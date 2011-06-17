@@ -43,4 +43,6 @@ class One_Term_Catalyst():
                 self.y_ = self.y_array[j]
                 self.Yxy_[i,j] = self.set_Y_()
     
+    def set_eff(self):
+        """Sets conversion efficiency over a range of Pe and Da."""
 
