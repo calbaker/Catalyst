@@ -15,7 +15,7 @@ class One_Term_Catalyst():
         self.lambda_1 = ( sp.array([0.31, 0.65, 0.86, 1.08, 1.31,
         1.43, 1.47, 1.50, 1.52, 1.53, 1.54]) )     
         self.ORDER = sp.size(self.Da_fix) - 1 - 6
-        self.Da_array = sp.arange(0.1, 5., 0.05)
+        self.Da_array = sp.arange(0.1, 10., 0.1)
         self.Pe_array = sp.arange(100., 1000., 25.)
         self.length_ = 100.
 
@@ -52,8 +52,8 @@ class One_Term_Catalyst():
         sp.size(self.Da_array)])
         for i in sp.arange(sp.size(self.Pe_array)):
             for j in sp.arange(sp.size(self.Da_array)):
-                self.eta[i,j] = ( 1. - 1. /
-        sp.sin(self.lambda_poly(self.Da_array[j])) *
+                self.eta[i,j] = ( 1. - 1. / 2. /
+        sp.sin(self.lambda_poly(self.Da_array[j])) * 
         sp.exp(-self.lambda_poly(self.Da_array[j])**2. / (4. *
         self.Pe_array[i]) * self.length_) *
         sp.sin(self.lambda_poly(self.Da_array[j])) ) 
