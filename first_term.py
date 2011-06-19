@@ -1,6 +1,5 @@
 import numpy as np
 import scipy as sp
-import matplotlib.pyplot as mpl
 
 class One_Term_Catalyst():
     """Class for representing catalyst reactor modeled by 1 term
