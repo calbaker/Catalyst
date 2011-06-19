@@ -29,9 +29,9 @@ class One_Term_Catalyst():
         """Sets float non-dimensional Y at any particular non-d x,y
         point""" 
         self.set_fit()
-        Y_ = ( 2. * self.lambda_poly(self.Da) / self.lambda_poly(self.Da) *
-        sp.exp(-self.lambda_poly(self.Da)**2. / (4. * self.Pe ) * self.x_) *
-        sp.cos(self.lambda_poly(self.Da) * self.y_) )
+        Y_ = ( self.lambda_poly(self.Da) / self.lambda_poly(self.Da) *
+        sp.exp(-self.lambda_poly(self.Da)**2. / (4. * self.Pe ) *
+        self.x_) * sp.cos(self.lambda_poly(self.Da) * self.y_) ) 
         return Y_
 
     def set_Yxy_(self):
@@ -52,8 +52,8 @@ class One_Term_Catalyst():
         sp.size(self.Da_array)])
         for i in sp.arange(sp.size(self.Pe_array)):
             for j in sp.arange(sp.size(self.Da_array)):
-                self.eta[i,j] = ( 1. - 1. / 2. /
-        sp.sin(self.lambda_poly(self.Da_array[j])) * 
+                self.eta[i,j] = ( 1. - 1. /
+        sp.sin(self.lambda_poly(self.Da_array[j])) *
         sp.exp(-self.lambda_poly(self.Da_array[j])**2. / (4. *
         self.Pe_array[i]) * self.length_) *
         sp.sin(self.lambda_poly(self.Da_array[j])) ) 
