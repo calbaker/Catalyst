@@ -14,7 +14,7 @@ class One_Term_Catalyst():
         30., 40., 50.]) )   
         self.lambda_1 = ( sp.array([0.31, 0.65, 0.86, 1.08, 1.31,
         1.43, 1.47, 1.50, 1.52, 1.53, 1.54]) )     
-        self.ORDER = sp.size(self.Da_fix) - 1 - 4
+        self.ORDER = sp.size(self.Da_fix) - 1 - 6
         self.Da_array = sp.arange(0.1, 5., 0.05)
         self.Pe_array = sp.arange(100., 1000., 25.)
         self.length_ = 100.
