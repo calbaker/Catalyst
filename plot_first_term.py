@@ -10,10 +10,9 @@ cat1 = One_Term_Catalyst()
 cat1.x_array = np.arange(0., 1050., 50.)
 cat1.y_array = np.arange(-1., 1.01, 0.01)
 cat1.set_Yxy_()
+cat1.set_eta()
 
 # Plot configuration
-x_2d, y_2d = np.meshgrid(cat1.x_array, cat1.y_array)
-
 FONTSIZE = 14
 mpl.rcParams['axes.labelsize'] = FONTSIZE
 mpl.rcParams['axes.titlesize'] = FONTSIZE
@@ -26,7 +25,7 @@ mpl.rcParams['lines.markersize'] = 10
 Da_range = sp.arange(0, 41, 1.)
 lambda_1_curve = cat1.lambda_poly(Da_range)
 
-fig1 = mpl.figure()
+fig_eigen = mpl.figure()
 mpl.plot(cat1.Da_fix, cat1.lambda_1, 'x', label='data')
 mpl.plot(Da_range, lambda_1_curve, label='fit')
 mpl.xlabel('Da')
@@ -38,7 +37,8 @@ mpl.legend()
 mpl.savefig('Plots/eigen_fit.pdf')
 mpl.savefig('Plots/eigen_fit.png')
 
-fig_eta = mpl.figure()
+fig_species = mpl.figure()
+x_2d, y_2d = np.meshgrid(cat1.x_array, cat1.y_array)
 # TICKS = sp.arange(0,1.5,0.1)
 LEVELS = sp.arange(0, 1.2, 0.1)
 FCS = mpl.contourf(x_2d, y_2d, cat1.Yxy_.T) 
@@ -53,6 +53,19 @@ mpl.savefig('Plots/species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
             + '.pdf') 
 mpl.savefig('Plots/species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
             + '.png')  
+
+fig_eta = mpl.figure()
+Pe_2d, Da_2d = np.meshgrid(cat1.Pe_array, cat1.Da_array)
+# TICKS = sp.arange(0,1.5,0.1)
+# LEVELS = sp.arange(0, 1.2, 0.1)
+FCS = mpl.contourf(Pe_2d, Da_2d, cat1.eta.T) 
+CB = mpl.colorbar(FCS, orientation='horizontal', format='%.2f')
+mpl.grid()
+mpl.xlabel('Pe')
+mpl.ylabel('Da')
+mpl.title('Species Conversion Efficiency')
+mpl.savefig('Plots/eta.pdf')
+mpl.savefig('Plots/eta.png')
 
 mpl.show()
 
