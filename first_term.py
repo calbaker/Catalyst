@@ -19,7 +19,7 @@ class One_Term_Catalyst():
         # Graphically determined eigenvalues corresponding to Da
         self.ORDER = sp.size(self.Da_fix) - 1 - 6
         # order of polynomial fit
-        self.Da_array = sp.arange(0.1, 10., 0.1)
+        self.Da_array = sp.arange(1., 20., 0.5)
         # Range of Da for plotting conversion efficiency
         self.Pe_array = sp.arange(100., 1000., 25.)
         # Range of Pe for plotting conversion efficiency
@@ -78,11 +78,9 @@ class One_Term_Catalyst():
         sp.size(self.Da_array)])
         for i in sp.arange(sp.size(self.Pe_array)):
             for j in sp.arange(sp.size(self.Da_array)):
-                self.eta[i,j] = ( 1. - 1. /
-        sp.sin(self.lambda_poly(self.Da_array[j])) *
+                self.eta[i,j] = ( 1. -
         sp.exp(-self.lambda_poly(self.Da_array[j])**2. / (4. *
-        self.Pe_array[i]) * self.length_) *
-        sp.sin(self.lambda_poly(self.Da_array[j])) ) 
+        self.Pe_array[i]) * self.length_) )
         
     def set_diffusivity(self):
         """Sets thermal diffusivity based on BSL Transport Phenomena
