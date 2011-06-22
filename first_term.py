@@ -10,6 +10,7 @@ class One_Term_Catalyst():
 
     def __init__(self):
         """Sets values of constants"""
+        self.CtoK = 273.15 # conversion from Celsius to Kelvin
         self.P = 100. # Pressure of flow (kPa)
         self.Da = 1. # Damkoehler number
         self.Pe = 500. # Peclet number
@@ -109,10 +110,10 @@ class One_Term_Catalyst():
         # flow velocity (m/s)
         for i in sp.arange(sp.size(self.Vdot)):
             for j in sp.arange(sp.size(self.T_array)):
-                self.T = self.T_array[j] + 273.15
+                self.T = self.T_array[j] + self.CtoK
                 self.set_diffusivity()
                 self.U_ij[i,j] = ( self.Vdot[i] / (self.width *
-        self.height) * (self.T_array[j] + 273.15) / self.T_ambient )    
+        self.height) * (self.T_array[j] + self.CtoK) / self.T_ambient )    
                 self.Pe_ij[i,j] = self.U_ij[i,j] * self.height / self.D_C3H8_air
                 
     def set_Da(self):
@@ -123,13 +124,13 @@ class One_Term_Catalyst():
         # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
         self.k_arr = sp.zeros(sp.size(self.T_array))
         self.k_arr = ( self.A_arr * sp.exp(-self.T_a / (self.T_array +
-        273.15)) )
+        self.CtoK)) )
         # preexponential reaction rate factor (1/s ???).  Expects
         # Celsius input temp
         self.Da_pore_j = sp.zeros(sp.size(self.T_array))
         self.Da_j = sp.zeros(sp.size(self.T_array))
         for j in sp.arange(sp.size(self.T_array)):
-            self.T = self.T_array[j] + 273.15
+            self.T = self.T_array[j] + self.CtoK
             self.set_diffusivity()
             self.D_C3H8_air_eff = ( self.D_C3H8_air * self.porosity ) 
             self.mfp = ( (sp.sqrt(2.) * sp.pi * self.air.d**2. *
