@@ -21,7 +21,7 @@ class One_Term_Catalyst():
         # order of polynomial fit
         self.Da_array = sp.arange(1., 20., 0.5)
         # Range of Da for plotting conversion efficiency
-        self.Pe_array = sp.arange(100., 1000., 25.)
+        self.Pe_array = sp.arange(1., 100., 2.)
         # Range of Pe for plotting conversion efficiency
         self.length_ = 100.
         # dimensionless channel length
@@ -35,8 +35,10 @@ class One_Term_Catalyst():
         self.width = 20e-3 # channel width (m)
         self.Vdot = sp.arange(100., 1000., 10) * 1.e-6 / 60. 
         # volume flow rate (m^3/s)
-        self.T = sp.arange(200., 600., 10.)
+        self.T_array = sp.arange(200., 600., 10.) + 273.15
         # temperature of flow (K)
+        self.T_ambient = 300.
+        # ambient temperature (K) at which flow rate is measured
         self.A_arr = 2.e2
         # Arrhenius coefficient (not sure what the units are)
         self.T_a = 500. # activation temperature (K)
@@ -50,6 +52,10 @@ class One_Term_Catalyst():
         of Da with handpicked values."""
         self.coeffs = sp.polyfit(self.Da_fix, self.lambda_1, self.ORDER)
         self.lambda_poly = sp.poly1d(self.coeffs)
+
+    def set_lambda(self):
+        """Sets first eigen value as a function of Da using linear
+        interpolation. """
 
     def set_Y_(self):
         """Sets float non-dimensional Y at any particular non-d x,y
@@ -100,29 +106,47 @@ class One_Term_Catalyst():
     def set_Pe(self):
         """Finds Peclet number as a function of flow rate (m^3/s),
         temperature (K), and geometry"""
-        self.set_diffusivity()
         self.Pe_ij = sp.zeros([sp.size(self.Vdot), sp.size(self.T)])
-        self.U = self.Vdot / (self.width * self.height)
         # flow velocity (m/s)
         for i in sp.arange(sp.size(self.Vdot)):
-            for j in sp.arange(sp.size(self.T)):
-                self.Pe_ij[i,j] = self.U[i] * self.height / self.D_C3H8_air[j]
+            for j in sp.arange(sp.size(self.T_array)):
+                self.T = self.T_array[j]
+                self.set_diffusivity()
+                self.U = ( self.Vdot / (self.width * self.height) *
+        self.T / self.T_ambient ) 
+                self.Pe_ij[i,j] = self.U * self.height / self.D_C3H8_air
                 
     def set_Da(self):
         """Finds Damkoehler number as a function of temperature (K),
         porosity, catalyst loading and a whole slew of other
         things."""
-        self.set_diffusivity()
-        self.mfp = ( (sp.sqrt(2.) * sp.pi * self.air.d**2. *
-        self.air.n)**-1. )
         # Crude approximation of mean free path (m) of propane in air from
         # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
-        self.k_arr = self.A_arr * sp.exp(-self.T_a / self.T)
+        self.k_arr = sp.zeros(sp.size(self.T_array))
+        self.k_arr = self.A_arr * sp.exp(-self.T_a / self.T_array)
+        # preexponential reaction rate factor (1/s ???)
         self.D_C3H8_air_eff = ( self.D_C3H8_air * self.porosity ) 
         self.Da_pore_j = sp.zeros(sp.size(self.T))
         self.Da_j = sp.zeros(sp.size(self.T))
         for j in sp.arange(sp.size(self.T)):
-            self.Da_pore_j = ( self.k_arr[j] * self.thickness**2 /
+            self.T = self.T_array[j]
+            self.set_diffusivity()
+            self.mfp = ( (sp.sqrt(2.) * sp.pi * self.air.d**2. *
+        self.air.n)**-1. ) 
+            self.Da_pore_j[j] = ( self.k_arr[j] * self.thickness**2 /
         self.D_C3H8_air_eff[j] )   
-            self.Da_j[j] = 37.
+            self.Da_j[j] = ( self.D_C3H8_air_eff / self.D_C3H8_air *
+        self.h / self.thickness * sp.sqrt(self.Da_pore_j[j]) *
+        sp.tanh(sp.sqrt(self.Da_pore_j[j])) )
         
+    def set_eta_dimensional(self):
+        """Sets conversion efficiency over a range of flow rate and
+        temperature."""
+        self.eta_ij = sp.zeros([sp.size(self.Vdot),
+        sp.size(self.T)])
+        for i in sp.arange(sp.size(self.Vdot)):
+            for j in sp.arange(sp.size(self.T)):
+                self.eta[i,j] = ( 1. -
+        sp.exp(-self.lambda_poly(self.Da_j[j])**2. / (4. *
+        self.Pe_array[i]) * self.length_) )
+
