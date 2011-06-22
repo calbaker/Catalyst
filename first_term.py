@@ -40,7 +40,7 @@ class One_Term_Catalyst():
         self.T_ambient = 300.
         # ambient temperature (K) at which flow rate is measured
         self.A_arr = 2.e2
-        # Arrhenius coefficient (not sure what the units are)
+        # Arrhenius coefficient (1/s ???)
         self.T_a = 500. # activation temperature (K)
         self.porosity = 0.9
 
