@@ -107,14 +107,15 @@ class One_Term_Catalyst():
         """Finds Peclet number as a function of flow rate (m^3/s),
         temperature (K), and geometry"""
         self.Pe_ij = sp.zeros([sp.size(self.Vdot), sp.size(self.T)])
+        self.U_ij = sp.zeros([sp.size(self.Vdot), sp.size(self.T)])
         # flow velocity (m/s)
         for i in sp.arange(sp.size(self.Vdot)):
             for j in sp.arange(sp.size(self.T_array)):
                 self.T = self.T_array[j]
                 self.set_diffusivity()
-                self.U = ( self.Vdot / (self.width * self.height) *
-        self.T / self.T_ambient ) 
-                self.Pe_ij[i,j] = self.U * self.height / self.D_C3H8_air
+                self.U_ij[i,j] = ( self.Vdot / (self.width *
+        self.height) * self.T / self.T_ambient )  
+                self.Pe_ij[i,j] = self.U_ij[i,j] * self.height / self.D_C3H8_air
                 
     def set_Da(self):
         """Finds Damkoehler number as a function of temperature (K),
