@@ -143,6 +143,7 @@ class One_Term_Catalyst():
     def set_eta_dimensional(self):
         """Sets conversion efficiency over a range of flow rate and
         temperature."""
+        self.set_fit()
         self.set_Da()
         self.set_Pe()
         self.eta_ij = sp.zeros([sp.size(self.Vdot),
