@@ -1,5 +1,6 @@
 import numpy as np
 import scipy as sp
+import scipy.interpolate as interp
 
 import properties as prop
 
@@ -35,35 +36,31 @@ class One_Term_Catalyst():
         self.width = 20e-3 # channel width (m)
         self.Vdot = sp.arange(100., 1000., 10) * 1.e-6 / 60. 
         # volume flow rate (m^3/s)
-        self.T_array = sp.arange(200., 600., 10.) + 273.15
-        # temperature of flow (K)
+        self.T_array = sp.arange(200., 600., 10.) 
+        # temperature of flow (C)
         self.T_ambient = 300.
         # ambient temperature (K) at which flow rate is measured
-        self.A_arr = 2.e2
+        self.A_arr = 1.e7
         # Arrhenius coefficient (1/s ???)
-        self.T_a = 500. # activation temperature (K)
+        self.T_a = 6.e3 # activation temperature (K)
         self.porosity = 0.9
 
     fuel = prop.ideal_gas(species='C3H8')
     air = prop.ideal_gas()
 
-    def set_fit(self):
-        """Uses polynomial fit curve to represent lambda as a function
-        of Da with handpicked values."""
-        self.coeffs = sp.polyfit(self.Da_fix, self.lambda_1, self.ORDER)
-        self.lambda_poly = sp.poly1d(self.coeffs)
-
-    def set_lambda(self):
-        """Sets first eigen value as a function of Da using linear
-        interpolation. """
+    def set_lambda(self, Da):
+        """Uses fit algorithm to represent lambda as a function of Da
+        with handpicked values.""" 
+        spline_params = interp.splrep(self.Da_fix, self.lambda_1)
+        lambda_fit = interp.splev(Da, spline_params)
+        return lambda_fit
 
     def set_Y_(self):
         """Sets float non-dimensional Y at any particular non-d x,y
         point""" 
-        self.set_fit()
-        Y_ = ( self.lambda_poly(self.Da) / self.lambda_poly(self.Da) *
-        sp.exp(-self.lambda_poly(self.Da)**2. / (4. * self.Pe ) *
-        self.x_) * sp.cos(self.lambda_poly(self.Da) * self.y_) ) 
+        lambda1 = self.set_lambda(self.Da)
+        Y_ = ( lambda1 / self.lambda1 * sp.exp(-self.lambda1**2. /
+        (4. * self.Pe ) * self.x_) * sp.cos(self.lambda1 * self.y_) )   
         return Y_
 
     def set_Yxy_(self):
@@ -82,11 +79,12 @@ class One_Term_Catalyst():
         """Sets conversion efficiency over a range of Pe and Da."""
         self.eta = sp.zeros([sp.size(self.Pe_array),
         sp.size(self.Da_array)])
+        self.lambda_j = sp.zeros(sp.size(self.Da_array))
         for i in sp.arange(sp.size(self.Pe_array)):
             for j in sp.arange(sp.size(self.Da_array)):
-                self.eta[i,j] = ( 1. -
-        sp.exp(-self.lambda_poly(self.Da_array[j])**2. / (4. *
-        self.Pe_array[i]) * self.length_) )
+                self.lambda_j[j] = self.set_lambda(self.Da_array[j])
+                self.eta[i,j] = ( 1. - sp.exp(-self.lambda_j[j]**2. /
+        (4. * self.Pe_array[i]) * self.length_) ) 
         
     def set_diffusivity(self):
         """Sets thermal diffusivity based on BSL Transport Phenomena
@@ -111,10 +109,10 @@ class One_Term_Catalyst():
         # flow velocity (m/s)
         for i in sp.arange(sp.size(self.Vdot)):
             for j in sp.arange(sp.size(self.T_array)):
-                self.T = self.T_array[j]
+                self.T = self.T_array[j] + 273.15
                 self.set_diffusivity()
                 self.U_ij[i,j] = ( self.Vdot[i] / (self.width *
-        self.height) * self.T_array[j] / self.T_ambient )   
+        self.height) * (self.T_array[j] + 273.15) / self.T_ambient )    
                 self.Pe_ij[i,j] = self.U_ij[i,j] * self.height / self.D_C3H8_air
                 
     def set_Da(self):
@@ -124,12 +122,14 @@ class One_Term_Catalyst():
         # Crude approximation of mean free path (m) of propane in air from
         # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
         self.k_arr = sp.zeros(sp.size(self.T_array))
-        self.k_arr = self.A_arr * sp.exp(-self.T_a / self.T_array)
-        # preexponential reaction rate factor (1/s ???)
+        self.k_arr = ( self.A_arr * sp.exp(-self.T_a / (self.T_array +
+        273.15)) )
+        # preexponential reaction rate factor (1/s ???).  Expects
+        # Celsius input temp
         self.Da_pore_j = sp.zeros(sp.size(self.T_array))
         self.Da_j = sp.zeros(sp.size(self.T_array))
         for j in sp.arange(sp.size(self.T_array)):
-            self.T = self.T_array[j]
+            self.T = self.T_array[j] + 273.15
             self.set_diffusivity()
             self.D_C3H8_air_eff = ( self.D_C3H8_air * self.porosity ) 
             self.mfp = ( (sp.sqrt(2.) * sp.pi * self.air.d**2. *
@@ -143,14 +143,15 @@ class One_Term_Catalyst():
     def set_eta_dimensional(self):
         """Sets conversion efficiency over a range of flow rate and
         temperature."""
-        self.set_fit()
         self.set_Da()
         self.set_Pe()
         self.eta_ij = sp.zeros([sp.size(self.Vdot),
         sp.size(self.T_array)])
+        self.lambda_j = sp.zeros(sp.size(self.T_array))
         for i in sp.arange(sp.size(self.Vdot)):
             for j in sp.arange(sp.size(self.T_array)):
+                self.lambda_j[j] = self.set_lambda(self.Da_j[j]) 
                 self.eta_ij[i,j] = ( 1. -
-        sp.exp(-self.lambda_poly(self.Da_j[j])**2. / (4. *
-        self.Pe_ij[i,j]) * self.length_) )
+        sp.exp(-self.lambda_j[j]**2. / (4. * self.Pe_ij[i,j]) *
+        self.length_) ) 
 
