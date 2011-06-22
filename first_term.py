@@ -106,15 +106,15 @@ class One_Term_Catalyst():
     def set_Pe(self):
         """Finds Peclet number as a function of flow rate (m^3/s),
         temperature (K), and geometry"""
-        self.Pe_ij = sp.zeros([sp.size(self.Vdot), sp.size(self.T)])
-        self.U_ij = sp.zeros([sp.size(self.Vdot), sp.size(self.T)])
+        self.Pe_ij = sp.zeros([sp.size(self.Vdot), sp.size(self.T_array)])
+        self.U_ij = sp.zeros([sp.size(self.Vdot), sp.size(self.T_array)])
         # flow velocity (m/s)
         for i in sp.arange(sp.size(self.Vdot)):
             for j in sp.arange(sp.size(self.T_array)):
                 self.T = self.T_array[j]
                 self.set_diffusivity()
-                self.U_ij[i,j] = ( self.Vdot / (self.width *
-        self.height) * self.T / self.T_ambient )  
+                self.U_ij[i,j] = ( self.Vdot[i] / (self.width *
+        self.height) * self.T_array[j] / self.T_ambient )   
                 self.Pe_ij[i,j] = self.U_ij[i,j] * self.height / self.D_C3H8_air
                 
     def set_Da(self):
@@ -126,28 +126,30 @@ class One_Term_Catalyst():
         self.k_arr = sp.zeros(sp.size(self.T_array))
         self.k_arr = self.A_arr * sp.exp(-self.T_a / self.T_array)
         # preexponential reaction rate factor (1/s ???)
-        self.D_C3H8_air_eff = ( self.D_C3H8_air * self.porosity ) 
-        self.Da_pore_j = sp.zeros(sp.size(self.T))
-        self.Da_j = sp.zeros(sp.size(self.T))
-        for j in sp.arange(sp.size(self.T)):
+        self.Da_pore_j = sp.zeros(sp.size(self.T_array))
+        self.Da_j = sp.zeros(sp.size(self.T_array))
+        for j in sp.arange(sp.size(self.T_array)):
             self.T = self.T_array[j]
             self.set_diffusivity()
+            self.D_C3H8_air_eff = ( self.D_C3H8_air * self.porosity ) 
             self.mfp = ( (sp.sqrt(2.) * sp.pi * self.air.d**2. *
         self.air.n)**-1. ) 
             self.Da_pore_j[j] = ( self.k_arr[j] * self.thickness**2 /
-        self.D_C3H8_air_eff[j] )   
+        self.D_C3H8_air_eff )   
             self.Da_j[j] = ( self.D_C3H8_air_eff / self.D_C3H8_air *
-        self.h / self.thickness * sp.sqrt(self.Da_pore_j[j]) *
+        self.height / self.thickness * sp.sqrt(self.Da_pore_j[j]) *
         sp.tanh(sp.sqrt(self.Da_pore_j[j])) )
         
     def set_eta_dimensional(self):
         """Sets conversion efficiency over a range of flow rate and
         temperature."""
+        self.set_Da()
+        self.set_Pe()
         self.eta_ij = sp.zeros([sp.size(self.Vdot),
-        sp.size(self.T)])
+        sp.size(self.T_array)])
         for i in sp.arange(sp.size(self.Vdot)):
-            for j in sp.arange(sp.size(self.T)):
-                self.eta[i,j] = ( 1. -
+            for j in sp.arange(sp.size(self.T_array)):
+                self.eta_ij[i,j] = ( 1. -
         sp.exp(-self.lambda_poly(self.Da_j[j])**2. / (4. *
-        self.Pe_array[i]) * self.length_) )
+        self.Pe_ij[i,j]) * self.length_) )
 
