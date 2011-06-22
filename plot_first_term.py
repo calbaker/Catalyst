@@ -80,9 +80,9 @@ Vdot2d, T2d = np.meshgrid(cat1.Vdot, cat1.T_array)
 Vdot2d = Vdot2d * 60. * 1.e6
 # converts back to sccm for plotting
 # TICKS = sp.arange(0,1.5,0.1)
-LEVELS = sp.arange(0.6, 1.01, 0.01)
+LEVELS = sp.arange(0., 1.05, 0.05)
 fig_eta_real = mpl.figure()
-FCS = mpl.contourf(Vdot2d, T2d, cat1.eta_ij.T)
+FCS = mpl.contourf(Vdot2d, T2d, cat1.eta_ij.T, LEVELS)
 CB = mpl.colorbar(FCS, orientation='horizontal')
 mpl.grid()
 mpl.xlabel(r'$\dot{V}$ (sccm)')
