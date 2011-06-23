@@ -12,7 +12,7 @@ mpl.close('all')
 cat1 = One_Term_Catalyst()
 
 cat1.x_array = np.arange(0., 1050., 50.)
-cat1.y_array = np.arange(-1., 1.01, 0.01)
+cat1.y_array = np.arange(-1., 1.05, 0.05)
 cat1.Da_array = sp.arange(0.05, 5., 0.05)
 cat1.set_lambda(cat1.Da_array)
 #cat1.set_Yxy_()
@@ -28,7 +28,7 @@ mpl.rcParams['ytick.labelsize'] = FONTSIZE
 mpl.rcParams['lines.linewidth'] = 1.5
 mpl.rcParams['lines.markersize'] = 10
 
-Da_range = sp.arange(0, 41, 1.)
+Da_range = sp.arange(0, 20, 0.01)
 lambda_1_curve = cat1.set_lambda(Da_range)
 
 fig_eigen = mpl.figure()
