@@ -14,20 +14,20 @@ class One_Term_Catalyst():
         self.P = 100. # Pressure of flow (kPa)
         self.Da = 1. # Damkoehler number
         self.Pe = 500. # Peclet number
-        self.Da_fix = ( sp.array([0.1, 0.5, 1., 2., 5., 10., 15., 20.,
-        30., 40., 50.]) ) # Graphically determined Da
-        self.lambda_1 = ( sp.array([0.31, 0.65, 0.86, 1.08, 1.31,
-        1.43, 1.47, 1.50, 1.52, 1.53, 1.54]) )
+
+        self.lambda_and_Da = sp.array([[0.01,0.10], [0.1,0.31],
+        [0.2,0.43], [0.3,0.52], [0.4,0.59], [0.5,0.65], [1.0,0.86],
+        [2.0,1.08], [5.0,1.31], [10.0,1.43], [15.0,1.47], [20.0,1.50],
+        [30.0,1.52], [40.0,1.53], [50.0,1.54]])  
+        
         # Graphically determined eigenvalues corresponding to Da
-        self.ORDER = sp.size(self.Da_fix) - 1 - 6
-        # order of polynomial fit
         self.Da_array = sp.arange(1., 20., 0.5)
         # Range of Da for plotting conversion efficiency
         self.Pe_array = sp.arange(1., 100., 2.)
         # Range of Pe for plotting conversion efficiency
         self.length_ = 100.
         # dimensionless channel length
-        self.height = 0.002
+        self.height = 0.003
         # channel height (m)
         self.length = 76.2e-3 * 2.
         # channel length (m)
@@ -41,9 +41,9 @@ class One_Term_Catalyst():
         # temperature of flow (C)
         self.T_ambient = 300.
         # ambient temperature (K) at which flow rate is measured
-        self.A_arr = 1.e7
+        self.A_arr = 15.e9
         # Arrhenius coefficient (1/s ???)
-        self.T_a = 6.e3 # activation temperature (K)
+        self.T_a = 14.e3 # activation temperature (K)
         self.porosity = 0.9
 
     fuel = prop.ideal_gas(species='C3H8')
@@ -52,7 +52,8 @@ class One_Term_Catalyst():
     def set_lambda(self, Da):
         """Uses fit algorithm to represent lambda as a function of Da
         with handpicked values.""" 
-        spline_params = interp.splrep(self.Da_fix, self.lambda_1)
+        spline_params = interp.splrep(self.lambda_and_Da[:,0],
+        self.lambda_and_Da[:,1]) 
         lambda_fit = interp.splev(Da, spline_params)
         return lambda_fit
 
