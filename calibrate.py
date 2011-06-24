@@ -5,34 +5,10 @@ import matplotlib.pyplot as mpl
 import os
 os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
 
-from first_term import *
+import first_term as ft
 import experimental_data as expdata
-reload(expdata)
 
-mpl.close('all')
-
-def get_S(real_cat, data1):
-    real_cat.set_eta_dimensional()
-    S = sp.sum((real_cat.eta_ij[0,:] - data1.eta_T)**2)
-    return S
-
-def set_dS(real_cat, data1, A_arr, T_a):
-    real_cat.S = sp.zeros([sp.size(A_arr), sp.size(T_a)])
-    real_cat.dSdA = sp.zeros([sp.size(A_arr)-1, sp.size(T_a)])
-    real_cat.dSdT = sp.zeros([sp.size(A_arr), sp.size(T_a)-1])
-    for i in sp.arange(sp.size(A_arr)):
-        if i%10 == 0:
-            print 'i =',i,'of',sp.size(real_cat.dSdA,0)
-        for j in sp.arange(sp.size(T_a)):
-            real_cat.A_arr = A_arr[i]
-            real_cat.T_a = T_a[j]
-            real_cat.S[i,j] = get_S(real_cat, data1)
-    real_cat.dSdA = ( (real_cat.S[1:,:] - real_cat.S[:-1,:]) /
-    (A_arr[1:] - A_arr[:-1]) ) 
-    real_cat.dSdT = ( (real_cat.S[:,1:] - real_cat.S[:,:-1]) /
-    (T_a[1:] - T_a[:-1]) )
-     
-real_cat = One_Term_Catalyst()
+real_cat = ft.One_Term_Catalyst()
 real_cat.T_array = sp.array([350., 400., 450., 500., 550., 600.]) 
 real_cat.Vdot = sp.array([300.]) * 1.e-6 / 60. 
 
@@ -44,46 +20,48 @@ data1.HCin = sp.array([3830., 3880., 3860., 3800., 3840., 3850.])
 data1.HCout = sp.array([3780., 3730., 3660., 3560., 3380., 1714.]) 
 data1.set_eta_T()
 
-A_arr = sp.linspace(1., 1000., 50) * 1e9
-T_a = sp.linspace(5, 15, 50) * 1e3
-set_dS(real_cat, data1, A_arr, T_a)
+def get_R(real_cat, data1):
+    """Returns value for R for a particular A and T_a"""
+    real_cat.set_eta_dimensional()
+    R = sp.sum((real_cat.eta_ij[0,:] - data1.eta_T)**2)
+    return R
 
-# Plot configuration
-FONTSIZE = 14
-mpl.rcParams['axes.labelsize'] = FONTSIZE
-mpl.rcParams['axes.titlesize'] = FONTSIZE
-mpl.rcParams['legend.fontsize'] = FONTSIZE
-mpl.rcParams['xtick.labelsize'] = FONTSIZE
-mpl.rcParams['ytick.labelsize'] = FONTSIZE
-mpl.rcParams['lines.linewidth'] = 1.5
-mpl.rcParams['lines.markersize'] = 10
+max_iter = 50
+A_arr = sp.zeros(max_iter)
+T_a = sp.zeros(max_iter)
+dRdA_arr = sp.zeros(max_iter - 1)
+dRdT_a = sp.zeros(max_iter - 1)
+d2RdA_arr2 = sp.zeros(max_iter - 2)
+d2RdT_a2 = sp.zeros(max_iter - 2)
 
-# converts back to sccm for plotting
-# TICKS = sp.arange(0,1.5,0.1)
-LEVELS = sp.arange(0., 1.05, 0.05)
+R = sp.zeros([max_iter, max_iter])               
 
-A,T = sp.meshgrid(A_arr[1:], T_a[:])
+# The idea here is to find the 2nd derivative by perturbing the
+# solution for R with 2 changes in A_arr or T_a, and then change the
+# values until the desired 1st derivative is achieved.  To do this
+# properly, only 1 of the two independent variables can be changed at
+# a time.  
 
-fig = mpl.figure()
-FCS = mpl.contourf(A, T, real_cat.dSdA.T)
-CB = mpl.colorbar(FCS, orientation='horizontal', format='%.0f')
-mpl.grid()
-mpl.title(r'Normalized $\frac{dS}{dA}$')
-mpl.xlabel('Preexponential (1/s)')
-mpl.ylabel('Activation Temperature (K)')
-mpl.savefig('Plots/calibrate A.pdf')
-mpl.savefig('Plots/calibrate A.png')
+A_arr[0:3] = sp.array([40., 41., 42.]) * 1.e10
+T_a[0:3] = sp.array([15., 16., 17.]) * 1.e3
 
-A,T = sp.meshgrid(A_arr[:], T_a[1:])
+for i in sp.arange(3):
+    for j in sp.arange(3):
+        real_cat.A_arr = A_arr[i]
+        real_cat.T_a = T_a[j]
+        R[i,j] = get_R(real_cat, data1)
 
-fig2 = mpl.figure()
-FCS2 = mpl.contourf(A, T, real_cat.dSdT.T)
-CB = mpl.colorbar(FCS2, orientation='horizontal', format='%.0f')
-mpl.grid()
-mpl.title(r'Normalized $\frac{dS}{dT}$')
-mpl.xlabel('Preexponential (1/s)')
-mpl.ylabel('Activation Temperature (K)')
-mpl.savefig('Plots/calibrate T.pdf')
-mpl.savefig('Plots/calibrate T.png')
+dRdA_arr[0:2] = (R[1:3,0] - R[0:2,0]) / (A_arr[1:3] - A_arr[0:2])
+dRdT_a[0:2] = (R[0,1:3] - R[0,0:2]) / (T_a[1:3] - T_a[0:2])
 
-mpl.show()
+d2RdA_arr2[0:1] = ( (dRdA_arr[1:2] - dRdA_arr[0:1]) /
+                    (A_arr[1:2] - A_arr[0:1]) )
+d2RdT_a2[0:1] = ( (dRdT_a[1:2] - dRdT_a[0:1]) /
+                  (T_a[1:2] - T_a[0:1]) ) 
+
+# d2RdA_arr2
+
+# for i in sp.arange(max_iter):
+#     for j in sp.arange(max_iter):
+        
+    
