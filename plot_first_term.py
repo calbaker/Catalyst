@@ -5,18 +5,17 @@ import matplotlib.pyplot as mpl
 import os
 os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
 
-from first_term import *
+import first_term as ft
+reload(ft)
 
-mpl.close('all')
-    
-cat1 = One_Term_Catalyst()
+cat1 = ft.One_Term_Catalyst()
 
 cat1.x_array = np.arange(0., 1050., 50.)
 cat1.y_array = np.arange(-1., 1.05, 0.05)
 cat1.Da_array = sp.arange(0.05, 5., 0.05)
-cat1.set_lambda(cat1.Da_array)
+cat1.lambda1 = cat1.get_lambda(cat1.Da_array)
 #cat1.set_Yxy_()
-cat1.set_eta()
+cat1.set_eta_dimless()
 
 # Plot configuration
 FONTSIZE = 14
@@ -29,7 +28,7 @@ mpl.rcParams['lines.linewidth'] = 1.5
 mpl.rcParams['lines.markersize'] = 10
 
 Da_range = sp.arange(0, 20, 0.01)
-lambda_1_curve = cat1.set_lambda(Da_range)
+lambda_1_curve = cat1.get_lambda(Da_range)
 
 fig_eigen = mpl.figure()
 mpl.plot(cat1.lambda_and_Da[:,0], cat1.lambda_and_Da[:,1], 'x',
@@ -66,7 +65,7 @@ fig_eta = mpl.figure()
 Pe_2d, Da_2d = np.meshgrid(cat1.Pe_array, cat1.Da_array)
 # TICKS = sp.arange(0,1.5,0.1)
 LEVELS = sp.arange(0, 1.05, 0.05)
-FCS = mpl.contourf(Pe_2d, Da_2d, cat1.eta.T, LEVELS) 
+FCS = mpl.contourf(Pe_2d, Da_2d, cat1.eta_dimless.T, LEVELS) 
 CB = mpl.colorbar(FCS, orientation='horizontal', format='%.2f')
 mpl.grid()
 mpl.xlabel('Pe')
