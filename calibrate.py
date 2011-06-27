@@ -21,17 +21,27 @@ data1.HCin = sp.array([3830., 3880., 3860., 3800., 3840., 3850.])
 data1.HCout = sp.array([3780., 3730., 3660., 3560., 3380., 1714.]) 
 data1.set_eta_T()
 
-real_cat.A_arr = 1.e10
-real_cat.T_a = 15.e3
+real_cat.A_arr = 6.e10 - 2000.
+real_cat.T_a = 13.2e3
 
-real_cat.set_eta_dim()
-eta = real_cat.eta_dim.reshape(6)
+Z_list = list()
+a_list = list()
+a_mag = sp.empty(0)
 
-D = sp.array(data1.eta_T - eta)
-d_eta_dA_arr = real_cat.perturb_A_arr()
-d_eta_dT_a = real_cat.perturb_T_a()
+for i in sp.arange(4):
+    real_cat.set_eta_dim()
+    eta = real_cat.eta_dim.reshape(6)
 
-Z = sp.array([d_eta_dA_arr, d_eta_dT_a]).reshape(6,2)
+    D = sp.array(data1.eta_T - eta)
+    d_eta_dA_arr = real_cat.perturb_A_arr()
+    d_eta_dT_a = real_cat.perturb_T_a()
 
-delta_A = sp.dot(sp.linalg.inv(sp.dot(Z.T, Z)), sp.dot(Z.T, D)) 
+    Z = sp.array([d_eta_dA_arr, d_eta_dT_a]).reshape(6,2)
+    Z_list.append(Z)
 
+    delta_a_i = sp.dot(sp.linalg.inv(sp.dot(Z.T, Z)), sp.dot(Z.T, D))
+    a_list.append(delta_a_i)
+    a_mag = sp.append(a_mag, sp.sqrt(a_list[i][0]**2 + a_list[i][1]**2))
+
+    real_cat.A_arr = real_cat.A_arr + delta_a_i[0]
+    real_cat.T_a = real_cat.T_a + delta_a_i[1]
