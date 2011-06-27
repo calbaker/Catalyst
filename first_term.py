@@ -10,6 +10,7 @@ class One_Term_Catalyst():
 
     def __init__(self):
         """Sets values of constants"""
+        self.epsilon = 1. # Used for perturbation
         self.CtoK = 273.15 # conversion from Celsius to Kelvin
         self.P = 100. # Pressure of flow (kPa)
         self.Da = 1. # Damkoehler number
@@ -168,3 +169,30 @@ class One_Term_Catalyst():
         sp.exp(-self.lambda_j[j]**2. / (4. * self.Pe_ij[i,j]) *
         self.length_) )  
 
+    def perturb_A_arr(self):
+        """Returns first derivative of eta w.r.t. A_arr for small
+        perturbations in A_arr"""
+        self.A_arr = self.A_arr + self.epsilon
+        self.set_eta_dim()
+        eta_new = self.eta_dim.reshape(sp.size(self.T_array))
+        self.A_arr = self.A_arr - self.epsilon
+        self.set_eta_dim()
+        eta_old = self.eta_dim.reshape(sp.size(self.T_array))
+        d_eta_dA_arr = (eta_new - eta_old) / self.epsilon
+        return d_eta_dA_arr
+
+    def perturb_T_a(self):
+        """Returns first derivative of eta w.r.t. T_a for small
+        perturbations in T_a"""
+        self.T_a = self.T_a + self.epsilon
+        self.set_eta_dim()
+        eta_new = self.eta_dim.reshape(sp.size(self.T_array))
+        self.T_a = self.T_a - self.epsilon
+        self.set_eta_dim()
+        eta_old = self.eta_dim.reshape(sp.size(self.T_array))
+        d_eta_dT_a = (eta_new - eta_old) / self.epsilon
+        return d_eta_dT_a
+
+    
+
+                
