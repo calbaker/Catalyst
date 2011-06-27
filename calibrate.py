@@ -6,6 +6,7 @@ import os
 os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
 
 import first_term as ft
+reload(ft)
 import experimental_data as expdata
 
 real_cat = ft.One_Term_Catalyst()
@@ -20,9 +21,17 @@ data1.HCin = sp.array([3830., 3880., 3860., 3800., 3840., 3850.])
 data1.HCout = sp.array([3780., 3730., 3660., 3560., 3380., 1714.]) 
 data1.set_eta_T()
 
-def get_R(real_cat, data1):
-    """Returns value for R for a particular A and T_a"""
-    real_cat.set_eta_dimensional()
-    R = sp.sum((real_cat.eta_ij[0,:] - data1.eta_T)**2)
-    return R
+real_cat.A_arr = 1.e10
+real_cat.T_a = 15.e3
+
+real_cat.set_eta_dim()
+eta = real_cat.eta_dim.reshape(6)
+
+D = sp.array(data1.eta_T - eta)
+d_eta_dA_arr = real_cat.perturb_A_arr()
+d_eta_dT_a = real_cat.perturb_T_a()
+
+Z = sp.array([d_eta_dA_arr, d_eta_dT_a]).reshape(6,2)
+
+delta_A = sp.dot(sp.linalg.inv(sp.dot(Z.T, Z)), sp.dot(Z.T, D)) 
 
