@@ -16,12 +16,16 @@ real_cat.Vdot = sp.array([300.]) * 1.e-6 / 60.
 data1 = expdata.Data()
 data1.source = '300sccm 20nmPtPd VariedT.xls'
 data1.Vdot_setpoint = 300.
-data1.T = sp.array([350., 400., 450., 500., 550., 600.])
-data1.HCin = sp.array([3830., 3880., 3860., 3800., 3840., 3850.])
-data1.HCout = sp.array([3780., 3730., 3660., 3560., 3380., 1714.]) 
+# data1.T = sp.array([350., 400., 450., 500., 550., 600.])
+# data1.HCin = sp.array([3830., 3880., 3860., 3800., 3840., 3850.])
+# data1.HCout = sp.array([3780., 3730., 3660., 3560., 3380., 1714.])
+
+data1.T = sp.array([350., 450., 550])
+data1.HCin = sp.array([3830., 3860., 3840])
+data1.HCout = sp.array([3780., 3660., 3380]) 
 data1.set_eta_T()
 
-real_cat.A_arr = 6.e10 - 2000.
+real_cat.A_arr = 6.e10 
 real_cat.T_a = 13.2e3
 
 Z_list = list()
