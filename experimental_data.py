@@ -19,6 +19,8 @@ class Data(ft.One_Term_Catalyst):
         self.set_eta_dim()
         self.eta_model = self.eta_dim
 
-    def get_R(self):
+    def get_S_r(self):
         """Returns sum of residuals squared for all data points."""
+        S_r = sp.sum((self.eta_model - self.eta_exp)**2.)
+        return S_r
         
