@@ -24,8 +24,9 @@ class Data(ft.One_Term_Catalyst):
         for i in sp.arange(self.HCin.shape[0]):
             for j in sp.arange(self.HCin.shape[1]):
                 self.eta_raw[i,j] = ( (self.HCin[i,j] -
-        self.HCout[i,j]) / self.HCin[i,j] / self.HCin.shape[1] ) 
-            self.eta_mean[i] = self.eta_raw[i,:].sum()
+        self.HCout[i,j]) / self.HCin[i,j] )
+            self.eta_mean[i] = ( self.eta_raw[i,:].sum() /
+            self.HCin.shape[1] )  
             self.errorbar[i] = 1.96 * self.eta_raw[i,:].std() 
 
     def get_S_r(self):

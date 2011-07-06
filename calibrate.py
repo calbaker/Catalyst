@@ -1,7 +1,8 @@
 """Module for plotting results of first term model."""
 
 import scipy as sp
-import matplotlib.pyplot as mpl
+from scipy.optimize import curve_fit
+import matplotlib.pyplot as plt
 import os
 os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
 
@@ -10,7 +11,7 @@ reload(expdata)
 
 data1 = expdata.Data()
 data1.source = 'Osman July 3'
-data1.Vdot = sp.array([250.]) * 1.e-6 / 60. 
+data1.Vdot = 250. * 1.e-6 / 60. 
 data1.T_array = sp.arange(350., 625., 25.)
 data1.HCin = sp.array([[4900., 4950., 4940.], [4900., 4920., 4950.],
                        [5150., 5170., 5140.], [5760., 5450., 5560.],
@@ -25,3 +26,29 @@ data1.HCout = sp.array([[3910., 3895., 3890.], [3730., 3740., 3720.],
                         [0239., 0220., 0225.], [0111., 0098., 0103.],
                         [0053., 0041., 0045.]])
 data1.set_eta()
+
+popt, pcov = curve_fit(data1.get_eta_dim, data1.T_array,
+                       data1.eta_mean, p0=sp.array([1.e16, 27.e3])) 
+
+# # Plot configuration
+# FONTSIZE = 14
+# plt.rcParams['axes.labelsize'] = FONTSIZE
+# plt.rcParams['axes.titlesize'] = FONTSIZE
+# plt.rcParams['legend.fontsize'] = FONTSIZE
+# plt.rcParams['xtick.labelsize'] = FONTSIZE
+# plt.rcParams['ytick.labelsize'] = FONTSIZE
+# plt.rcParams['lines.linewidth'] = 1.5
+# plt.rcParams['lines.markersize'] = 5
+
+# fig = plt.figure()
+# plt.plot(data1.T_array, data1.eta_mean, linestyle='', marker='x', markersize=15)
+
+# plt.grid()
+# plt.xlabel('Temperature (C)')
+# plt.ylabel('HC Conversion Efficiency')
+# plt.title('HC Conversion v. Temperature')
+# fig.savefig('Plots/eta v temp.pdf')
+# fig.savefig('Plots/eta v temp.png')
+
+# plt.show()
+

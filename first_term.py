@@ -1,6 +1,7 @@
 import numpy as np
 import scipy as sp
 import scipy.interpolate as interp
+from scipy.optimize import curve_fit
 
 import properties as prop
 
@@ -62,6 +63,7 @@ class One_Term_Catalyst():
         spline_params = interp.splrep(self.lambda_and_Da[:,0],
         self.lambda_and_Da[:,1]) 
         lambda_fit = interp.splev(Da, spline_params)
+        print "\nSpecified Da = ",Da
         return lambda_fit
 
     def get_Y_(self, x_, y_):
@@ -115,6 +117,43 @@ class One_Term_Catalyst():
         # Transport Phenomena 2nd Ed. Equation 17.3-10
         return D_C3H8_air 
 
+    def get_Pe(self, Vdot, T):
+        """Returns Peclet number for a particular flow rate (m^3/s),
+        temperature (K), and geometry"""
+        T = T + self.CtoK
+        D_C3H8_air = self.get_diffusivity(T, self.P)
+        U = ( Vdot / (self.width * self.height) * (T / self.T_ambient)
+        ) 
+        Pe = U * self.height / D_C3H8_air
+        return Pe
+                
+    def get_Da(self, T, A_arr, T_a):
+        """Returns Damkoehler for a particular temperature (K),
+        porosity, catalyst loading and a whole slew of other things."""
+        T = T + self.CtoK
+        k_arr = ( A_arr * sp.exp(-T_a / T) )
+        D_C3H8_air = self.get_diffusivity(T, self.P)
+        D_C3H8_air_eff = ( D_C3H8_air * self.porosity ) 
+        mfp = ( (sp.sqrt(2.) * sp.pi * self.air.d**2. *
+        self.air.n)**-1. )  
+        # Crude approximation of mean free path (m) of propane in air from
+        # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
+        Da_pore = ( k_arr * self.thickness**2 / D_C3H8_air_eff )   
+        Da = ( D_C3H8_air_eff / D_C3H8_air * self.height /
+        self.thickness * sp.sqrt(Da_pore) * sp.tanh(sp.sqrt(Da_pore))
+        ) 
+        return Da
+        
+    def get_eta_dim(self, T, A_arr, T_a):
+        """Returns conversion efficiency for a particular flow rate and
+        temperature."""
+        Da = self.get_Da(T, A_arr, T_a)
+        Pe = self.get_Pe(self.Vdot, T)
+        Lambda = self.get_lambda(Da) 
+        eta_dim = ( 1. - sp.exp(-Lambda**2. / (4. * Pe) *
+        self.length_) )
+        return eta_dim
+
     def set_Pe(self):
         """Finds Peclet number as a function of flow rate (m^3/s),
         temperature (K), and geometry"""
@@ -133,8 +172,6 @@ class One_Term_Catalyst():
         """Finds Damkoehler number as a function of temperature (K),
         porosity, catalyst loading and a whole slew of other
         things."""
-        # Crude approximation of mean free path (m) of propane in air from
-        # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
         self.k_arr = sp.zeros(sp.size(self.T_array))
         self.k_arr = ( self.A_arr * sp.exp(-self.T_a / (self.T_array +
         self.CtoK)) )
@@ -148,12 +185,14 @@ class One_Term_Catalyst():
             self.D_C3H8_air_eff = ( self.D_C3H8_air * self.porosity ) 
             self.mfp = ( (sp.sqrt(2.) * sp.pi * self.air.d**2. *
         self.air.n)**-1. ) 
+        # Crude approximation of mean free path (m) of propane in air from
+        # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
             self.Da_pore_j[j] = ( self.k_arr[j] * self.thickness**2 /
         self.D_C3H8_air_eff )   
             self.Da_j[j] = ( self.D_C3H8_air_eff / self.D_C3H8_air *
         self.height / self.thickness * sp.sqrt(self.Da_pore_j[j]) *
         sp.tanh(sp.sqrt(self.Da_pore_j[j])) )
-        
+
     def set_eta_dim(self):
         """Sets conversion efficiency over a range of flow rate and
         temperature."""
