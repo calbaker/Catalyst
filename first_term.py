@@ -60,14 +60,14 @@ class One_Term_Catalyst():
         with handpicked values.
         Da is necessary argument.  Returns value of lambda at
         specified Da.""" 
+        Da = Da.astype('float32')
         spline_params = interp.splrep(self.lambda_and_Da[:,0],
         self.lambda_and_Da[:,1]) 
         lambda_fit = interp.splev(Da, spline_params)
-        print "\nSpecified Da = ",Da
         return lambda_fit
 
     def get_Y_(self, x_, y_):
-        """Sets float non-dimensional Y at any particular non-d x,y
+        """Sets float non-dimensional Y at any particular non-d (x,y)
         point""" 
         lambda1 = self.get_lambda(self.Da)
         Y_ = ( lambda1 / self.lambda1 * sp.exp(-self.lambda1**2. /
