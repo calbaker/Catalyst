@@ -29,6 +29,16 @@ class Data(ft.One_Term_Catalyst):
             self.HCin.shape[1] )  
             self.errorbar[i] = 1.96 * self.eta_raw[i,:].std() 
 
+    def set_params(self):
+        """Uses scipy optimize curve_fit to determine Arrhenius
+        parameters that result in best curve fit."""
+        self.set_eta()
+        popt, pcov = curve_fit(self.get_eta_dim, self.T_array,
+        self.eta_mean, p0=sp.array([5.e16, 27.e3])) 
+        self.A_arr = popt[0]
+        self.T_a = popt[1]
+        self.set_eta_dim()
+
     def get_S_r(self):
         """Returns sum of residuals squared for all data points."""
         S_r = sp.sum((self.eta_model - self.eta_exp)**2.)
