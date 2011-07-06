@@ -1,6 +1,7 @@
 """Module for plotting results of first term model."""
 
 import scipy as sp
+import numpy as np
 import matplotlib.pyplot as mpl
 import os
 os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
@@ -74,16 +75,14 @@ mpl.title('Species Conversion Efficiency')
 mpl.savefig('Plots/eta.pdf')
 mpl.savefig('Plots/eta.png')
 
-cat1.set_Da()
-cat1.set_Pe()
-cat1.set_eta_dimensional()
-Vdot2d, T2d = np.meshgrid(cat1.Vdot, cat1.T_array)
+cat1.set_eta_dim()
+Vdot2d, T2d = np.meshgrid(cat1.Vdot_array, cat1.T_array)
 Vdot2d = Vdot2d * 60. * 1.e6
 # converts back to sccm for plotting
 # TICKS = sp.arange(0,1.5,0.1)
 LEVELS = sp.arange(0., 1.05, 0.05)
 fig_eta_real = mpl.figure()
-FCS = mpl.contourf(Vdot2d, T2d, cat1.eta_ij.T, LEVELS)
+FCS = mpl.contourf(Vdot2d, T2d, cat1.eta_dim.T, LEVELS)
 CB = mpl.colorbar(FCS, orientation='horizontal')
 mpl.grid()
 mpl.xlabel(r'$\dot{V}$ (sccm)')

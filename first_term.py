@@ -41,7 +41,7 @@ class One_Term_Catalyst():
         # Thickness of wash coat or height of porous media (m).  This
         # was h_{pore} in the pdf.
         self.width = 20e-3 # channel width (m)
-        self.Vdot = sp.arange(100., 1000., 10) * 1.e-6 / 60. 
+        self.Vdot_array = sp.arange(100., 1000., 10) * 1.e-6 / 60. 
         # volume flow rate (m^3/s)
         self.T_array = sp.arange(200., 600., 10.) 
         # temperature of flow (C)
@@ -157,9 +157,10 @@ class One_Term_Catalyst():
     def set_eta_dim(self):
         """Sets conversion efficiency over a range of flow rate and
         temperature."""
-        self.eta_dim = sp.zeros([sp.size(self.Vdot),
+        self.eta_dim = sp.zeros([sp.size(self.Vdot_array),
         sp.size(self.T_array)])
-        for i in sp.arange(sp.size(self.Vdot)):
+        for i in sp.arange(sp.size(self.Vdot_array)):
             for j in sp.arange(sp.size(self.T_array)):
+                self.Vdot = self.Vdot_array[i]
                 self.eta_dim[i,j] = self.get_eta_dim(self.T_array[j],
         self.A_arr, self.T_a)
