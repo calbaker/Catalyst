@@ -147,7 +147,6 @@ class One_Term_Catalyst():
         """Returns conversion efficiency for a particular flow rate and
         temperature."""
         Da = self.get_Da(T, A_arr, T_a)
-        print "Da =", Da
         Pe = self.get_Pe(self.Vdot, T)
         Lambda = self.get_lambda(Da) 
         eta_dim = ( 1. - sp.exp(-Lambda**2. / (4. * Pe) *

@@ -5,6 +5,7 @@ import scipy as sp
 from scipy.optimize import curve_fit
 
 import first_term as ft
+reload(ft)
 
 class Data(ft.One_Term_Catalyst):
     """Class for keeping track of experimental data"""
@@ -13,6 +14,7 @@ class Data(ft.One_Term_Catalyst):
         """Sets constants and initializes parent class."""
         self.T_ambient = 300. # ambient tempearture (K)
         self.CtoK = 273.15 # conversion from Celsisus to Kelvin
+        self.p0 = sp.array([5.e16, 27.e3])
         ft.One_Term_Catalyst.__init__(self)
 
     def set_eta(self):
@@ -38,7 +40,7 @@ class Data(ft.One_Term_Catalyst):
         parameters that result in best curve fit."""
         self.set_eta()
         popt, pcov = curve_fit(self.get_eta_dim, self.T_array,
-        self.eta_mean, p0=sp.array([5.e16, 27.e3])) 
+        self.eta_mean, p0 = self.p0)
         self.A_arr = popt[0]
         self.T_a = popt[1]
         self.set_eta_dim()
