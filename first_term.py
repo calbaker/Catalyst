@@ -85,8 +85,8 @@ class One_Term_Catalyst():
                 self.Yxy_[i,j] = self.get_Y_(x_array[i], y_array[j]) 
     
     def get_eta(self, Pe, Da):
-        """Returns eta as a function of required arguments Da and
-        Pe"""
+        """Returns species conversion efficiency, eta, as a function
+        of required arguments Da and Pe"""
         Lambda = self.get_lambda(Da)
         eta = ( 1. - sp.exp(-Lambda**2. / (4. * Pe) * self.length_) )
         return eta
@@ -154,84 +154,12 @@ class One_Term_Catalyst():
         self.length_) )
         return eta_dim
 
-    def set_Pe(self):
-        """Finds Peclet number as a function of flow rate (m^3/s),
-        temperature (K), and geometry"""
-        self.Pe_ij = sp.zeros([sp.size(self.Vdot), sp.size(self.T_array)])
-        self.U_ij = sp.zeros([sp.size(self.Vdot), sp.size(self.T_array)])
-        # flow velocity (m/s)
-        for i in sp.arange(sp.size(self.Vdot)):
-            for j in sp.arange(sp.size(self.T_array)):
-                T = self.T_array[j] + self.CtoK
-                self.D_C3H8_air = self.get_diffusivity(T, self.P)
-                self.U_ij[i,j] = ( self.Vdot[i] / (self.width *
-        self.height) * (self.T_array[j] + self.CtoK) / self.T_ambient )    
-                self.Pe_ij[i,j] = self.U_ij[i,j] * self.height / self.D_C3H8_air
-                
-    def set_Da(self):
-        """Finds Damkoehler number as a function of temperature (K),
-        porosity, catalyst loading and a whole slew of other
-        things."""
-        self.k_arr = sp.zeros(sp.size(self.T_array))
-        self.k_arr = ( self.A_arr * sp.exp(-self.T_a / (self.T_array +
-        self.CtoK)) )
-        # preexponential reaction rate factor (1/s ???).  Expects
-        # Celsius input temp
-        self.Da_pore_j = sp.zeros(sp.size(self.T_array))
-        self.Da_j = sp.zeros(sp.size(self.T_array))
-        for j in sp.arange(sp.size(self.T_array)):
-            T = self.T_array[j] + self.CtoK
-            self.D_C3H8_air = self.get_diffusivity(T, self.P)
-            self.D_C3H8_air_eff = ( self.D_C3H8_air * self.porosity ) 
-            self.mfp = ( (sp.sqrt(2.) * sp.pi * self.air.d**2. *
-        self.air.n)**-1. ) 
-        # Crude approximation of mean free path (m) of propane in air from
-        # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
-            self.Da_pore_j[j] = ( self.k_arr[j] * self.thickness**2 /
-        self.D_C3H8_air_eff )   
-            self.Da_j[j] = ( self.D_C3H8_air_eff / self.D_C3H8_air *
-        self.height / self.thickness * sp.sqrt(self.Da_pore_j[j]) *
-        sp.tanh(sp.sqrt(self.Da_pore_j[j])) )
-
     def set_eta_dim(self):
         """Sets conversion efficiency over a range of flow rate and
         temperature."""
-        self.set_Da()
-        self.set_Pe()
         self.eta_dim = sp.zeros([sp.size(self.Vdot),
         sp.size(self.T_array)])
-        self.lambda_j = sp.zeros(sp.size(self.T_array))
         for i in sp.arange(sp.size(self.Vdot)):
             for j in sp.arange(sp.size(self.T_array)):
-                self.lambda_j[j] = self.get_lambda(self.Da_j[j]) 
-                self.eta_dim[i,j] = ( 1. -
-        sp.exp(-self.lambda_j[j]**2. / (4. * self.Pe_ij[i,j]) *
-        self.length_) )  
-
-    def perturb_A_arr(self):
-        """Returns first derivative of eta w.r.t. A_arr for small
-        perturbations in A_arr"""
-        self.A_arr = self.A_arr + self.epsilon
-        self.set_eta_dim()
-        eta_new = self.eta_dim.reshape(sp.size(self.T_array))
-        self.A_arr = self.A_arr - self.epsilon
-        self.set_eta_dim()
-        eta_old = self.eta_dim.reshape(sp.size(self.T_array))
-        d_eta_dA_arr = (eta_new - eta_old) / self.epsilon
-        return d_eta_dA_arr
-
-    def perturb_T_a(self):
-        """Returns first derivative of eta w.r.t. T_a for small
-        perturbations in T_a"""
-        self.T_a = self.T_a + self.epsilon
-        self.set_eta_dim()
-        eta_new = self.eta_dim.reshape(sp.size(self.T_array))
-        self.T_a = self.T_a - self.epsilon
-        self.set_eta_dim()
-        eta_old = self.eta_dim.reshape(sp.size(self.T_array))
-        d_eta_dT_a = (eta_new - eta_old) / self.epsilon
-        return d_eta_dT_a
-
-    
-
-                
+                self.eta_dim[i,j] = self.get_eta_dim(self.T_array[j],
+        self.A_arr, self.T_a)
