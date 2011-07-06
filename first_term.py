@@ -23,7 +23,7 @@ class One_Term_Catalyst():
             [0.5,0.65],
              [1.0,0.86], [2.0,1.08], [5.0,1.31],
              [10.0,1.43], [15.0,1.47], [20.0,1.50], [30.0,1.52],
-            [40.0,1.53], [50.0,1.54]])    
+            [40.0,1.53], [50.0,1.54], [150., 1.56]])    
         
         # Graphically determined eigenvalues corresponding to Da
         self.Da_array = sp.arange(1., 20., 0.5)
@@ -147,6 +147,7 @@ class One_Term_Catalyst():
         """Returns conversion efficiency for a particular flow rate and
         temperature."""
         Da = self.get_Da(T, A_arr, T_a)
+        print "Da =", Da
         Pe = self.get_Pe(self.Vdot, T)
         Lambda = self.get_lambda(Da) 
         eta_dim = ( 1. - sp.exp(-Lambda**2. / (4. * Pe) *
