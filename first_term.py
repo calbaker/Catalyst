@@ -1,7 +1,6 @@
 import numpy as np
 import scipy as sp
 import scipy.interpolate as interp
-from scipy.optimize import curve_fit
 
 import properties as prop
 

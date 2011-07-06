@@ -25,12 +25,8 @@ data1.HCout = sp.array([[3910., 3895., 3890.], [3730., 3740., 3720.],
                         [0753., 0725., 0718.], [0400., 0381., 0377.],
                         [0239., 0220., 0225.], [0111., 0098., 0103.],
                         [0053., 0041., 0045.]])
-data1.set_eta()
-popt, pcov = curve_fit(data1.get_eta_dim, data1.T_array,
-                       data1.eta_mean, p0=sp.array([5.e16, 27.e3]))
-data1.A_arr = popt[0]
-data1.T_a = popt[1]
-data1.set_eta_dim()
+
+data1.set_params()
 
 # Plot configuration
 FONTSIZE = 14

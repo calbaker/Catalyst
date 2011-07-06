@@ -1,4 +1,8 @@
+"""Module for class definition for experimental data with model curve
+fitting capability."""
+
 import scipy as sp
+from scipy.optimize import curve_fit
 
 import first_term as ft
 
