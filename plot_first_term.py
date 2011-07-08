@@ -75,6 +75,8 @@ mpl.title('Species Conversion Efficiency')
 mpl.savefig('Plots/eta.pdf')
 mpl.savefig('Plots/eta.png')
 
+cat1.A_arr = 25950754583570564.0
+cat1.T_a = 22056.187248619895
 cat1.set_eta_dim()
 Vdot2d, T2d = np.meshgrid(cat1.Vdot_array, cat1.T_array)
 Vdot2d = Vdot2d * 60. * 1.e6
