@@ -42,7 +42,7 @@ class One_Term_Catalyst():
         self.width = 20e-3 # channel width (m)
         self.Vdot_array = sp.arange(100., 1000., 10) * 1.e-6 / 60. 
         # volume flow rate (m^3/s)
-        self.T_array = sp.arange(200., 600., 10.) 
+        self.T_array = sp.arange(350., 600., 5.) 
         # temperature of flow (C)
         self.T_ambient = 300.
         # ambient temperature (K) at which flow rate is measured
@@ -59,7 +59,7 @@ class One_Term_Catalyst():
         with handpicked values.
         Da is necessary argument.  Returns value of lambda at
         specified Da.""" 
-        Da = Da.astype('float32')
+#        Da = Da.astype('float32')
         spline_params = interp.splrep(self.lambda_and_Da[:,0],
         self.lambda_and_Da[:,1]) 
         lambda_fit = interp.splev(Da, spline_params)
