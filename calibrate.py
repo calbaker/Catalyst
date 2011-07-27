@@ -11,7 +11,8 @@ import experimental_data as expdata
 reload(expdata)
 
 data1 = expdata.Data()
-data1.Vdot = 250.
+
+data1.Vdot = 250. * 1.e-6 / 60.
 source = '250sccm 10nm PtPd variedT.xls'
 # Define the path to the .xls file(s) containing the conversion data.
 # import the worksheet as a sheet object
