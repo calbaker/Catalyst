@@ -4,7 +4,7 @@ import scipy as sp
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-#os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
+os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
 
 import first_term as ft
 reload(ft)
@@ -44,8 +44,8 @@ plt.ylim(0,1)
 plt.title('First Eigenvalue Spline Fit')
 plt.grid()
 plt.legend(loc='lower right')
-plt.savefig('Plots/eigen_fit.pdf')
-plt.savefig('Plots/eigen_fit.png')
+# plt.savefig('Plots/eigen_fit.pdf')
+# plt.savefig('Plots/eigen_fit.png')
 
 # fig_species = plt.figure()
 # x_2d, y_2d = np.meshgrid(cat1.x_array, cat1.y_array)
@@ -59,9 +59,9 @@ plt.savefig('Plots/eigen_fit.png')
 # plt.title(r'Species Concentration v. $\tilde{x}$ and $\tilde{y}$' +
 #           '\nDa=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe))  
 # plt.ylim(-1, 1)
-# plt.savefig('Plots/species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
+# # plt.savefig('Plots/species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
 #             + '.pdf') 
-# plt.savefig('Plots/species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
+# # plt.savefig('Plots/species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
 #             + '.png')  
 
 fig_eta = plt.figure()
@@ -74,8 +74,8 @@ plt.grid()
 plt.xlabel('Pe')
 plt.ylabel('Da')
 plt.title('Species Conversion Efficiency')
-plt.savefig('Plots/eta.pdf')
-plt.savefig('Plots/eta.png')
+# plt.savefig('Plots/eta.pdf')
+# plt.savefig('Plots/eta.png')
 
 cat1.A_arr = 25950754583570564.0
 cat1.T_a = 22056.187248619895
@@ -93,8 +93,8 @@ plt.xlabel(r'$\dot{V}$ (sccm)')
 plt.ylabel('T (K)')
 plt.title(
     'Conversion Efficiency v.\nFlow Rate and Temperature') 
-plt.savefig('Plots/real eta.pdf')
-plt.savefig('Plots/real eta.png')
+# plt.savefig('Plots/real eta.pdf')
+# plt.savefig('Plots/real eta.png')
 
 plt.show()
 
