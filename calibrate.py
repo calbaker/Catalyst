@@ -22,7 +22,7 @@ data_worksheet = xlrd.open_workbook(filename=source).sheet_by_index(0)
 
 data1.T_raw = sp.array(data_worksheet.col_values(0, start_rowx=4, 
                                                  end_rowx=None)) 
-data1.T_array = data1.T_raw[0::3]
+data1.T_exp = data1.T_raw[0::3]
 data1.HCout_raw = sp.array(data_worksheet.col_values(4, start_rowx=4, 
                                                      end_rowx=None))
 data1.HCout = sp.array([data1.HCout_raw[0::3],
@@ -33,11 +33,15 @@ data1.HCin_raw = sp.array(data_worksheet.col_values(8, start_rowx=4,
 data1.HCin = sp.array([data1.HCin_raw[0::3],
                         data1.HCin_raw[1::3],
                         data1.HCin_raw[2::3]]).T
+data1.HCin = data1.HCin[1:-2]
+data1.HCout = data1.HCout[1:-2]
+data1.T_exp = data1.T_exp[1:-2]
    
 data1.Vdot_array = sp.array([data1.Vdot])
 data1.set_eta()
-data1.p0 = sp.array([5.e12, 15.e3])
+data1.p0 = sp.array([5.e10, 12.e3])
 data1.set_params()
+data1.T_array = sp.arange(375., 555., 5.)
 data1.set_eta_dim()
 
 
@@ -52,17 +56,16 @@ plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 8
 
 fig = plt.figure()
-plt.plot(data1.T_array, data1.eta_mean, ' sk', label='Experiment')  
-
+plt.plot(data1.T_exp, data1.eta_mean, ' sk', label='Experiment')  
 plt.plot(data1.T_array, data1.eta_dim.T, '-b', label='Model')
-
+plt.xlim(350, 575)
 plt.legend(loc='best')
 plt.grid()
 plt.xlabel('Temperature (C)')
 plt.ylabel('HC Conversion Efficiency')
 plt.title('HC Conversion v. Temperature')
-fig.savefig('Plots/eta v temp.pdf')
-fig.savefig('Plots/eta v temp.png')
+fig.savefig('Plots/calibrate.pdf')
+fig.savefig('Plots/calibrate.png')
 
 plt.show()
 

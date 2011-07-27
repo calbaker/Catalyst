@@ -39,7 +39,7 @@ class Data(ft.One_Term_Catalyst):
         """Uses scipy optimize curve_fit to determine Arrhenius
         parameters that result in best curve fit."""
         self.set_eta()
-        popt, pcov = curve_fit(self.get_eta_dim, self.T_array,
+        popt, pcov = curve_fit(self.get_eta_dim, self.T_exp,
         self.eta_mean, p0 = self.p0)
         self.A_arr = popt[0]
         self.T_a = popt[1]
