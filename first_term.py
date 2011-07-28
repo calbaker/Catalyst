@@ -46,9 +46,9 @@ class One_Term_Catalyst():
         # temperature of flow (C)
         self.T_ambient = 300.
         # ambient temperature (K) at which flow rate is measured
-        self.A_arr = 15.e9
+        self.A_arr = 42.2e9
         # Arrhenius coefficient (1/s ???)
-        self.T_a = 14.e3 # activation temperature (K)
+        self.T_a = 12.2e3 # activation temperature (K)
         self.porosity = 0.9
 
     fuel = prop.ideal_gas(species='C3H8')
