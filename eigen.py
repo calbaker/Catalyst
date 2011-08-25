@@ -3,7 +3,7 @@ import scipy as sp
 import matplotlib.pyplot as mpl
 
 lambda_guess = np.arange(0, 5., 0.0001)
-Da = 150.  
+Da = 1.  
 
 def get_solution(lambda_guess, Da):
     solution = 1 - lambda_guess / Da * np.tan(lambda_guess)
