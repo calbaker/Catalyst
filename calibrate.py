@@ -14,7 +14,7 @@ plt.close('all')
 
 data0 = expdata.Data()
 data0.Vdot = 1000. * 1.e-6 / 60.
-data0.source = 'alumina_holder_only.xls'
+data0.source = 'Al2O3_1000sccm.xls'
 # Define the path to the .xls file(s) containing the conversion data.
 # import the worksheet as a sheet object
 data0.worksheet = xlrd.open_workbook(filename=data0.source).sheet_by_index(0)
@@ -57,8 +57,8 @@ data1.HCin = sp.array([data1.HCin_raw[0::3],
 data1.T_array = sp.arange(305., 655., 5.)
 data1.Vdot_array = sp.array([data1.Vdot])
 data1.set_eta()
-data1.eta_mean = data1.eta_mean[0:-4]
-data1.T_exp = data1.T_exp[0:-4]
+data1.eta_mean = data1.eta_mean[0:-5]
+data1.T_exp = data1.T_exp[0:-5]
 data1.p0 = sp.array([4.95e9, 10.666e3])
 data1.set_params()
 data1.set_eta_dim()
