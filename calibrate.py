@@ -63,29 +63,6 @@ data1.p0 = sp.array([4.95e9, 10.666e3])
 data1.set_params()
 data1.set_eta_dim()
 
-data20nm = expdata.Data()
-data20nm.T_a = data1.T_a
-data20nm.A_arr = data1.A_arr
-data20nm.Vdot = 100. * 1.e-6 / 60.
-data20nm.source = '100sccm 20nmPtPd VariedT.xls'
-# Define the path to the .xls file(s) containing the conversion data.
-# import the worksheet as a sheet object
-data20nm.worksheet = xlrd.open_workbook(filename=data20nm.source).sheet_by_index(0)
-# Import conversion data from worksheet and store as scipy arrays
-data20nm.T_raw = sp.array(data20nm.worksheet.col_values(0, start_rowx=4, 
-                                                 end_rowx=None)) 
-data20nm.T_exp = data20nm.T_raw
-data20nm.HCout_raw = sp.array(data20nm.worksheet.col_values(4, start_rowx=4, 
-                                                     end_rowx=None))
-data20nm.HCout = data20nm.HCout_raw.T
-data20nm.HCin_raw = sp.array(data20nm.worksheet.col_values(8, start_rowx=4,
-                                                    end_rowx=None))
-data20nm.HCin = data20nm.HCin_raw.T
-data20nm.T_array = sp.arange(305., 655., 5.)
-data20nm.Vdot_array = sp.array([data20nm.Vdot])
-data20nm.eta_mean = (data20nm.HCin - data20nm.HCout) / data20nm.HCin
-data20nm.set_eta_dim()
-
 data2 = expdata.Data()
 data2.T_a = data1.T_a
 data2.A_arr = data1.A_arr
@@ -160,9 +137,6 @@ plt.plot(data0.T_exp, data0.eta_mean * 100., 'ok',
 
 plt.plot(data1.T_exp, data1.eta_mean * 100., 'sk', label='250sccm exp')
 plt.plot(data1.T_array, data1.eta_dim.T * 100., '-k', label='250sccm model')
-
-plt.plot(data20nm.T_exp, data20nm.eta_mean * 100., 'sg', label='100sccm exp')
-plt.plot(data20nm.T_array, data20nm.eta_dim.T * 100., '-g', label='100sccm model')
 
 plt.plot(data2.T_exp, data2.eta_mean * 100., 'sr', linestyle='', label='750sccm exp')
 plt.plot(data2.T_array, data2.eta_dim.T * 100, '-r', label='750sccm model')
