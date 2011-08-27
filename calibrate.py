@@ -146,7 +146,7 @@ plt.plot(data3.T_array, data3.eta_dim.T * 100., '-b', label='1000sccm model')
 
 plt.xlabel('Temperature (C)')
 plt.ylabel('Conversion Efficiency (%)')
-plt.xlim(xmax=450)
+#plt.xlim(xmax=450)
 #plt.ylim(xmax=150)
 plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
