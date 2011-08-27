@@ -17,6 +17,7 @@ cat1.Da_array = sp.arange(0.05, 5., 0.05)
 cat1.lambda1 = cat1.get_lambda(cat1.Da_array)
 cat1.A_arr = 5576796142069.6602
 cat1.T_a = 15325.877039480061
+cat1.Pe = 50.
 cat1.set_Yxy_()
 cat1.set_eta_dimless()
 
@@ -58,9 +59,11 @@ CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
 plt.grid()
 plt.xlabel(r'$\tilde{x}$')
 plt.ylabel(r'$\tilde{y}$')
-plt.title(r'Species Concentration v. $\tilde{x}$ and $\tilde{y}$' +
-          '\nDa=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe))  
+# plt.title(r'Species Concentration v. $\tilde{x}$ and $\tilde{y}$' +
+#           '\nDa=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe))  
 plt.ylim(-1, 1)
+plt.subplots_adjust(bottom=0.15)
+plt.subplots_adjust(left=0.15)
 plt.savefig('Plots/species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
             + '.pdf') 
 plt.savefig('Plots/species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
