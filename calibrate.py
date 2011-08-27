@@ -86,7 +86,7 @@ data2.set_eta_dim()
 
 
 # Plot configuration
-FONTSIZE = 14
+FONTSIZE = 18
 plt.rcParams['axes.labelsize'] = FONTSIZE
 plt.rcParams['axes.titlesize'] = FONTSIZE
 plt.rcParams['legend.fontsize'] = FONTSIZE
