@@ -3,6 +3,7 @@ import scipy as sp
 import matplotlib.pyplot as plt
 
 import first_term as ft
+reload(ft)
 
 # For Da = 1,
 lambda_i = np.array([0.86, 3.43, 6.44, 9.53])
