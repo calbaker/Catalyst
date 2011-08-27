@@ -1,6 +1,6 @@
 import numpy as np
 import scipy as sp
-import matplotlib.pyplot as mpl
+import matplotlib.pyplot as plt
 
 lambda_guess = np.arange(0, 5., 0.0001)
 Da = 1.  
@@ -12,24 +12,24 @@ def get_solution(lambda_guess, Da):
 solution = get_solution(lambda_guess, Da)
 
 # Plot configuration
-FONTSIZE = 14
-mpl.rcParams['axes.labelsize'] = FONTSIZE
-mpl.rcParams['axes.titlesize'] = FONTSIZE
-mpl.rcParams['legend.fontsize'] = FONTSIZE
-mpl.rcParams['xtick.labelsize'] = FONTSIZE
-mpl.rcParams['ytick.labelsize'] = FONTSIZE
-mpl.rcParams['lines.linewidth'] = 1.5
-mpl.rcParams['lines.markersize'] = 10
+FONTSIZE = 20
+plt.rcParams['axes.labelsize'] = FONTSIZE
+plt.rcParams['axes.titlesize'] = FONTSIZE
+plt.rcParams['legend.fontsize'] = FONTSIZE
+plt.rcParams['xtick.labelsize'] = FONTSIZE
+plt.rcParams['ytick.labelsize'] = FONTSIZE
+plt.rcParams['lines.linewidth'] = 1.5
+plt.rcParams['lines.markersize'] = 10
 
-fig1 = mpl.figure()
+fig1 = plt.figure()
 fig1.subplots_adjust(bottom=0.12)
-mpl.plot(lambda_guess, solution)
-#mpl.xlim(0, 2)
-mpl.ylim(-10, 10)
-mpl.grid()
-mpl.xlabel(r'$\lambda$')
-mpl.title('Eigenvalues\nDa='+str(Da))
-mpl.savefig('Plots/eigen.pdf')
-mpl.savefig('Plots/eigen.png')
+plt.plot(lambda_guess, solution)
+#plt.xlim(0, 2)
+plt.ylim(-10, 10)
+plt.grid()
+plt.xlabel(r'$\lambda$')
+plt.title('Eigenvalues\nDa='+str(Da))
+plt.savefig('Plots/eigen.pdf')
+plt.savefig('Plots/eigen.png')
 
-mpl.show()
+plt.show()
