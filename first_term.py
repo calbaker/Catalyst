@@ -59,7 +59,7 @@ class One_Term_Catalyst():
         with handpicked values.
         Da is necessary argument.  Returns value of lambda at
         specified Da.""" 
-        Da = Da.astype('float32')
+        # Da = Da.astype('float32')
         spline_params = interp.splrep(self.lambda_and_Da[:,0],
         self.lambda_and_Da[:,1]) 
         lambda_fit = interp.splev(Da, spline_params)
@@ -69,8 +69,8 @@ class One_Term_Catalyst():
         """Sets float non-dimensional Y at any particular non-d (x,y)
         point""" 
         lambda1 = self.get_lambda(self.Da)
-        Y_ = ( lambda1 / self.lambda1 * sp.exp(-self.lambda1**2. /
-        (4. * self.Pe ) * self.x_) * sp.cos(self.lambda1 * self.y_) )   
+        Y_ = ( lambda1 / lambda1 * sp.exp(-lambda1**2. / (4. * self.Pe
+        ) * x_) * sp.cos(lambda1 * y_) )    
         return Y_
 
     def set_Yxy_(self):
@@ -81,7 +81,8 @@ class One_Term_Catalyst():
 
         for i in sp.arange(sp.size(self.x_array)):
             for j in sp.arange(sp.size(self.y_array)):
-                self.Yxy_[i,j] = self.get_Y_(x_array[i], y_array[j]) 
+                self.Yxy_[i,j] = ( self.get_Y_(self.x_array[i],
+            self.y_array[j]) )
     
     def get_eta(self, Pe, Da):
         """Returns species conversion efficiency, eta, as a function
