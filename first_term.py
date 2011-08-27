@@ -59,7 +59,7 @@ class One_Term_Catalyst():
         with handpicked values.
         Da is necessary argument.  Returns value of lambda at
         specified Da.""" 
-        Da = Da.astype('float32')
+        Da = np.float32(Da)
         spline_params = interp.splrep(self.lambda_and_Da[:,0],
         self.lambda_and_Da[:,1]) 
         lambda_fit = interp.splev(Da, spline_params)
