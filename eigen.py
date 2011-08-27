@@ -28,7 +28,7 @@ plt.plot(lambda_guess, solution)
 plt.ylim(-10, 10)
 plt.grid()
 plt.xlabel(r'$\lambda$')
-plt.title('Eigenvalues\nDa='+str(Da))
+#plt.title('Eigenvalues\nDa='+str(Da))
 plt.savefig('Plots/eigen.pdf')
 plt.savefig('Plots/eigen.png')
 
