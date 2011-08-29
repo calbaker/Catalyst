@@ -80,8 +80,10 @@ data2.HCout_raw = sp.array(data2.worksheet.col_values(4, start_rowx=4,
 data2.HCin_raw = sp.array(data2.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data2.eta_mean = (data2.HCin_raw - data2.HCout_raw) / data2.HCin_raw
-data2.T_array = sp.arange(305., 655., 5.)
+data2.T_array = sp.linspace(250., 650., 100)
 data2.Vdot_array = sp.array([data2.Vdot])
+data2.p0 = sp.array([1e7, 5e3])
+data2.set_params()
 data2.set_eta_dim()
 
 
@@ -104,11 +106,13 @@ plt.plot(data1.T_array, data1.eta_dim.T * 100., '-k', label='250sccm model')
 
 plt.plot(data2.T_exp, data2.eta_mean * 100., 'sr', linestyle='',
          label='250sccm exp new')
+plt.plot(data2.T_array, data2.eta_dim.T * 100., '-r',
+         label='250sccm model new')
 
 plt.xlabel('Temperature (C)')
 plt.ylabel('Conversion Efficiency (%)')
 #plt.xlim(xmax=450)
-#plt.ylim(xmax=150)
+plt.ylim(ymax=150)
 plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
 plt.grid()
