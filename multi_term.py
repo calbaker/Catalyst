@@ -4,37 +4,32 @@ import scipy.interpolate as interp
 
 import properties as prop
 
-class One_Term_Catalyst():
+class Catalyst():
     """Class for representing catalyst reactor modeled by 5 term
     expansion""" 
 
     def __init__(self):
         """Sets values of constants"""
-        self.epsilon = 1. # Used for perturbation
         self.CtoK = 273.15 # conversion from Celsius to Kelvin
         self.P = 100. # Pressure of flow (kPa)
-        self.Da = 1. # Damkoehler number
-        self.Pe = 500. # Peclet number
 
-        self.lambda1_and_Da = sp.array(
-            [[0.001,0.0316], [0.002,0.0447], [0.003,0.0547], 
-            [0.01,0.100], [0.02,0.141], [0.03,0.172], 
-             [0.1,0.31], [0.2,0.43], [0.3,0.52], [0.4,0.59],
-            [0.5,0.65],
-             [1.0,0.86], [2.0,1.08], [5.0,1.31],
-             [10.0,1.43], [15.0,1.47], [20.0,1.50], [30.0,1.52],
-            [40.0,1.53], [50.0,1.54], [150., 1.56]])    
-        
-        self.lambda2_and_Da = sp.array(
-        
-        self.lambda3_and_Da = sp.array(
-        
-        self.lambda4_and_Da = sp.array(
-        
+        self.lambda_and_Da = sp.array(
+            [[0.001,0.0316,3.142,6.28,9.42],
+             [0.002,0.0447,3.141,6.28,9.42],
+             [0.003,0.0547,3.141,6.28,9.42], 
+             [0.01,0.100,3.144,6.28,9.43],
+             [0.02,0.141,3.15,6.28,9.43],
+             [0.03,0.172,3.15,6.29,9.43], 
+             [0.1,0.31,3.17,6.30,9.44],
+             [0.2,0.43,3.20,6.31,9.45],
+             [0.3,0.52,3.23,6.33,9.46],
+             [0.4,0.59,3.26,6.35,9.46],
+             [0.5,0.65,3.29,6.36,9.48],
+             [1.0,0.86,3.43,6.44,9.53],
+             [2.0,1.08,3.64,6.58,9.63],
+             [5.0,1.31,4.03,6.91,9.89],
         # Graphically determined eigenvalues corresponding to Da
-        self.Da_array = sp.arange(1., 20., 0.5)
-        # Range of Da for plotting conversion efficiency
-        self.Pe_array = sp.arange(1., 100., 2.)
+
         # Range of Pe for plotting conversion efficiency
         self.length_ = 100.
         # dimensionless channel length
@@ -65,17 +60,25 @@ class One_Term_Catalyst():
         Da is necessary argument.  Returns value of lambda at
         specified Da.""" 
         Da = np.float32(Da)
-        spline_params = interp.splrep(self.lambda_and_Da[:,0],
+        spline1 = interp.splrep(self.lambda_and_Da[:,0],
         self.lambda_and_Da[:,1]) 
-        lambda_fit = interp.splev(Da, spline_params)
-        return lambda_fit
+        spline2 = interp.splrep(self.lambda_and_Da[:,0],
+        self.lambda_and_Da[:,2]) 
+        spline3 = interp.splrep(self.lambda_and_Da[:,0],
+        self.lambda_and_Da[:,3]) 
+        spline4 = interp.splrep(self.lambda_and_Da[:,0],
+        self.lambda_and_Da[:,4]) 
+        lambda1 = interp.splev(Da, spline_params)
+        lambda2 = interp.splev(Da, spline_params)
+        lambda3 = interp.splev(Da, spline_params)
+        lambda4 = interp.splev(Da, spline_params)
+        return lambda1,lambda2,lambda3,lambda4
 
     def get_Y_(self, x_, y_):
         """Sets float non-dimensional Y at any particular non-d (x,y)
         point""" 
-        lambda1 = self.get_lambda(self.Da)
-        Y_ = ( lambda1 / lambda1 * sp.exp(-lambda1**2. / (4. * self.Pe
-        ) * x_) * sp.cos(lambda1 * y_) )    
+        lambda1,lambda2,lambda3,lambda4 = self.get_lambda(self.Da) 
+        Y_ = 
         return Y_
 
     def set_Yxy_(self):
@@ -93,10 +96,10 @@ class One_Term_Catalyst():
         """Returns species conversion efficiency, eta, as a function
         of required arguments Da and Pe"""
         Lambda = self.get_lambda(Da)
-        eta = ( 1. - sp.exp(-Lambda**2. / (4. * Pe) * self.length_) )
+        eta = 
         return eta
         
-    def set_eta_dimless(self):
+    def set_eta(self):
         """Sets conversion efficiency over a range of Pe and Da."""
         self.eta_dimless = sp.zeros([sp.size(self.Pe_array),
         sp.size(self.Da_array)])
@@ -132,6 +135,17 @@ class One_Term_Catalyst():
         Pe = U * self.height / D_C3H8_air
         return Pe
                 
+    def set_Pe(self):
+        """Sets Peclet number for a temperature and flow rate range of
+        interest."""
+        self.Pe_array = (
+        sp.empty([sp.size(self.Vdot_array),sp.size(self.T_array)]) )
+
+        for i in range(sp.size(self.Vdot_array)):
+            for j in range(sp.size(self.T_array)):
+                self.Pe_array[i,j] = (
+            self.get_Pe(Vdot_array[i],T_array[j]) )
+        
     def get_Da(self, T, A_arr, T_a):
         """Returns Damkoehler for a particular temperature (K),
         porosity, catalyst loading and a whole slew of other things."""
@@ -149,23 +163,11 @@ class One_Term_Catalyst():
         ) 
         return Da
         
-    def get_eta_dim(self, T, A_arr, T_a):
-        """Returns conversion efficiency for a particular flow rate and
-        temperature."""
-        Da = self.get_Da(T, A_arr, T_a)
-        Pe = self.get_Pe(self.Vdot, T)
-        Lambda = self.get_lambda(Da) 
-        eta_dim = ( 1. - sp.exp(-Lambda**2. / (4. * Pe) *
-        self.length_) )
-        return eta_dim
+    def set_Da(self):
+        """Sets Dahmkohler number for temperature range of
+        interest."""
+        self.Da_array = sp.empty(sp.size(self.T_array))
 
-    def set_eta_dim(self):
-        """Sets conversion efficiency over a range of flow rate and
-        temperature."""
-        self.eta_dim = sp.zeros([sp.size(self.Vdot_array),
-        sp.size(self.T_array)])
-        for i in sp.arange(sp.size(self.Vdot_array)):
-            for j in sp.arange(sp.size(self.T_array)):
-                self.Vdot = self.Vdot_array[i]
-                self.eta_dim[i,j] = self.get_eta_dim(self.T_array[j],
-        self.A_arr, self.T_a)
+        for i in range(sp.size(self.T_array)):
+            self.Da_array[i] = (
+            self.get_Da(self.T_array[i],self.A_arr,self.T_a) ) 
