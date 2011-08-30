@@ -88,7 +88,7 @@ plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 8
 
 plt.figure()
-plt.plot(data250.T_exp, data250.eta_mean * 100., 'sr', linestyle='',
+plt.plot(data250.T_exp, data250.eta_mean * 100., 'or', linestyle='',
          label='250sccm exp')
 plt.plot(data250.T_array, data250.eta_dim.T * 100., '-r',
          label='250sccm model')
@@ -98,7 +98,7 @@ plt.plot(data500.T_exp, data500.eta_mean * 100., 'sk', linestyle='',
 plt.plot(data500.T_array, data500.eta_dim.T * 100., '-k',
          label='500sccm model')
 
-plt.plot(data750.T_exp, data750.eta_mean * 100., 'sb', linestyle='',
+plt.plot(data750.T_exp, data750.eta_mean * 100., 'db', linestyle='',
          label='750sccm exp')
 plt.plot(data750.T_array, data750.eta_dim.T * 100., '-b',
          label='750sccm model')
