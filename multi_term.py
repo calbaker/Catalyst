@@ -68,20 +68,27 @@ class Catalyst():
         self.lambda_and_Da[:,3]) 
         spline4 = interp.splrep(self.lambda_and_Da[:,0],
         self.lambda_and_Da[:,4]) 
-        lambda1 = interp.splev(Da, spline_params)
-        lambda2 = interp.splev(Da, spline_params)
-        lambda3 = interp.splev(Da, spline_params)
-        lambda4 = interp.splev(Da, spline_params)
-        return lambda1,lambda2,lambda3,lambda4
+        lambda1 = interp.splev(Da, spline1)
+        lambda2 = interp.splev(Da, spline2)
+        lambda3 = interp.splev(Da, spline3)
+        lambda4 = interp.splev(Da, spline4)
+        lambda_i = sp.array([lambda1,lambda2,lambda3,lambda4]) 
+        return lambda_i
 
-    def get_Y_(self, x_, y_):
+    def get_A(lambda_i):
+        A = ( 2. * lambda_i / (lambda_i + sp.sin(lambda_i) *
+        sp.sin(lambda_i)) )
+        return A
+
+    def get_Y(self, x_, y_):
         """Sets float non-dimensional Y at any particular non-d (x,y)
         point""" 
-        lambda1,lambda2,lambda3,lambda4 = self.get_lambda(self.Da) 
-        Y_ = 
-        return Y_
+        lambda_i = self.get_lambda(self.Da) 
+        Y = ( sp.sum(A_i * np.exp(-4. * lambda_i**2. / Pe * x_) *
+        np.cos(lambda_i * y_)) )   
+        return Y
 
-    def set_Yxy_(self):
+    def set_Yxy(self):
         """Sets non-dimensional Y over a 2d array of non-dimensional
         x_ and y_"""
         self.Yxy_ = np.zeros([np.size(self.x_array),
@@ -96,7 +103,7 @@ class Catalyst():
         """Returns species conversion efficiency, eta, as a function
         of required arguments Da and Pe"""
         Lambda = self.get_lambda(Da)
-        eta = 
+        eta = 57.
         return eta
         
     def set_eta(self):
