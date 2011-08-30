@@ -2,15 +2,15 @@ import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
 
-lambda_guess = np.arange(0, 5., 0.0001)
 Da = 1.  
 
-def get_solution(lambda_guess, Da):
+def get_solution(Da):
+    lambda_guess = np.arange(0, 10., 0.0001)
     solution = 1 - lambda_guess / Da * np.tan(lambda_guess)
-    return solution
+    return solution,lambda_guess
 
-def plot_solution(lambda_guess,Da):
-    solution = get_solution(lambda_guess,Da)
+def plot_solution(Da):
+    solution,lambda_guess = get_solution(Da)
 
     # Plot configuration
     FONTSIZE = 20
@@ -24,10 +24,11 @@ def plot_solution(lambda_guess,Da):
 
     fig1 = plt.figure()
     fig1.subplots_adjust(bottom=0.12)
-    fig1.subplots_adjust(left=0.15)
+    fig1.subplots_adjust(left=0.17)
     plt.plot(lambda_guess, solution, label='Da =' + str(Da))
+    plt.plot(lambda_guess, sp.absolute(solution), label='absolute')
     # plt.xlim(0, 2)
-    plt.ylim(-10, 10)
+    plt.ylim(-100, 100)
     plt.grid()
     plt.xlabel(r'$\lambda$')
     plt.ylabel(r'$1 - \frac{\lambda}{Da} \lambda$') 
