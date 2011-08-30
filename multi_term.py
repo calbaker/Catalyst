@@ -5,7 +5,7 @@ import scipy.interpolate as interp
 import properties as prop
 
 class One_Term_Catalyst():
-    """Class for representing catalyst reactor modeled by 1 term
+    """Class for representing catalyst reactor modeled by 5 term
     expansion""" 
 
     def __init__(self):
@@ -16,7 +16,7 @@ class One_Term_Catalyst():
         self.Da = 1. # Damkoehler number
         self.Pe = 500. # Peclet number
 
-        self.lambda_and_Da = sp.array(
+        self.lambda1_and_Da = sp.array(
             [[0.001,0.0316], [0.002,0.0447], [0.003,0.0547], 
             [0.01,0.100], [0.02,0.141], [0.03,0.172], 
              [0.1,0.31], [0.2,0.43], [0.3,0.52], [0.4,0.59],
@@ -24,6 +24,12 @@ class One_Term_Catalyst():
              [1.0,0.86], [2.0,1.08], [5.0,1.31],
              [10.0,1.43], [15.0,1.47], [20.0,1.50], [30.0,1.52],
             [40.0,1.53], [50.0,1.54], [150., 1.56]])    
+        
+        self.lambda2_and_Da = sp.array(
+        
+        self.lambda3_and_Da = sp.array(
+        
+        self.lambda4_and_Da = sp.array(
         
         # Graphically determined eigenvalues corresponding to Da
         self.Da_array = sp.arange(1., 20., 0.5)
