@@ -27,10 +27,9 @@ class Catalyst():
              [0.5,0.65,3.29,6.36,9.48],
              [1.0,0.86,3.43,6.44,9.53],
              [2.0,1.08,3.64,6.58,9.63],
-             [5.0,1.31,4.03,6.91,9.89],
+             [5.0,1.31,4.03,6.91,9.89]] )
         # Graphically determined eigenvalues corresponding to Da
 
-        # Range of Pe for plotting conversion efficiency
         self.length_ = 100.
         # dimensionless channel length
         self.height = 0.003
@@ -75,29 +74,30 @@ class Catalyst():
         lambda_i = sp.array([lambda1,lambda2,lambda3,lambda4]) 
         return lambda_i
 
-    def get_A(lambda_i):
+    def get_A(self,lambda_i):
         A = ( 2. * lambda_i / (lambda_i + sp.sin(lambda_i) *
         sp.sin(lambda_i)) )
         return A
 
-    def get_Y(self, x_, y_):
+    def get_Y(self, x_, y_, Pe, lambda_i):
         """Sets float non-dimensional Y at any particular non-d (x,y)
         point""" 
-        lambda_i = self.get_lambda(self.Da) 
         Y = ( sp.sum(A_i * np.exp(-4. * lambda_i**2. / Pe * x_) *
         np.cos(lambda_i * y_)) )   
         return Y
 
-    def set_Yxy(self):
+    def set_Yxy(self,Pe,Da):
         """Sets non-dimensional Y over a 2d array of non-dimensional
         x_ and y_"""
-        self.Yxy_ = np.zeros([np.size(self.x_array),
+        lambda_i = self.get_lambda(Da)
+        A_i = self.get_A(lambda_i)
+        self.Yxy = np.zeros([np.size(self.x_array),
         np.size(self.y_array)])
 
         for i in sp.arange(sp.size(self.x_array)):
             for j in sp.arange(sp.size(self.y_array)):
-                self.Yxy_[i,j] = ( self.get_Y_(self.x_array[i],
-            self.y_array[j]) )
+                self.Yxy[i,j] = ( self.get_Y(self.x_array[i],
+            self.y_array[j], Pe, lambda_i) )
     
     def get_eta(self, Pe, Da):
         """Returns species conversion efficiency, eta, as a function
@@ -167,7 +167,9 @@ class Catalyst():
         Da_pore = ( k_arr * self.thickness**2 / D_C3H8_air_eff )   
         Da = ( D_C3H8_air_eff / D_C3H8_air * self.height /
         self.thickness * sp.sqrt(Da_pore) * sp.tanh(sp.sqrt(Da_pore))
-        ) 
+        ) # THIS FORMULA IS NOT CORRECT FOR MULTI TERM!!!!!
+          # ****************************** ###########################
+          # ?????????????????? 
         return Da
         
     def set_Da(self):
