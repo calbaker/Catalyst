@@ -12,7 +12,6 @@ def get_solution(lambda_guess, Da):
 def plot_solution(lambda_guess,Da):
     solution = get_solution(lambda_guess,Da)
 
-
     # Plot configuration
     FONTSIZE = 20
     plt.rcParams['axes.labelsize'] = FONTSIZE
