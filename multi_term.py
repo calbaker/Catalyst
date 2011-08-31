@@ -75,11 +75,11 @@ class Catalyst():
         return lambda_i
 
     def get_A(self,lambda_i):
-        A = ( 2. * lambda_i / (lambda_i + sp.sin(lambda_i) *
-        sp.sin(lambda_i)) )
+        A = ( 2. * sp.sin(lambda_i) / (lambda_i + sp.sin(lambda_i) *
+        sp.sin(lambda_i)) ) 
         return A
 
-    def get_Y(self, x_, y_, Pe, lambda_i):
+    def get_Y(self, x_, y_, Pe, lambda_i,A_i):
         """Sets float non-dimensional Y at any particular non-d (x,y)
         point""" 
         Y = ( sp.sum(A_i * np.exp(-4. * lambda_i**2. / Pe * x_) *
@@ -97,7 +97,7 @@ class Catalyst():
         for i in sp.arange(sp.size(self.x_array)):
             for j in sp.arange(sp.size(self.y_array)):
                 self.Yxy[i,j] = ( self.get_Y(self.x_array[i],
-            self.y_array[j], Pe, lambda_i) )
+            self.y_array[j], Pe, lambda_i, A_i) )
     
     def get_eta(self, Pe, Da):
         """Returns species conversion efficiency, eta, as a function
