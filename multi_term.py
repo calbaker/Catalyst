@@ -102,18 +102,20 @@ class Catalyst():
     def get_eta(self, Pe, Da):
         """Returns species conversion efficiency, eta, as a function
         of required arguments Da and Pe"""
-        Lambda = self.get_lambda(Da)
-        eta = 57.
+        lambda_i = self.get_lambda(Da)
+        A_i = self.get_A(lambda_i)
+        eta = ( 1. - sp.sum(A_i / lambda_i * sp.exp(-lambda_i**2 / (4. *
+        Pe) * self.length_) * sp.sin(lambda_i))  )
         return eta
         
     def set_eta(self):
         """Sets conversion efficiency over a range of Pe and Da."""
-        self.eta_dimless = sp.zeros([sp.size(self.Pe_array),
+        self.eta = sp.zeros([sp.size(self.Pe_array),
         sp.size(self.Da_array)])
         self.lambda_j = sp.zeros(sp.size(self.Da_array))
         for i in sp.arange(sp.size(self.Pe_array)):
             for j in sp.arange(sp.size(self.Da_array)):
-                self.eta_dimless[i,j] = self.get_eta(self.Pe_array[i],
+                self.eta[i,j] = self.get_eta(self.Pe_array[i],
         self.Da_array[j]) 
         
     def get_diffusivity(self, T, P):
