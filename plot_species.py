@@ -7,7 +7,7 @@ reload(ft)
 import multi_term as mt
 reload(mt)
 
-x_array = np.linspace(0., 10., 100)
+x_array = np.linspace(0., 100., 100)
 y_array = np.linspace(-1., 1., 100)
 
 cat4 = mt.Catalyst()
