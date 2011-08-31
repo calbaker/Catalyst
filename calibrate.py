@@ -15,7 +15,7 @@ plt.close('all')
 
 data250 = expdata.Data()
 data250.Vdot = 250. * 1.e-6 / 60.
-data250.source = '250sccm 10nmPtPd VariedT aug.xls'
+data250.source = '250sccm 10nmPtPd VariedT rep2.xls'
 # Define the path to the .xls file(s) containing the conversion data.
 # import the worksheet as a sheet object
 data250.worksheet = xlrd.open_workbook(filename=data250.source).sheet_by_index(0)
@@ -38,7 +38,7 @@ data500 = expdata.Data()
 data500.T_a = data250.T_a
 data500.A_arr = data250.A_arr
 data500.Vdot = 500. * 1.e-6 / 60.
-data500.source = '500sccm 10nmPtPd VariedT aug.xls'
+data500.source = '500sccm 10nmPtPd VariedT rep2.xls'
 # Define the path to the .xls file(s) containing the conversion data.
 # import the worksheet as a sheet object
 data500.worksheet = xlrd.open_workbook(filename=data500.source).sheet_by_index(0)
@@ -59,7 +59,7 @@ data750 = expdata.Data()
 data750.T_a = data250.T_a
 data750.A_arr = data250.A_arr
 data750.Vdot = 750. * 1.e-6 / 60.
-data750.source = '750sccm 10nmPtPd VariedT aug.xls'
+data750.source = '750sccm 10nmPtPd VariedT rep2.xls'
 # Define the path to the .xls file(s) containing the conversion data.
 # import the worksheet as a sheet object
 data750.worksheet = xlrd.open_workbook(filename=data750.source).sheet_by_index(0)
