@@ -110,6 +110,8 @@ class Catalyst():
         
     def set_eta(self):
         """Sets conversion efficiency over a range of Pe and Da."""
+        self.set_Da()
+        self.set_Pe()
         self.eta = sp.zeros([sp.size(self.Pe_array),
         sp.size(self.Da_array)])
         self.lambda_j = sp.zeros(sp.size(self.Da_array))
