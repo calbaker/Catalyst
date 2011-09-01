@@ -112,12 +112,11 @@ class Catalyst():
         """Sets conversion efficiency over a range of Pe and Da."""
         self.set_Da()
         self.set_Pe()
-        self.eta = sp.zeros([sp.size(self.Pe_array),
+        self.eta = sp.zeros([sp.size(self.Pe_array,0),
         sp.size(self.Da_array)])
-        self.lambda_j = sp.zeros(sp.size(self.Da_array))
-        for i in sp.arange(sp.size(self.Pe_array)):
+        for i in sp.arange(sp.size(self.Pe_array,0)):
             for j in sp.arange(sp.size(self.Da_array)):
-                self.eta[i,j] = self.get_eta(self.Pe_array[i],
+                self.eta[i,j] = self.get_eta(self.Pe_array[i,j],
         self.Da_array[j]) 
         
     def get_diffusivity(self, T, P):
@@ -155,7 +154,7 @@ class Catalyst():
         for i in range(sp.size(self.Vdot_array)):
             for j in range(sp.size(self.T_array)):
                 self.Pe_array[i,j] = (
-            self.get_Pe(Vdot_array[i],T_array[j]) )
+            self.get_Pe(self.Vdot_array[i],self.T_array[j]) )
         
     def get_Da(self, T, A_arr, T_a):
         """Returns Damkoehler for a particular temperature (K),
