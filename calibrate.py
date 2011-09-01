@@ -76,6 +76,13 @@ data750.T_array = sp.linspace(250., 650., 100)
 data750.Vdot_array = sp.array([data750.Vdot])
 data750.set_eta_dim()
 
+cat1000 = One_Term_Catalyst()
+cat1000.T_a = data250.T_a
+cat1000.A_arr = data250.A_arr
+cat1000.Vdot = 1000. * 1.e-6 / 60.
+cat1000.T_array = sp.linspace(250., 650., 100)
+cat1000.Vdot_array = sp.array([cat1000.Vdot])
+cat1000.set_eta_dim()
 
 # Plot configuration
 FONTSIZE = 18
@@ -102,6 +109,9 @@ plt.plot(data750.T_exp, data750.eta_mean * 100., 'db', linestyle='',
          label='750sccm exp')
 plt.plot(data750.T_array, data750.eta_dim.T * 100., '-b',
          label='750sccm model')
+
+plt.plot(cat1000.T_array, cat1000.eta_dim.T * 100., '-g',
+         label='1000sccm model')
 
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')
