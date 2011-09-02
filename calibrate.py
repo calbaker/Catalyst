@@ -99,6 +99,21 @@ data500.T_array = sp.linspace(250., 650., 100)
 data500.Vdot_array = sp.array([data500.Vdot])
 data500.set_eta_dim()
 
+data500b = expdata.Data()
+data500b.source = '500sccm 10nmPtPd VariedT rep3.xls'
+# Define the path to the .xls file(s) containing the conversion data.
+# import the worksheet as a sheet object
+data500b.worksheet = xlrd.open_workbook(filename=data500b.source).sheet_by_index(0)
+# Import conversion data from worksheet and store as scipy arrays
+data500b.T_raw = sp.array(data500b.worksheet.col_values(0, start_rowx=4, 
+                                                 end_rowx=None)) 
+data500b.T_exp = data500b.T_raw
+data500b.HCout_raw = sp.array(data500b.worksheet.col_values(4, start_rowx=4, 
+                                                     end_rowx=None))
+data500b.HCin_raw = sp.array(data500b.worksheet.col_values(8, start_rowx=4,
+                                                    end_rowx=None))
+data500b.eta_mean = (data500b.HCin_raw - data500b.HCout_raw) / data500b.HCin_raw
+
 data100 = expdata.Data()
 data100.T_a = data250.T_a
 data100.A_arr = data250.A_arr
@@ -141,6 +156,21 @@ data750.T_array = sp.linspace(250., 650., 100)
 data750.Vdot_array = sp.array([data750.Vdot])
 data750.set_eta_dim()
 
+data750b = expdata.Data()
+data750b.source = '750sccm 10nmPtPd VariedT rep3.xls'
+# Define the path to the .xls file(s) containing the conversion data.
+# import the worksheet as a sheet object
+data750b.worksheet = xlrd.open_workbook(filename=data750b.source).sheet_by_index(0)
+# Import conversion data from worksheet and store as scipy arrays
+data750b.T_raw = sp.array(data750b.worksheet.col_values(0, start_rowx=4, 
+                                                 end_rowx=None)) 
+data750b.T_exp = data750b.T_raw
+data750b.HCout_raw = sp.array(data750b.worksheet.col_values(4, start_rowx=4, 
+                                                     end_rowx=None))
+data750b.HCin_raw = sp.array(data750b.worksheet.col_values(8, start_rowx=4,
+                                                    end_rowx=None))
+data750b.eta_mean = (data750b.HCin_raw - data750b.HCout_raw) / data750b.HCin_raw
+
 data1000 = expdata.Data()
 data1000.T_a = data250.T_a
 data1000.A_arr = data250.A_arr
@@ -162,48 +192,71 @@ data1000.T_array = sp.linspace(250., 650., 100)
 data1000.Vdot_array = sp.array([data1000.Vdot])
 data1000.set_eta_dim()
 
+data1000b = expdata.Data()
+data1000b.source = '1000sccm 10nmPtPd VariedT rep3.xls'
+# Define the path to the .xls file(s) containing the conversion data.
+# import the worksheet as a sheet object
+data1000b.worksheet = xlrd.open_workbook(filename=data1000b.source).sheet_by_index(0)
+# Import conversion data from worksheet and store as scipy arrays
+data1000b.T_raw = sp.array(data1000b.worksheet.col_values(0, start_rowx=4, 
+                                                 end_rowx=None)) 
+data1000b.T_exp = data1000b.T_raw
+data1000b.HCout_raw = sp.array(data1000b.worksheet.col_values(4, start_rowx=4, 
+                                                     end_rowx=None))
+data1000b.HCin_raw = sp.array(data1000b.worksheet.col_values(8, start_rowx=4,
+                                                    end_rowx=None))
+data1000b.eta_mean = (data1000b.HCin_raw - data1000b.HCout_raw) / data1000b.HCin_raw
+
 # Plot configuration
 FONTSIZE = 18
 plt.rcParams['axes.labelsize'] = FONTSIZE
 plt.rcParams['axes.titlesize'] = FONTSIZE
-plt.rcParams['legend.fontsize'] = FONTSIZE
+plt.rcParams['legend.fontsize'] = FONTSIZE - 10
 plt.rcParams['xtick.labelsize'] = FONTSIZE
 plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 8
 
 plt.figure()
-# plt.plot(data100.T_exp, data100.eta_mean * 100., 'sk', linestyle='',
-#          label='100sccm exp')
-# plt.plot(data100.T_array, data100.eta_dim.T * 100., '-k',
-#          label='100sccm model')
+plt.plot(data100.T_exp, data100.eta_mean * 100., 'ok', linestyle='',
+         label='100sccm exp')
+plt.plot(data100.T_array, data100.eta_dim.T * 100., '-k',
+         label='100sccm model')
 
-plt.plot(data250.T_exp, data250.eta_mean * 100., 'or', linestyle='',
+plt.plot(data250.T_exp, data250.eta_mean * 100., 'sr', linestyle='',
          label='250sccm exp')
 plt.plot(data250.T_array, data250.eta_dim.T * 100., '-r',
          label='250sccm model')
 
-# plt.plot(data250b.T_exp, data250b.eta_mean * 100., '^r', linestyle='',
-#          label='250sccm new')
+plt.plot(data250b.T_exp, data250b.eta_mean * 100., 'or', linestyle='',
+         label='250sccm new')
 
 # plt.errorbar(data250osman.T_exp, data250osman.eta_mean * 100., linestyle='',
 #          yerr=data250osman.errorbar * 100., label='250sccm Osman')
 
-plt.plot(data500.T_exp, data500.eta_mean * 100., 'Dg', linestyle='',
+plt.plot(data500.T_exp, data500.eta_mean * 100., 'sg', linestyle='',
          label='500sccm exp')
 plt.plot(data500.T_array, data500.eta_dim.T * 100., '-g',
          label='500sccm model')
 
-plt.plot(data750.T_exp, data750.eta_mean * 100., 'ob', linestyle='',
+plt.plot(data500b.T_exp, data500b.eta_mean * 100., 'og', linestyle='',
+         label='500sccm new')
+
+plt.plot(data750.T_exp, data750.eta_mean * 100., 'sb', linestyle='',
          label='750sccm exp')
 plt.plot(data750.T_array, data750.eta_dim.T * 100., '-b',
          label='750sccm model')
 
-plt.plot(data1000.T_exp, data1000.eta_mean * 100., '>m', linestyle='',
+plt.plot(data750b.T_exp, data750b.eta_mean * 100., 'ob', linestyle='',
+         label='750sccm new')
+
+plt.plot(data1000.T_exp, data1000.eta_mean * 100., 'sm', linestyle='',
          label='1000sccm exp')
 plt.plot(data1000.T_array, data1000.eta_dim.T * 100., '-m',
          label='1000sccm model')
 
+plt.plot(data1000b.T_exp, data1000b.eta_mean * 100., 'om', linestyle='',
+         label='1000sccm new')
 
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')
