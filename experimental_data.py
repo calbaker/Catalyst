@@ -33,7 +33,7 @@ class Data(ft.One_Term_Catalyst):
         self.HCout[i,j]) / self.HCin[i,j] )
             self.eta_mean[i] = ( self.eta_raw[i,:].sum() /
             self.HCin.shape[1] )  
-            self.errorbar[i] = 1.96 * self.eta_raw[i,:].std() 
+            self.errorbar[i] = 3.2 * self.eta_raw[i,:].std() 
 
     def set_params(self):
         """Uses scipy optimize curve_fit to determine Arrhenius
