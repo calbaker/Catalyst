@@ -166,25 +166,25 @@ data1000.set_eta_dim()
 FONTSIZE = 18
 plt.rcParams['axes.labelsize'] = FONTSIZE
 plt.rcParams['axes.titlesize'] = FONTSIZE
-plt.rcParams['legend.fontsize'] = FONTSIZE - 5
+plt.rcParams['legend.fontsize'] = FONTSIZE
 plt.rcParams['xtick.labelsize'] = FONTSIZE
 plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 8
 
 plt.figure()
-plt.plot(data100.T_exp, data100.eta_mean * 100., 'sk', linestyle='',
-         label='100sccm exp')
-plt.plot(data100.T_array, data100.eta_dim.T * 100., '-k',
-         label='100sccm model')
+# plt.plot(data100.T_exp, data100.eta_mean * 100., 'sk', linestyle='',
+#          label='100sccm exp')
+# plt.plot(data100.T_array, data100.eta_dim.T * 100., '-k',
+#          label='100sccm model')
 
 plt.plot(data250.T_exp, data250.eta_mean * 100., 'or', linestyle='',
          label='250sccm exp')
 plt.plot(data250.T_array, data250.eta_dim.T * 100., '-r',
          label='250sccm model')
 
-plt.plot(data250b.T_exp, data250b.eta_mean * 100., '^r', linestyle='',
-         label='250sccm new')
+# plt.plot(data250b.T_exp, data250b.eta_mean * 100., '^r', linestyle='',
+#          label='250sccm new')
 
 # plt.errorbar(data250osman.T_exp, data250osman.eta_mean * 100., linestyle='',
 #          yerr=data250osman.errorbar * 100., label='250sccm Osman')
