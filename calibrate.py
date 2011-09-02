@@ -46,8 +46,17 @@ data250osman.worksheet = xlrd.open_workbook(filename=data250osman.source).sheet_
 # Import conversion data from worksheet and store as scipy arrays
 data250osman.T_raw = sp.array(data250osman.worksheet.col_values(0, start_rowx=4, 
                                                  end_rowx=None)) 
-data250osman.T_exp = data250osman.T_raw
-data250osman.HCin = data250osman.HCin_raw[0::3]
+data250osman.T_exp = data250osman.T_raw[0::3]
+data250osman.HCout_raw = sp.array(data250osman.worksheet.col_values(4, start_rowx=4, 
+                                                     end_rowx=None))
+data250osman.HCout = sp.array([data250osman.HCout_raw[0::3],
+                        data250osman.HCout_raw[1::3],
+                        data250osman.HCout_raw[2::3]]).T
+data250osman.HCin_raw = sp.array(data250osman.worksheet.col_values(8, start_rowx=4,
+                                                    end_rowx=None))
+data250osman.HCin = sp.array([data250osman.HCin_raw[0::3],
+                        data250osman.HCin_raw[1::3],
+                        data250osman.HCin_raw[2::3]]).T
 data250osman.set_eta()
 data250osman.T_array = sp.linspace(250., 650., 100)
 data250osman.Vdot_array = sp.array([data250osman.Vdot])
@@ -120,7 +129,7 @@ data1000.set_eta_dim()
 FONTSIZE = 18
 plt.rcParams['axes.labelsize'] = FONTSIZE
 plt.rcParams['axes.titlesize'] = FONTSIZE
-plt.rcParams['legend.fontsize'] = FONTSIZE
+plt.rcParams['legend.fontsize'] = FONTSIZE -10
 plt.rcParams['xtick.labelsize'] = FONTSIZE
 plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
@@ -132,8 +141,8 @@ plt.plot(data250.T_exp, data250.eta_mean * 100., 'or', linestyle='',
 plt.plot(data250.T_array, data250.eta_dim.T * 100., '-r',
          label='250sccm model')
 
-plt.plot(data250.T_exp, data250.eta_mean * 100., 'Dr', linestyle='',
-         label='250sccm exp')
+plt.errorbar(data250osman.T_exp, data250osman.eta_mean * 100., linestyle='',
+         yerr=data250osman.errorbar * 100., label='250sccm Osman')
 
 plt.plot(data500.T_exp, data500.eta_mean * 100., 'sk', linestyle='',
          label='500sccm exp')
@@ -153,9 +162,9 @@ plt.plot(data1000.T_array, data1000.eta_dim.T * 100., '-g',
 
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')
-plt.xlim(xmax=450)
-plt.ylim(ymax=40)
-#plt.title('Conversion Efficiency v. Flow Rate')
+# plt.xlim(200,450)
+plt.ylim(ymax=150)
+# plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
 plt.grid()
 plt.savefig('Plots/model and exp.pdf')
