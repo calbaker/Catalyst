@@ -12,7 +12,7 @@ class One_Term_Catalyst(expdata.ExpData):
 
     def __init__(self):
         """Sets values of constants"""
-        self.ExpData.__init__(self)
+        expdata.ExpData.__init__(self)
         self.epsilon = 1. # Used for perturbation
         self.CtoK = 273.15 # conversion from Celsius to Kelvin
         self.P = 100. # Pressure of flow (kPa)
@@ -93,9 +93,10 @@ class One_Term_Catalyst(expdata.ExpData):
                 self.Yxy[i,j] = ( self.get_Y(self.x_array[i],
             self.y_array[j], Pe, Da) )
     
-    def get_eta(self, Pe, Da):
+    def get_eta(self, Da):
         """Returns species conversion efficiency, eta, as a function
         of required arguments Da and Pe"""
         Lambda = self.get_lambda(Da)
-        eta = ( 1. - sp.exp(-Lambda**2. / (4. * Pe) * self.length_) )
+        eta = ( 1. - sp.exp(-Lambda**2. / (4. * Pe_ij) * self.length_)
+        ) 
         return eta

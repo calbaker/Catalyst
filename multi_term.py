@@ -107,12 +107,12 @@ class Catalyst():
                 self.Yxy[i,j] = ( self.get_Y(self.x_array[i],
             self.y_array[j], Pe, lambda_i, A_i) )
     
-    def get_eta(self, Pe, Da):
+    def get_eta(self, Da):
         """Returns species conversion efficiency, eta, as a function
         of required arguments Da and Pe"""
         lambda_i = self.get_lambda(Da)
         A_i = self.get_A(lambda_i)
         eta = ( (sp.sum(A_i / lambda_i * sp.sin(lambda_i)) - sp.sum(A_i
-        / lambda_i * sp.exp(-lambda_i**2 / (4. * Pe) * self.length_) *
-        sp.sin(lambda_i))) )
+        / lambda_i * sp.exp(-lambda_i**2 / (4. * Pe_ij) *
+        self.length_) * sp.sin(lambda_i))) ) 
         return eta

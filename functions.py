@@ -11,8 +11,8 @@ def set_eta(self):
     sp.size(self.Da_array)])
     for i in sp.arange(sp.size(self.Pe_array,0)):
         for j in sp.arange(sp.size(self.Da_array)):
-            self.eta[i,j] = self.get_eta(self.Pe_array[i,j],
-    self.Da_array[j]) 
+            self.Pe_ij = self.Pe_array[i,j]
+            self.eta[i,j] = self.get_eta(self.Da_array[j])  
 
 def get_diffusivity(self, T, P):
     """Sets thermal diffusivity based on BSL Transport Phenomena
