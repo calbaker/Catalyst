@@ -16,9 +16,9 @@ cat4.y_array = np.linspace(-1., 1., 100)
 cat4.A_arr = 5576796142069.6602
 cat4.T_a = 15325.877039480061
 cat4.set_eta()
-Pe = 500.
+cat4.Pe = 500.
 Da = 1.
-cat4.set_Yxy(Pe,Da)
+cat4.set_Yxy(cat4.Pe,Da)
 Da_range = sp.linspace(0, 5., 100)
 lambda_i = cat4.get_lambda(Da_range)
 
@@ -58,21 +58,21 @@ plt.grid()
 plt.xlabel(r'$\tilde{x}$')
 plt.ylabel(r'$\tilde{y}$')
 # plt.title(r'Species Concentration v. $\tilde{x}$ and $\tilde{y}$' +
-#           '\nDa=' + str(cat4.Da) + ' Pe=' + str(cat4.Pe))  
+#           '\nDa=' + str(cat4.Da) + ' cat4.Pe=' + str(cat4.cat4.Pe))  
 plt.ylim(-1, 1)
 plt.subplots_adjust(bottom=0.15)
 plt.subplots_adjust(left=0.15)
-plt.savefig('Plots/4species Da=' + str(Da) + ' Pe=' + str(Pe)
+plt.savefig('Plots/4species Da=' + str(Da) + ' Pe=' + str(cat4.Pe)
             + '.pdf') 
-plt.savefig('Plots/4species Da=' + str(Da) + ' Pe=' + str(Pe)
+plt.savefig('Plots/4species Da=' + str(Da) + ' Pe=' + str(cat4.Pe)
             + '.png')  
 
 fig_eta = plt.figure()
-Pe_2d = cat4.Pe_array.T
+cat4.Pe_2d = cat4.Pe_array.T
 dummy, Da_2d = np.meshgrid(cat4.Pe_array[:,0], cat4.Da_array)
 TICKS = sp.arange(0,1.5,0.1)
 LEVELS = sp.arange(0, 1.05, 0.05)
-FCS = plt.contourf(Pe_2d, Da_2d, cat4.eta.T) 
+FCS = plt.contourf(cat4.Pe_2d, Da_2d, cat4.eta.T) 
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
 plt.grid()
 plt.xlabel('Pe')
