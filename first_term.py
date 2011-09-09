@@ -97,6 +97,6 @@ class One_Term_Catalyst(expdata.ExpData):
         """Returns species conversion efficiency, eta, as a function
         of required arguments Da and Pe"""
         Lambda = self.get_lambda(Da)
-        eta = ( 1. - sp.exp(-Lambda**2. / (4. * Pe_ij) * self.length_)
-        ) 
+        eta = ( 1. - sp.exp(-Lambda**2. / (4. * self.Pe_ij) *
+        self.length_) )  
         return eta
