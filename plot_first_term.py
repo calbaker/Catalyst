@@ -15,6 +15,8 @@ cat1.x_array = np.linspace(0., 100., 100)
 cat1.y_array = np.linspace(-1., 1., 100)
 cat1.A_arr = 5576796142069.6602
 cat1.T_a = 15325.877039480061
+cat1.T_array = sp.linspace(300., 425., 50)
+cat1.Vdot_array = sp.linspace(100., 1000., 50) * 1.e-6 / 60. 
 cat1.set_eta()
 cat1.Pe = 500.
 cat1.Da = 1.
