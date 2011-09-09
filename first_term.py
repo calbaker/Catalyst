@@ -4,13 +4,15 @@ import scipy.interpolate as interp
 
 import properties as prop
 import functions as func
+import experimental_data as expdata
 
-class One_Term_Catalyst():
+class One_Term_Catalyst(expdata.ExpData):
     """Class for representing catalyst reactor modeled by 1 term
     expansion""" 
 
     def __init__(self):
         """Sets values of constants"""
+        self.ExpData.__init__(self)
         self.epsilon = 1. # Used for perturbation
         self.CtoK = 273.15 # conversion from Celsius to Kelvin
         self.P = 100. # Pressure of flow (kPa)

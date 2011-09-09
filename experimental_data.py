@@ -4,9 +4,6 @@ fitting capability."""
 import scipy as sp
 from scipy.optimize import curve_fit
 
-import first_term
-reload(first_term)
-
 class ExpData():
     """Class for keeping track of experimental data"""
 

@@ -9,12 +9,10 @@ os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
 
 import first_term as ft
 reload(ft)
-import experimental_data as expdata
-reload(expdata)
 
 plt.close('all')
 
-data250 = expdata.Data()
+data250 = ft.One_Term_Catalyst()
 data250.Vdot = 250. * 1.e-6 / 60.
 data250.source = '250sccm 10nmPtPd VariedT rep2.xls'
 # Define the path to the .xls file(s) containing the conversion data.
