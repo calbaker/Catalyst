@@ -22,6 +22,14 @@ class ExpData():
         self.T_a = popt[1]
         self.set_eta()
 
+    def get_eta_dim(self, T, A_arr, T_a):
+        """Returns species conversion efficiency, eta, as a function
+        of required argument T. Used by set_params."""
+        self.Pe_ij = self.get_Pe(T,self.Vdot) 
+        Da = self.get_Da(T, A_arr, T_a)
+        eta = self.get_eta(Da)
+        return eta
+
     def get_S_r(self):
         """Returns sum of residuals squared for all data points."""
         S_r = sp.sum((self.eta_model - self.eta_exp)**2.)

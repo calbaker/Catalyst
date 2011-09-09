@@ -5,6 +5,7 @@ import scipy.interpolate as interp
 import properties as prop
 import functions as func
 import experimental_data as expdata
+reload(expdata)
 
 class One_Term_Catalyst(expdata.ExpData):
     """Class for representing catalyst reactor modeled by 1 term
@@ -99,13 +100,4 @@ class One_Term_Catalyst(expdata.ExpData):
         Lambda = self.get_lambda(Da)
         eta = ( 1. - sp.exp(-Lambda**2. / (4. * self.Pe_ij) *
         self.length_) )  
-        return eta
-
-    def get_eta_dim(self, T, A_arr, T_a):
-        """Returns species conversion efficiency, eta, as a function
-        of required argument T. Used by set_params. This can probably
-        work in functions.py"""
-        self.Pe_ij = self.get_Pe(T,self.Vdot) 
-        Da = self.get_Da(T, A_arr, T_a)
-        eta = self.get_eta(Da)
         return eta

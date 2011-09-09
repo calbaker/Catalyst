@@ -29,52 +29,9 @@ data250.HCin_raw = sp.array(data250.worksheet.col_values(8, start_rowx=4,
 data250.eta_exp = (data250.HCin_raw - data250.HCout_raw) / data250.HCin_raw
 data250.T_array = sp.linspace(250., 650., 100)
 data250.Vdot_array = sp.array([data250.Vdot])
-data250.p0 = sp.array([1e7, 15e3])
+data250.p0 = sp.array([6e10, 15e3])
 data250.set_params()
 data250.set_eta()
-
-# data250osman = ft.One_Term_Catalyst()
-# data250osman.T_a = data250.T_a
-# data250osman.A_arr = data250.A_arr
-# data250osman.Vdot = 250. * 1.e-6 / 60.
-# data250osman.source = '250sccm 10nm PtPd variedT.xls'
-# # Define the path to the .xls file(s) containing the conversion data.
-# # import the worksheet as a sheet object
-# data250osman.worksheet = xlrd.open_workbook(filename=data250osman.source).sheet_by_index(0)
-# # Import conversion data from worksheet and store as scipy arrays
-# data250osman.T_raw = sp.array(data250osman.worksheet.col_values(0, start_rowx=4, 
-#                                                  end_rowx=None)) 
-# data250osman.T_exp = data250osman.T_raw[0::3]
-# data250osman.HCout_raw = sp.array(data250osman.worksheet.col_values(4, start_rowx=4, 
-#                                                      end_rowx=None))
-# data250osman.HCout = sp.array([data250osman.HCout_raw[0::3],
-#                         data250osman.HCout_raw[1::3],
-#                         data250osman.HCout_raw[2::3]]).T
-# data250osman.HCin_raw = sp.array(data250osman.worksheet.col_values(8, start_rowx=4,
-#                                                     end_rowx=None))
-# data250osman.HCin = sp.array([data250osman.HCin_raw[0::3],
-#                         data250osman.HCin_raw[1::3],
-#                         data250osman.HCin_raw[2::3]]).T
-# data250osman.set_eta()
-# data250osman.T_array = sp.linspace(250., 650., 100)
-# data250osman.Vdot_array = sp.array([data250osman.Vdot])
-# data250osman.set_eta()
-
-data250b = ft.One_Term_Catalyst()
-data250b.Vdot = 250. * 1.e-6 / 60.
-data250b.source = '250sccm 10nmPtPd VariedT rep3.xls'
-# Define the path to the .xls file(s) containing the conversion data.
-# import the worksheet as a sheet object
-data250b.worksheet = xlrd.open_workbook(filename=data250b.source).sheet_by_index(0)
-# Import conversion data from worksheet and store as scipy arrays
-data250b.T_raw = sp.array(data250b.worksheet.col_values(0, start_rowx=4, 
-                                                 end_rowx=None)) 
-data250b.T_exp = data250b.T_raw
-data250b.HCout_raw = sp.array(data250b.worksheet.col_values(4, start_rowx=4, 
-                                                     end_rowx=None))
-data250b.HCin_raw = sp.array(data250b.worksheet.col_values(8, start_rowx=4,
-                                                    end_rowx=None))
-data250b.eta_exp = (data250b.HCin_raw - data250b.HCout_raw) / data250b.HCin_raw
 
 data500 = ft.One_Term_Catalyst()
 data500.T_a = data250.T_a
@@ -96,21 +53,6 @@ data500.eta_exp = (data500.HCin_raw - data500.HCout_raw) / data500.HCin_raw
 data500.T_array = sp.linspace(250., 650., 100)
 data500.Vdot_array = sp.array([data500.Vdot])
 data500.set_eta()
-
-data500b = ft.One_Term_Catalyst()
-data500b.source = '500sccm 10nmPtPd VariedT rep3.xls'
-# Define the path to the .xls file(s) containing the conversion data.
-# import the worksheet as a sheet object
-data500b.worksheet = xlrd.open_workbook(filename=data500b.source).sheet_by_index(0)
-# Import conversion data from worksheet and store as scipy arrays
-data500b.T_raw = sp.array(data500b.worksheet.col_values(0, start_rowx=4, 
-                                                 end_rowx=None)) 
-data500b.T_exp = data500b.T_raw
-data500b.HCout_raw = sp.array(data500b.worksheet.col_values(4, start_rowx=4, 
-                                                     end_rowx=None))
-data500b.HCin_raw = sp.array(data500b.worksheet.col_values(8, start_rowx=4,
-                                                    end_rowx=None))
-data500b.eta_exp = (data500b.HCin_raw - data500b.HCout_raw) / data500b.HCin_raw
 
 data100 = ft.One_Term_Catalyst()
 data100.T_a = data250.T_a
@@ -154,21 +96,6 @@ data750.T_array = sp.linspace(250., 650., 100)
 data750.Vdot_array = sp.array([data750.Vdot])
 data750.set_eta()
 
-data750b = ft.One_Term_Catalyst()
-data750b.source = '750sccm 10nmPtPd VariedT rep3.xls'
-# Define the path to the .xls file(s) containing the conversion data.
-# import the worksheet as a sheet object
-data750b.worksheet = xlrd.open_workbook(filename=data750b.source).sheet_by_index(0)
-# Import conversion data from worksheet and store as scipy arrays
-data750b.T_raw = sp.array(data750b.worksheet.col_values(0, start_rowx=4, 
-                                                 end_rowx=None)) 
-data750b.T_exp = data750b.T_raw
-data750b.HCout_raw = sp.array(data750b.worksheet.col_values(4, start_rowx=4, 
-                                                     end_rowx=None))
-data750b.HCin_raw = sp.array(data750b.worksheet.col_values(8, start_rowx=4,
-                                                    end_rowx=None))
-data750b.eta_exp = (data750b.HCin_raw - data750b.HCout_raw) / data750b.HCin_raw
-
 data1000 = ft.One_Term_Catalyst()
 data1000.T_a = data250.T_a
 data1000.A_arr = data250.A_arr
@@ -189,21 +116,6 @@ data1000.eta_exp = (data1000.HCin_raw - data1000.HCout_raw) / data1000.HCin_raw
 data1000.T_array = sp.linspace(250., 650., 100)
 data1000.Vdot_array = sp.array([data1000.Vdot])
 data1000.set_eta()
-
-data1000b = ft.One_Term_Catalyst()
-data1000b.source = '1000sccm 10nmPtPd VariedT rep3.xls'
-# Define the path to the .xls file(s) containing the conversion data.
-# import the worksheet as a sheet object
-data1000b.worksheet = xlrd.open_workbook(filename=data1000b.source).sheet_by_index(0)
-# Import conversion data from worksheet and store as scipy arrays
-data1000b.T_raw = sp.array(data1000b.worksheet.col_values(0, start_rowx=4, 
-                                                 end_rowx=None)) 
-data1000b.T_exp = data1000b.T_raw
-data1000b.HCout_raw = sp.array(data1000b.worksheet.col_values(4, start_rowx=4, 
-                                                     end_rowx=None))
-data1000b.HCin_raw = sp.array(data1000b.worksheet.col_values(8, start_rowx=4,
-                                                    end_rowx=None))
-data1000b.eta_exp = (data1000b.HCin_raw - data1000b.HCout_raw) / data1000b.HCin_raw
 
 # Plot configuration
 FONTSIZE = 18
@@ -226,35 +138,20 @@ plt.plot(data250.T_exp, data250.eta_exp * 100., 'sr', linestyle='',
 plt.plot(data250.T_array, data250.eta.T * 100., '-r',
          label='250sccm model')
 
-plt.plot(data250b.T_exp, data250b.eta_exp * 100., 'or', linestyle='',
-         label='250sccm new')
-
-# plt.errorbar(data250osman.T_exp, data250osman.eta_exp * 100., linestyle='',
-#          yerr=data250osman.errorbar * 100., label='250sccm Osman')
-
 plt.plot(data500.T_exp, data500.eta_exp * 100., 'sg', linestyle='',
          label='500sccm exp')
 plt.plot(data500.T_array, data500.eta.T * 100., '-g',
          label='500sccm model')
-
-plt.plot(data500b.T_exp, data500b.eta_exp * 100., 'og', linestyle='',
-         label='500sccm new')
 
 plt.plot(data750.T_exp, data750.eta_exp * 100., 'sb', linestyle='',
          label='750sccm exp')
 plt.plot(data750.T_array, data750.eta.T * 100., '-b',
          label='750sccm model')
 
-plt.plot(data750b.T_exp, data750b.eta_exp * 100., 'ob', linestyle='',
-         label='750sccm new')
-
 plt.plot(data1000.T_exp, data1000.eta_exp * 100., 'sm', linestyle='',
          label='1000sccm exp')
 plt.plot(data1000.T_array, data1000.eta.T * 100., '-m',
          label='1000sccm model')
-
-plt.plot(data1000b.T_exp, data1000b.eta_exp * 100., 'om', linestyle='',
-         label='1000sccm new')
 
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')
