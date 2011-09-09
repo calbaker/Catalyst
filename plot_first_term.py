@@ -81,6 +81,19 @@ plt.ylabel('Da')
 plt.savefig('Plots/eta.pdf')
 plt.savefig('Plots/eta.png')
 
+fig_eta_dim = plt.figure()
+cat1.Vdot_2d, cat1.T_2d = np.meshgrid(cat1.Vdot_array, cat1.T_array)
+TICKS = sp.arange(0,1.5,0.1)
+LEVELS = sp.arange(0, 1.05, 0.05)
+FCS = plt.contourf(cat1.Vdot_2d * 60. * 1.e6, cat1.T_2d, cat1.eta.T) 
+CB = plt.colorbar(FCS, orientation='vertical')#, format='%.2f')
+plt.grid()
+plt.xlabel('Vdot')
+plt.ylabel('T')
+# plt.title('Species Conversion Efficiency')
+plt.savefig('Plots/eta_dim.pdf')
+plt.savefig('Plots/eta_dim.png')
+
 plt.show()
 
 
