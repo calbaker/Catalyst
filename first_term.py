@@ -27,7 +27,8 @@ class One_Term_Catalyst(expdata.ExpData):
             [0.5,0.65],
              [1.0,0.86], [2.0,1.08], [5.0,1.31],
              [10.0,1.43], [15.0,1.47], [20.0,1.50], [30.0,1.52],
-            [40.0,1.53], [50.0,1.54], [150., 1.56]])    
+            [40.0,1.53], [50.0,1.54], [150., 1.56],
+             [5000., 1.57]])    
         
         # Graphically determined eigenvalues corresponding to Da
         self.Da_array = sp.arange(1., 20., 0.5)
@@ -44,9 +45,9 @@ class One_Term_Catalyst(expdata.ExpData):
         # Thickness of wash coat or height of porous media (m).  This
         # was h_{pore} in the pdf.
         self.width = 20e-3 # channel width (m)
-        self.Vdot_array = sp.arange(100., 1000., 10) * 1.e-6 / 60. 
+        self.Vdot_array = sp.linspace(100., 1000., 50) * 1.e-6 / 60. 
         # volume flow rate (m^3/s)
-        self.T_array = sp.arange(350., 600., 5.) 
+        self.T_array = sp.linspace(250., 450., 50) 
         # temperature of flow (C)
         self.T_ambient = 300.
         # ambient temperature (K) at which flow rate is measured

@@ -27,9 +27,8 @@ data250.HCout_raw = sp.array(data250.worksheet.col_values(4, start_rowx=4,
 data250.HCin_raw = sp.array(data250.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data250.eta_exp = (data250.HCin_raw - data250.HCout_raw) / data250.HCin_raw
-data250.T_array = sp.linspace(250., 650., 100)
 data250.Vdot_array = sp.array([data250.Vdot])
-data250.p0 = sp.array([6e10, 15e3])
+data250.p0 = sp.array([100.e7, 15.e3])
 data250.set_params()
 data250.set_eta()
 
@@ -50,7 +49,6 @@ data500.HCout_raw = sp.array(data500.worksheet.col_values(4, start_rowx=4,
 data500.HCin_raw = sp.array(data500.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data500.eta_exp = (data500.HCin_raw - data500.HCout_raw) / data500.HCin_raw
-data500.T_array = sp.linspace(250., 650., 100)
 data500.Vdot_array = sp.array([data500.Vdot])
 data500.set_eta()
 
@@ -71,7 +69,6 @@ data100.HCout_raw = sp.array(data100.worksheet.col_values(4, start_rowx=4,
 data100.HCin_raw = sp.array(data100.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data100.eta_exp = (data100.HCin_raw - data100.HCout_raw) / data100.HCin_raw
-data100.T_array = sp.linspace(250., 650., 100)
 data100.Vdot_array = sp.array([data100.Vdot])
 data100.set_eta()
 
@@ -92,7 +89,6 @@ data750.HCout_raw = sp.array(data750.worksheet.col_values(4, start_rowx=4,
 data750.HCin_raw = sp.array(data750.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data750.eta_exp = (data750.HCin_raw - data750.HCout_raw) / data750.HCin_raw
-data750.T_array = sp.linspace(250., 650., 100)
 data750.Vdot_array = sp.array([data750.Vdot])
 data750.set_eta()
 
@@ -113,7 +109,6 @@ data1000.HCout_raw = sp.array(data1000.worksheet.col_values(4, start_rowx=4,
 data1000.HCin_raw = sp.array(data1000.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data1000.eta_exp = (data1000.HCin_raw - data1000.HCout_raw) / data1000.HCin_raw
-data1000.T_array = sp.linspace(250., 650., 100)
 data1000.Vdot_array = sp.array([data1000.Vdot])
 data1000.set_eta()
 
@@ -155,8 +150,7 @@ plt.plot(data1000.T_array, data1000.eta.T * 100., '-m',
 
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')
-plt.xlim(200,450)
-plt.ylim(ymax=30)
+#plt.ylim(ymax=30)
 # plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
 plt.grid()

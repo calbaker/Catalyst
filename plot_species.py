@@ -10,18 +10,19 @@ reload(mt)
 x_array = np.linspace(0., 100., 100)
 y_array = np.linspace(-1., 1., 100)
 
+Pe = 500.
+Da = 1.
+
 cat4 = mt.Catalyst()
 cat4.x_array = x_array
 cat4.y_array = y_array
-Pe = 500.
-Da = 1.
 cat4.set_Yxy(Pe,Da)
 
 cat1 = ft.One_Term_Catalyst()
 cat1.x_array = x_array
 cat1.y_array = y_array
 cat1.Pe = 500.
-cat1.set_Yxy_()
+cat1.set_Yxy(Pe,Da)
 
 
 # Plot configuration
@@ -56,7 +57,7 @@ plt.savefig('Plots/4 term species.png')
 fig_species = plt.figure()
 # TICKS = sp.arange(0,1.5,0.1)
 LEVELS = sp.arange(0, 1.2, 0.1)
-FCS = plt.contourf(x_2d, y_2d, cat1.Yxy_.T) 
+FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T) 
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
 plt.grid()
 plt.xlabel(r'$\tilde{x}$')
