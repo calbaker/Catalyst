@@ -20,7 +20,7 @@ cat4.set_Yxy(Pe,Da)
 cat1 = ft.One_Term_Catalyst()
 cat1.x_array = x_array
 cat1.y_array = y_array
-cat1.Pe = 50.
+cat1.Pe = 500.
 cat1.set_Yxy_()
 
 
