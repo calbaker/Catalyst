@@ -65,23 +65,23 @@ class One_Term_Catalyst():
         lambda_fit = interp.splev(Da, spline_params)
         return lambda_fit
 
-    def get_Y_(self, x_, y_):
+    def get_Y(self, x_, y_):
         """Sets float non-dimensional Y at any particular non-d (x,y)
         point""" 
         lambda1 = self.get_lambda(self.Da)
         Y_ = ( lambda1 / lambda1 * sp.exp(-lambda1**2. / (4. * self.Pe
         ) * x_) * sp.cos(lambda1 * y_) )    
-        return Y_
+        return Y
 
-    def set_Yxy_(self):
+    def set_Yxy(self):
         """Sets non-dimensional Y over a 2d array of non-dimensional
         x_ and y_"""
-        self.Yxy_ = np.zeros([np.size(self.x_array),
+        self.Yxy = np.zeros([np.size(self.x_array),
         np.size(self.y_array)])
 
         for i in sp.arange(sp.size(self.x_array)):
             for j in sp.arange(sp.size(self.y_array)):
-                self.Yxy_[i,j] = ( self.get_Y_(self.x_array[i],
+                self.Yxy[i,j] = ( self.get_Y(self.x_array[i],
             self.y_array[j]) )
     
     def get_eta(self, Pe, Da):
@@ -91,14 +91,15 @@ class One_Term_Catalyst():
         eta = ( 1. - sp.exp(-Lambda**2. / (4. * Pe) * self.length_) )
         return eta
         
-    def set_eta_dimless(self):
+    def set_eta(self):
         """Sets conversion efficiency over a range of Pe and Da."""
-        self.eta_dimless = sp.zeros([sp.size(self.Pe_array),
+        self.set_Da()
+        self.set_Pe()
+        self.eta = sp.zeros([sp.size(self.Pe_array,0),
         sp.size(self.Da_array)])
-        self.lambda_j = sp.zeros(sp.size(self.Da_array))
-        for i in sp.arange(sp.size(self.Pe_array)):
+        for i in sp.arange(sp.size(self.Pe_array,0)):
             for j in sp.arange(sp.size(self.Da_array)):
-                self.eta_dimless[i,j] = self.get_eta(self.Pe_array[i],
+                self.eta[i,j] = self.get_eta(self.Pe_array[i,j],
         self.Da_array[j]) 
         
     def get_diffusivity(self, T, P):
@@ -144,23 +145,41 @@ class One_Term_Catalyst():
         ) 
         return Da
         
-    def get_eta_dim(self, T, A_arr, T_a):
-        """Returns conversion efficiency for a particular flow rate and
-        temperature."""
-        Da = self.get_Da(T, A_arr, T_a)
-        Pe = self.get_Pe(self.Vdot, T)
-        Lambda = self.get_lambda(Da) 
-        eta_dim = ( 1. - sp.exp(-Lambda**2. / (4. * Pe) *
-        self.length_) )
-        return eta_dim
+    def set_Pe(self):
+        """Sets Peclet number for a temperature and flow rate range of
+        interest."""
+        self.Pe_array = (
+        sp.empty([sp.size(self.Vdot_array),sp.size(self.T_array)]) )
 
-    def set_eta_dim(self):
-        """Sets conversion efficiency over a range of flow rate and
-        temperature."""
-        self.eta_dim = sp.zeros([sp.size(self.Vdot_array),
-        sp.size(self.T_array)])
-        for i in sp.arange(sp.size(self.Vdot_array)):
-            for j in sp.arange(sp.size(self.T_array)):
-                self.Vdot = self.Vdot_array[i]
-                self.eta_dim[i,j] = self.get_eta_dim(self.T_array[j],
-        self.A_arr, self.T_a)
+        for i in range(sp.size(self.Vdot_array)):
+            for j in range(sp.size(self.T_array)):
+                self.Pe_array[i,j] = (
+            self.get_Pe(self.Vdot_array[i],self.T_array[j]) )
+        
+    def get_Da(self, T, A_arr, T_a):
+        """Returns Damkoehler for a particular temperature (K),
+        porosity, catalyst loading and a whole slew of other things."""
+        T = T + self.CtoK
+        k_arr = ( A_arr * sp.exp(-T_a / T) )
+        D_C3H8_air = self.get_diffusivity(T, self.P)
+        D_C3H8_air_eff = ( D_C3H8_air * self.porosity ) 
+        mfp = ( (sp.sqrt(2.) * sp.pi * self.air.d**2. *
+        self.air.n)**-1. )  
+        # Crude approximation of mean free path (m) of propane in air from
+        # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
+        Da_pore = ( k_arr * self.thickness**2 / D_C3H8_air_eff )   
+        Da = ( D_C3H8_air_eff / D_C3H8_air * self.height /
+        self.thickness * sp.sqrt(Da_pore) * sp.tanh(sp.sqrt(Da_pore))
+        ) # THIS FORMULA IS NOT CORRECT FOR MULTI TERM!!!!!
+          # ****************************** ###########################
+          # ?????????????????? 
+        return Da
+        
+    def set_Da(self):
+        """Sets Dahmkohler number for temperature range of
+        interest."""
+        self.Da_array = sp.empty(sp.size(self.T_array))
+
+        for i in range(sp.size(self.T_array)):
+            self.Da_array[i] = (
+            self.get_Da(self.T_array[i],self.A_arr,self.T_a) ) 
