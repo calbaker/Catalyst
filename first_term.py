@@ -65,15 +65,15 @@ class One_Term_Catalyst():
         lambda_fit = interp.splev(Da, spline_params)
         return lambda_fit
 
-    def get_Y(self, x_, y_):
+    def get_Y(self, x_, y_, Pe, Da):
         """Sets float non-dimensional Y at any particular non-d (x,y)
         point""" 
-        lambda1 = self.get_lambda(self.Da)
-        Y_ = ( lambda1 / lambda1 * sp.exp(-lambda1**2. / (4. * self.Pe
-        ) * x_) * sp.cos(lambda1 * y_) )    
+        lambda1 = self.get_lambda(Da)
+        Y = ( lambda1 / lambda1 * sp.exp(-lambda1**2. / (4. * Pe) *
+        x_) * sp.cos(lambda1 * y_) )     
         return Y
 
-    def set_Yxy(self):
+    def set_Yxy(self,Pe,Da):
         """Sets non-dimensional Y over a 2d array of non-dimensional
         x_ and y_"""
         self.Yxy = np.zeros([np.size(self.x_array),
@@ -82,7 +82,7 @@ class One_Term_Catalyst():
         for i in sp.arange(sp.size(self.x_array)):
             for j in sp.arange(sp.size(self.y_array)):
                 self.Yxy[i,j] = ( self.get_Y(self.x_array[i],
-            self.y_array[j]) )
+            self.y_array[j], Pe, Da) )
     
     def get_eta(self, Pe, Da):
         """Returns species conversion efficiency, eta, as a function
