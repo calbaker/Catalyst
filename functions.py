@@ -1,6 +1,8 @@
 """Module containing funcitons that are common to both first term and
 multi-term catalyst models."""
 
+import scipy as sp
+
 def set_eta(self):
     """Sets conversion efficiency over a range of Pe and Da."""
     self.set_Da()
