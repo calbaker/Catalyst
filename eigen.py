@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 Da = 1.  
 
 def get_solution(Da):
-    lambda_guess = np.arange(0, 10., 0.0001)
+    lambda_guess = np.arange(0, 15., 0.0001)
     solution = 1 - lambda_guess / Da * np.tan(lambda_guess)
     return solution,lambda_guess
 

@@ -13,9 +13,9 @@ cat4 = multi_term.Catalyst()
 
 cat4.x_array = np.linspace(0., 100., 100)
 cat4.y_array = np.linspace(-1., 1., 100)
-cat4.A_arr = 5e12
-cat4.T_a = 14.5e3
-cat4.T_array = sp.linspace(300., 425., 50)
+cat4.A_arr = 15.e6
+cat4.T_a = 7.5e3
+cat4.T_array = sp.linspace(250., 450., 50)
 cat4.Vdot_array = sp.linspace(100., 1000., 50) * 1.e-6 / 60. 
 cat4.set_eta()
 cat4.Pe = 500.
@@ -73,10 +73,10 @@ plt.savefig('Plots/4species Da=' + str(cat4.Da) + ' Pe=' + str(cat4.Pe)
 fig_eta = plt.figure()
 cat4.Pe_2d = cat4.Pe_array.T
 dummy, cat4.Da_2d = np.meshgrid(cat4.Pe_array[:,0], cat4.Da_array)
-TICKS = sp.arange(0,1.5,0.1)
-LEVELS = sp.arange(0, 1.05, 0.05)
-FCS = plt.contourf(cat4.Pe_2d, cat4.Da_2d, cat4.eta.T) 
-CB = plt.colorbar(FCS, orientation='vertical')#, format='%.2f')
+TICKS = sp.arange(0,1.1,0.1)
+LEVELS = sp.arange(0, .75, 0.05)
+FCS = plt.contourf(cat4.Pe_2d, cat4.Da_2d, cat4.eta.T,LEVELS) 
+CB = plt.colorbar(FCS, orientation='vertical', format='%.1f',ticks=TICKS)
 plt.grid()
 plt.xlabel('Pe')
 plt.ylabel('Da')
@@ -86,10 +86,9 @@ plt.savefig('Plots/4eta.png')
 
 fig_eta_dim = plt.figure()
 cat4.Vdot_2d, cat4.T_2d = np.meshgrid(cat4.Vdot_array, cat4.T_array)
-TICKS = sp.arange(0,1.5,0.1)
-LEVELS = sp.arange(0, 1.05, 0.05)
-FCS = plt.contourf(cat4.Vdot_2d * 60. * 1.e6, cat4.T_2d, cat4.eta.T) 
-CB = plt.colorbar(FCS, orientation='vertical')#, format='%.2f')
+FCS = plt.contourf(cat4.Vdot_2d * 60. * 1.e6, cat4.T_2d,
+                   cat4.eta.T,LEVELS)  
+CB = plt.colorbar(FCS, orientation='vertical', format='%.1f',ticks=TICKS)
 plt.grid()
 plt.xlabel('Vdot')
 plt.ylabel('T')

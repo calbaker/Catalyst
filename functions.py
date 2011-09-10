@@ -62,9 +62,9 @@ def get_Da(self, T, A_arr, T_a):
     self.air.n)**-1. )  
     # Crude approximation of mean free path (m) of propane in air from
     # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
-    Da_pore = ( k_arr * self.thickness**2 / D_C3H8_air_eff )   
+    thiele = ( k_arr * self.thickness**2 / D_C3H8_air_eff )   
     Da = ( D_C3H8_air_eff / D_C3H8_air * self.height /
-    self.thickness * sp.sqrt(Da_pore) * sp.tanh(sp.sqrt(Da_pore))
+    self.thickness * sp.sqrt(thiele) * sp.tanh(sp.sqrt(thiele))
     ) # THIS FORMULA IS NOT CORRECT FOR MULTI TERM!!!!!
         # ****************************** ###########################
         # ?????????????????? 

@@ -4,13 +4,16 @@ import scipy.interpolate as interp
 
 import properties as prop
 import functions as func
+import experimental_data as expdata
+reload(expdata)
 
-class Catalyst():
-    """Class for representing catalyst reactor modeled by 5 term
+class Catalyst(expdata.ExpData):
+    """Class for representing catalyst reactor modeled by multi term
     expansion""" 
 
     def __init__(self):
         """Sets values of constants"""
+        expdata.ExpData.__init__(self)
         self.CtoK = 273.15 # conversion from Celsius to Kelvin
         self.P = 100. # Pressure of flow (kPa)
 
@@ -28,7 +31,9 @@ class Catalyst():
              [0.5,0.65,3.29,6.36,9.48],
              [1.0,0.86,3.43,6.44,9.53],
              [2.0,1.08,3.64,6.58,9.63],
-             [5.0,1.31,4.03,6.91,9.89]] )
+             [5.0,1.31,4.03,6.91,9.89],
+             [10.0,1.43,4.30,7.23,10.2],
+             [5000.,1.57,4.71,7.85,11.0]] )
         # Graphically determined eigenvalues corresponding to Da
 
         self.length_ = 100.
@@ -41,9 +46,9 @@ class Catalyst():
         # Thickness of wash coat or height of porous media (m).  This
         # was h_{pore} in the pdf.
         self.width = 20e-3 # channel width (m)
-        self.Vdot_array = sp.arange(100., 1000., 10) * 1.e-6 / 60. 
+        self.Vdot_array = sp.linspace(100., 1000., 50) * 1.e-6 / 60. 
         # volume flow rate (m^3/s)
-        self.T_array = sp.arange(350., 600., 5.) 
+        self.T_array = sp.linspace(250., 450., 50) 
         # temperature of flow (C)
         self.T_ambient = 300.
         # ambient temperature (K) at which flow rate is measured
@@ -114,5 +119,5 @@ class Catalyst():
         A_i = self.get_A(lambda_i)
         eta = ( (sp.sum(A_i / lambda_i * sp.sin(lambda_i)) - sp.sum(A_i
         / lambda_i * sp.exp(-lambda_i**2 / (4. * self.Pe_ij) *
-        self.length_) * sp.sin(lambda_i))) ) 
+        self.length_) * sp.sin(lambda_i))) )
         return eta
