@@ -28,7 +28,7 @@ data250.HCin_raw = sp.array(data250.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data250.eta_exp = (data250.HCin_raw - data250.HCout_raw) / data250.HCin_raw
 data250.Vdot_array = sp.array([data250.Vdot])
-data250.p0 = sp.array([100.e7, 15.e3])
+data250.p0 = sp.array([900.e3, 14.e3])
 data250.set_params()
 data250.set_eta()
 
@@ -51,26 +51,6 @@ data500.HCin_raw = sp.array(data500.worksheet.col_values(8, start_rowx=4,
 data500.eta_exp = (data500.HCin_raw - data500.HCout_raw) / data500.HCin_raw
 data500.Vdot_array = sp.array([data500.Vdot])
 data500.set_eta()
-
-data100 = ft.One_Term_Catalyst()
-data100.T_a = data250.T_a
-data100.A_arr = data250.A_arr
-data100.Vdot = 100. * 1.e-6 / 60.
-data100.source = '100sccm 10nmPtPd VariedT rep3.xls'
-# Define the path to the .xls file(s) containing the conversion data.
-# import the worksheet as a sheet object
-data100.worksheet = xlrd.open_workbook(filename=data100.source).sheet_by_index(0)
-# Import conversion data from worksheet and store as scipy arrays
-data100.T_raw = sp.array(data100.worksheet.col_values(0, start_rowx=4, 
-                                                 end_rowx=None)) 
-data100.T_exp = data100.T_raw
-data100.HCout_raw = sp.array(data100.worksheet.col_values(4, start_rowx=4, 
-                                                     end_rowx=None))
-data100.HCin_raw = sp.array(data100.worksheet.col_values(8, start_rowx=4,
-                                                    end_rowx=None))
-data100.eta_exp = (data100.HCin_raw - data100.HCout_raw) / data100.HCin_raw
-data100.Vdot_array = sp.array([data100.Vdot])
-data100.set_eta()
 
 data750 = ft.One_Term_Catalyst()
 data750.T_a = data250.T_a
@@ -123,10 +103,6 @@ plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 8
 
 plt.figure()
-plt.plot(data100.T_exp, data100.eta_exp * 100., 'ok', linestyle='',
-         label='100sccm exp')
-plt.plot(data100.T_array, data100.eta.T * 100., '-k',
-         label='100sccm model')
 
 plt.plot(data250.T_exp, data250.eta_exp * 100., 'sr', linestyle='',
          label='250sccm exp')
