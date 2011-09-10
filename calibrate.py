@@ -15,8 +15,8 @@ plt.close('all')
 data250 = ft.One_Term_Catalyst()
 data250.Vdot = 250. * 1.e-6 / 60.
 data250.source = '250sccm 10nmPtPd VariedT rep2.xls'
-A_arr = 900.e3
-T_a = 14.e3
+A_arr = 10.e6
+T_a = 6.9e3
 data250.A_arr = A_arr
 data250.T_a = T_a
 # Define the path to the .xls file(s) containing the conversion data.
@@ -33,7 +33,7 @@ data250.HCin_raw = sp.array(data250.worksheet.col_values(8, start_rowx=4,
 data250.eta_exp = (data250.HCin_raw - data250.HCout_raw) / data250.HCin_raw
 data250.Vdot_array = sp.array([data250.Vdot])
 data250.p0 = sp.array([A_arr, T_a])
-# data250.set_params()
+data250.set_params()
 data250.set_eta()
 
 data500 = ft.One_Term_Catalyst()
