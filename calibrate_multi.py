@@ -15,8 +15,10 @@ plt.close('all')
 data250 = multi_term.Catalyst()
 data250.Vdot = 250. * 1.e-6 / 60.
 data250.source = '250sccm 10nmPtPd VariedT rep2.xls'
-data250.A_arr = 15.e6
-data250.T_a = 7.5e3
+A_arr = 10.e6
+T_a = 7.2e3
+data250.A_arr = A_arr
+data250.T_a = T_a
 # Define the path to the .xls file(s) containing the conversion data.
 # import the worksheet as a sheet object
 data250.worksheet = xlrd.open_workbook(filename=data250.source).sheet_by_index(0)
@@ -30,8 +32,8 @@ data250.HCin_raw = sp.array(data250.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data250.eta_exp = (data250.HCin_raw - data250.HCout_raw) / data250.HCin_raw
 data250.Vdot_array = sp.array([data250.Vdot])
-data250.p0 = sp.array([15.4e6, 7.5e3])
-data250.set_params()
+data250.p0 = sp.array([A_arr, T_a])
+# data250.set_params()
 data250.set_eta()
 
 data500 = multi_term.Catalyst()
