@@ -25,7 +25,7 @@ class ExpData():
     def get_eta_dim(self, T, A_arr, T_a):
         """Returns species conversion efficiency, eta, as a function
         of required argument T. Used by set_params."""
-        self.Pe_ij = self.get_Pe(T,self.Vdot) 
+        self.Pe_ij = self.get_Pe(self.Vdot,T) 
         Da = self.get_Da(T, A_arr, T_a)
         eta = self.get_eta(Da)
         return eta
