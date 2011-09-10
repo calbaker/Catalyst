@@ -33,7 +33,7 @@ data250.HCin_raw = sp.array(data250.worksheet.col_values(8, start_rowx=4,
 data250.eta_exp = (data250.HCin_raw - data250.HCout_raw) / data250.HCin_raw
 data250.Vdot_array = sp.array([data250.Vdot])
 data250.p0 = sp.array([A_arr, T_a])
-# data250.set_params()
+data250.set_params()
 data250.set_eta()
 
 data500 = multi_term.Catalyst()

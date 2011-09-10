@@ -52,9 +52,9 @@ class Catalyst(expdata.ExpData):
         # temperature of flow (C)
         self.T_ambient = 300.
         # ambient temperature (K) at which flow rate is measured
-        self.A_arr = 42.2e9
+        self.A_arr = 9.8e6
         # Arrhenius coefficient (1/s ???)
-        self.T_a = 12.2e3 # activation temperature (K)
+        self.T_a = 7.2e3 # activation temperature (K)
         self.porosity = 0.9
         self.fuel = prop.ideal_gas(species='C3H8')
 
@@ -117,7 +117,7 @@ class Catalyst(expdata.ExpData):
         of required arguments Da and Pe"""
         lambda_i = self.get_lambda(Da)
         A_i = self.get_A(lambda_i)
-        eta = ( (sp.sum(A_i / lambda_i * sp.sin(lambda_i)) - sp.sum(A_i
+        eta = ( (sp.sum(A_i / lambda_i * sp.sin(lambda_i),0) - sp.sum(A_i
         / lambda_i * sp.exp(-lambda_i**2 / (4. * self.Pe_ij) *
-        self.length_) * sp.sin(lambda_i))) )
+        self.length_) * sp.sin(lambda_i),0)) )
         return eta
