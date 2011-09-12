@@ -14,7 +14,6 @@ class One_Term_Catalyst(expdata.ExpData):
     def __init__(self):
         """Sets values of constants"""
         expdata.ExpData.__init__(self)
-        self.epsilon = 1. # Used for perturbation
         self.CtoK = 273.15 # conversion from Celsius to Kelvin
         self.P = 100. # Pressure of flow (kPa)
         self.Da = 1. # Damkoehler number
