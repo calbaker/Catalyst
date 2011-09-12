@@ -24,6 +24,7 @@ def get_diffusivity(self, T, P):
     self.fuel.P = P
     self.fuel.set_TempPres_dependents()
     D_C3H8_air = ( 2./3. * sp.sqrt(self.air.k_B * T /
+
     sp.pi * 0.5 * (1. / self.air.m + 1. / self.fuel.m)) / (sp.pi *
     (0.5 * (self.air.d + self.fuel.d))**2.) / self.air.n )
     # Bindary diffusion coefficient from Bird, Stewart, Lightfoot
@@ -58,10 +59,6 @@ def get_Da(self, T, A_arr, T_a):
     k_arr = ( A_arr * sp.exp(-T_a / T) )
     D_C3H8_air = self.get_diffusivity(T, self.P)
     D_C3H8_air_eff = ( D_C3H8_air * self.porosity ) 
-    mfp = ( (sp.sqrt(2.) * sp.pi * self.air.d**2. *
-    self.air.n)**-1. )  
-    # Crude approximation of mean free path (m) of propane in air from
-    # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
     thiele = ( k_arr * self.thickness**2 / D_C3H8_air_eff )   
     Da = ( D_C3H8_air_eff / D_C3H8_air * self.height /
     self.thickness * sp.sqrt(thiele) * sp.tanh(sp.sqrt(thiele))
