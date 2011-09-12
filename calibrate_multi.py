@@ -97,7 +97,7 @@ data1000.Vdot_array = sp.array([data1000.Vdot])
 data1000.set_eta()
 
 # Plot configuration
-FONTSIZE = 15
+FONTSIZE = 18
 plt.rcParams['axes.labelsize'] = FONTSIZE
 plt.rcParams['axes.titlesize'] = FONTSIZE
 plt.rcParams['legend.fontsize'] = FONTSIZE 
