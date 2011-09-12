@@ -4,16 +4,15 @@ import scipy.interpolate as interp
 
 import properties as prop
 import functions as func
-import experimental_data as expdata
-reload(expdata)
+from experimental_data import ExpData
 
-class One_Term_Catalyst(expdata.ExpData):
+class One_Term_Catalyst(ExpData):
     """Class for representing catalyst reactor modeled by 1 term
     expansion""" 
 
     def __init__(self):
         """Sets values of constants"""
-        expdata.ExpData.__init__(self)
+        ExpData.__init__(self)
         self.CtoK = 273.15 # conversion from Celsius to Kelvin
         self.P = 100. # Pressure of flow (kPa)
         self.Da = 1. # Damkoehler number
