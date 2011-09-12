@@ -9,8 +9,7 @@ class ExpData():
 
     def __init__(self):
         """Sets constants and initializes parent class."""
-        self.T_ambient = 300. # ambient tempearture (K)
-        self.CtoK = 273.15 # conversion from Celsisus to Kelvin
+        self.T_ambient = 300. # ambient temperature (K)
         self.p0 = sp.array([5.e16, 27.e3])
 
     def set_params(self):
