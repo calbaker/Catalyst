@@ -13,7 +13,7 @@ x_array = np.linspace(0., 100., 100)
 y_array = np.linspace(-1., 1., 100)
 
 Pe = 50.
-Da = 0.5
+Da = 1.
 
 cat4 = multi_term.Catalyst()
 cat4.x_array = x_array
@@ -55,9 +55,10 @@ plt.ylim(-1, 1)
 plt.subplots_adjust(bottom=0.15)
 plt.subplots_adjust(left=0.2)
 plt.subplots_adjust(right=0.7)
-plt.savefig('Plots/4 term species.pdf')
-plt.savefig('Plots/4 term species.png')
-
+plt.savefig('Plots/4species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
+            + '.pdf') 
+plt.savefig('Plots/4species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
+            + '.png')  
 
 fig_species = plt.figure()
 # TICKS = sp.arange(0,1.5,0.1)
