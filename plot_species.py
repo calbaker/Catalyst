@@ -1,27 +1,32 @@
 import numpy as np
 import scipy as sp
 import matplotlib.pyplot as plt
+import os
+os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
 
-import first_term as ft
-reload(ft)
-import multi_term as mt
-reload(mt)
+import first_term
+reload(first_term)
+import multi_term 
+reload(multi_term)
 
 x_array = np.linspace(0., 100., 100)
 y_array = np.linspace(-1., 1., 100)
 
-Pe = 500.
-Da = 1.
+Pe = 50.
+Da = 0.5
 
-cat4 = mt.Catalyst()
+cat4 = multi_term.Catalyst()
 cat4.x_array = x_array
 cat4.y_array = y_array
+cat4.Pe = Pe
+cat4.Da = Da
 cat4.set_Yxy(Pe,Da)
 
-cat1 = ft.One_Term_Catalyst()
+cat1 = first_term.One_Term_Catalyst()
 cat1.x_array = x_array
 cat1.y_array = y_array
-cat1.Pe = 500.
+cat1.Pe = Pe
+cat1.Da = Da
 cat1.set_Yxy(Pe,Da)
 
 

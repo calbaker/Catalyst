@@ -21,11 +21,12 @@ cat1.set_eta()
 cat1.Pe = 500.
 cat1.Da = 1.
 cat1.set_Yxy(cat1.Pe,cat1.Da)
+
 Da_range = sp.linspace(0, 5., 100)
 lambda_fit = cat1.get_lambda(Da_range)
 
 # Plot configuration
-FONTSIZE = 15
+FONTSIZE = 30
 plt.rcParams['axes.labelsize'] = FONTSIZE
 plt.rcParams['axes.titlesize'] = FONTSIZE
 plt.rcParams['legend.fontsize'] = FONTSIZE - 5
@@ -75,6 +76,9 @@ LEVELS = sp.arange(0, 1.05, 0.05)
 FCS = plt.contourf(cat1.Pe_2d, cat1.Da_2d, cat1.eta.T) 
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
 plt.grid()
+plt.subplots_adjust(left=0.15)
+plt.subplots_adjust(bottom=0.15)
+plt.subplots_adjust(right=0.75)
 plt.xlabel('Pe')
 plt.ylabel('Da')
 # plt.title('Species Conversion Efficiency')

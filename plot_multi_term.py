@@ -25,7 +25,7 @@ Da_range = sp.linspace(0, 5., 100)
 lambda_i = cat4.get_lambda(Da_range)
 
 # Plot configuration
-FONTSIZE = 15
+FONTSIZE = 30
 plt.rcParams['axes.labelsize'] = FONTSIZE
 plt.rcParams['axes.titlesize'] = FONTSIZE
 plt.rcParams['legend.fontsize'] = FONTSIZE - 5
@@ -35,18 +35,22 @@ plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 10
 
 fig_eigen = plt.figure()
-plt.plot(Da_range, lambda_i[3,:], label='4th')
-plt.plot(Da_range, lambda_i[2,:], label='3rd')
-plt.plot(Da_range, lambda_i[1,:], label='2nd')
-plt.plot(Da_range, lambda_i[0,:], label='1st')
+plt.plot(Da_range, lambda_i[3,:], label='4th fit', color='r')
+plt.plot(Da_range, lambda_i[2,:], label='3rd fit', color='g')
+plt.plot(Da_range, lambda_i[1,:], label='2nd fit', color='b')
+plt.plot(Da_range, lambda_i[0,:], label='1st fit', color='k')
+plt.plot(cat4.lambda_and_Da[:,0], cat4.lambda_and_Da[:,1], 'xk',
+         label='1st')
+
 plt.xlabel('Da')
 plt.ylabel(r'$\lambda_1$')
+plt.ylim(0,18)
 plt.xlim(0,5)
 plt.subplots_adjust(bottom=0.15)
 plt.subplots_adjust(left=0.17)
 #plt.title('Four Eigenvalue Spline Fit')
 plt.grid()
-plt.legend(loc='best')
+plt.legend(loc='best',ncol=2)
 plt.savefig('Plots/4eigen_fit.pdf')
 plt.savefig('Plots/4eigen_fit.png')
 
@@ -78,6 +82,9 @@ LEVELS = sp.arange(0, .75, 0.05)
 FCS = plt.contourf(cat4.Pe_2d, cat4.Da_2d, cat4.eta.T,LEVELS) 
 CB = plt.colorbar(FCS, orientation='vertical', format='%.1f',ticks=TICKS)
 plt.grid()
+plt.subplots_adjust(left=0.18)
+plt.subplots_adjust(bottom=0.15)
+plt.subplots_adjust(right=0.75)
 plt.xlabel('Pe')
 plt.ylabel('Da')
 # plt.title('Species Conversion Efficiency')
