@@ -25,7 +25,7 @@ Da_range = sp.linspace(0, 5., 100)
 lambda_i = cat4.get_lambda(Da_range)
 
 # Plot configuration
-FONTSIZE = 30
+FONTSIZE = 18
 plt.rcParams['axes.labelsize'] = FONTSIZE
 plt.rcParams['axes.titlesize'] = FONTSIZE
 plt.rcParams['legend.fontsize'] = FONTSIZE - 5
@@ -99,9 +99,9 @@ CB = plt.colorbar(FCS, orientation='vertical', format='%.1f',ticks=TICKS)
 plt.grid()
 plt.xlabel('Vdot')
 plt.ylabel('T')
-plt.subplots_adjust(left=0.18)
-plt.subplots_adjust(bottom=0.15)
-plt.subplots_adjust(right=0.75)
+# plt.subplots_adjust(left=0.18)
+# plt.subplots_adjust(bottom=0.15)
+# plt.subplots_adjust(right=0.75)
 # plt.title('Species Conversion Efficiency')
 plt.savefig('Plots/4eta_dim.pdf')
 plt.savefig('Plots/4eta_dim.png')
