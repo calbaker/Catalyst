@@ -55,7 +55,7 @@ class Catalyst(expdata.ExpData):
         self.A_arr = 9.8e6
         # Arrhenius coefficient (1/s ???)
         self.T_a = 7.2e3 # activation temperature (K)
-        self.porosity = 0.9
+        self.porosity = 0.97
         self.fuel = prop.ideal_gas(species='C3H8')
 
     air = prop.ideal_gas()
