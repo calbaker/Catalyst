@@ -43,7 +43,7 @@ plt.plot(cat4.lambda_and_Da[:,0], cat4.lambda_and_Da[:,1], 'xk',
          label='1st')
 
 plt.xlabel('Da')
-plt.ylabel(r'$\lambda_1$')
+plt.ylabel(r'$\lambda_n$')
 plt.ylim(0,18)
 plt.xlim(0,5)
 plt.subplots_adjust(bottom=0.15)

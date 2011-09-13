@@ -31,7 +31,7 @@ def plot_solution(Da):
     plt.ylim(-20, 20)
     plt.grid()
     plt.xlabel(r'$\lambda$')
-    plt.ylabel(r'$1 - \frac{\lambda}{Da} \lambda$') 
+    plt.ylabel(r'$1 - \frac{\lambda_n}{Da} \tan \lambda_n$') 
     # plt.title('Eigenvalues\nDa='+str(Da))
     # plt.legend(loc='best')
 
