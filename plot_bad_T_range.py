@@ -12,30 +12,33 @@ reload(multi_term)
 
 plt.close('all')
 
-data250 = multi_term.Catalyst()
-data250.Vdot = 250. * 1.e-6 / 60.
-data250.source = '250sccm 10nmPtPd VariedT rep2.xls'
 A_arr = 10.e6
 T_a = 7.2e3
-data250.A_arr = A_arr
-data250.T_a = T_a
+
+data = multi_term.Catalyst()
+data.Vdot = 500. * 1.e-6 / 60.
+# data.source = 'alumina_holder_only.xls' # this data needs to be
+# cleared with Hall and Ezekoye
+data.source = '500sccm 10nmPtPd VariedT rep2.xls'
 # Define the path to the .xls file(s) containing the conversion data.
 # import the worksheet as a sheet object
-data250.worksheet = xlrd.open_workbook(filename=data250.source).sheet_by_index(0)
+data.worksheet = xlrd.open_workbook(filename=data.source).sheet_by_index(0)
 # Import conversion data from worksheet and store as scipy arrays
-data250.T_raw = sp.array(data250.worksheet.col_values(0, start_rowx=4, 
+data.T_raw = sp.array(data.worksheet.col_values(0, start_rowx=4, 
                                                  end_rowx=None)) 
-data250.T_exp = data250.T_raw
-data250.HCout_raw = sp.array(data250.worksheet.col_values(4, start_rowx=4, 
+data.T_exp = data.T_raw
+data.HCout_raw = sp.array(data.worksheet.col_values(4, start_rowx=4, 
                                                      end_rowx=None))
-data250.HCin_raw = sp.array(data250.worksheet.col_values(8, start_rowx=4,
+data.HCin_raw = sp.array(data.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
-data250.eta_exp = (data250.HCin_raw - data250.HCout_raw) / data250.HCin_raw
-data250.Vdot_array = sp.array([data250.Vdot])
-data250.p0 = sp.array([A_arr, T_a])
-data250.set_eta()
+data.eta_exp = (data.HCin_raw - data.HCout_raw) / data.HCin_raw
+data.Vdot_array = sp.array([data.Vdot])
+data.set_eta()
 
 data_empty = multi_term.Catalyst()
+# data_empty.source = 'alumina_holder_only.xls' # this data needs to be
+# cleared with Hall and Ezekoye
+# data_empty.source = 'empty_quartz_tube.xls'
 data_empty.source = '1000sccm empty tube.xls'
 data_empty.A_arr = A_arr
 data_empty.T_a = T_a
@@ -65,17 +68,18 @@ plt.rcParams['lines.markersize'] = 8
 
 plt.figure()
 
-plt.plot(data250.T_exp, data250.eta_exp * 100., 'sr', linestyle='',
-         label='250sccm exp')
-plt.plot(data250.T_array, data250.eta.T * 100., '-r',
-         label='250sccm model')
+plt.plot(data.T_exp, data.eta_exp * 100., 'sr', linestyle='',
+         label='500sccm exp')
+plt.plot(data.T_array, data.eta.T * 100., '-r',
+         label='500sccm model')
 
 plt.plot(data_empty.T_exp, data_empty.eta_exp * 100., 'sm', linestyle='',
          label='1000sccm empty tube')
 
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')
-#plt.ylim(ymax=30)
+plt.ylim(ymax=40)
+plt.xlim(xmax=600)
 # plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
 plt.grid()
