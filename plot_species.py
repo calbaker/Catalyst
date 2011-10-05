@@ -40,12 +40,13 @@ plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 10
 
-x_2d, y_2d = np.meshgrid(x_array, y_array)
 TICKS = sp.arange(0,1.2,0.2)
-LEVELS = sp.arange(0, 1.3, 0.05)
+LEVELS = sp.arange(0, 1.1, 0.1)
+
+x_2d, y_2d = np.meshgrid(x_array, y_array)
 fig_eta = plt.figure()
-FCS = plt.contourf(x_2d, y_2d, cat4.Yxy.T)
-CB = plt.colorbar(FCS, orientation='vertical')
+FCS = plt.contourf(x_2d, y_2d, cat4.Yxy.T, levels=LEVELS)
+CB = plt.colorbar(FCS, orientation='vertical', ticks=TICKS)
 plt.grid()
 plt.xlabel(r'$\tilde{x}$')
 plt.ylabel(r'$\tilde{y}$')
@@ -63,8 +64,8 @@ plt.savefig('Plots/4species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
 fig_species = plt.figure()
 # TICKS = sp.arange(0,1.5,0.1)
 LEVELS = sp.arange(0, 1.2, 0.1)
-FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T) 
-CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
+FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T, levels=LEVELS) 
+CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKS)
 plt.grid()
 plt.xlabel(r'$\tilde{x}$')
 plt.ylabel(r'$\tilde{y}$')
