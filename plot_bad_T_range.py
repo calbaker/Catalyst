@@ -73,7 +73,7 @@ plt.plot(data.T_array, data.eta.T * 100., '-r',
          label='750sccm model')
 
 plt.plot(data_empty.T_exp, data_empty.eta_exp * 100., 'sm', linestyle='',
-         label='1000sccm empty tube')
+         label='1000sccm control')
 
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')
