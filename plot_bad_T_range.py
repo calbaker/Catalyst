@@ -16,10 +16,10 @@ A_arr = 10.e6
 T_a = 7.2e3
 
 data = multi_term.Catalyst()
-data.Vdot = 500. * 1.e-6 / 60.
+data.Vdot = 750. * 1.e-6 / 60.
 # data.source = 'alumina_holder_only.xls' # this data needs to be
 # cleared with Hall and Ezekoye
-data.source = '500sccm 10nmPtPd VariedT rep2.xls'
+data.source = '750sccm 10nmPtPd VariedT rep2.xls'
 # Define the path to the .xls file(s) containing the conversion data.
 # import the worksheet as a sheet object
 data.worksheet = xlrd.open_workbook(filename=data.source).sheet_by_index(0)
@@ -38,8 +38,7 @@ data.set_eta()
 data_empty = multi_term.Catalyst()
 # data_empty.source = 'alumina_holder_only.xls' # this data needs to be
 # cleared with Hall and Ezekoye
-# data_empty.source = 'empty_quartz_tube.xls'
-data_empty.source = '1000sccm empty tube.xls'
+data_empty.source = '1000sccm empty tube rep2.xls'
 data_empty.A_arr = A_arr
 data_empty.T_a = T_a
 # Define the path to the .xls file(s) containing the conversion data.
@@ -69,9 +68,9 @@ plt.rcParams['lines.markersize'] = 8
 plt.figure()
 
 plt.plot(data.T_exp, data.eta_exp * 100., 'sr', linestyle='',
-         label='500sccm exp')
+         label='750sccm exp')
 plt.plot(data.T_array, data.eta.T * 100., '-r',
-         label='500sccm model')
+         label='750sccm model')
 
 plt.plot(data_empty.T_exp, data_empty.eta_exp * 100., 'sm', linestyle='',
          label='1000sccm empty tube')
@@ -79,7 +78,7 @@ plt.plot(data_empty.T_exp, data_empty.eta_exp * 100., 'sm', linestyle='',
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')
 plt.ylim(ymax=40)
-plt.xlim(xmax=600)
+plt.xlim(xmax=700)
 # plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
 plt.grid()
