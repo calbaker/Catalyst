@@ -4,7 +4,7 @@ fitting capability."""
 import scipy as sp
 from scipy.optimize import curve_fit
 
-class ExpData():
+class ExpData(object):
     """Class for keeping track of experimental data"""
 
     def __init__(self):
