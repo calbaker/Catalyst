@@ -14,7 +14,7 @@ plt.close('all')
 
 data250 = multi_term.Catalyst()
 data250.Vdot = 250. * 1.e-6 / 60.
-data250.source = '250sccm 10nmPtPd VariedT rep2.xls'
+data250.source = '../Conversion Data/250sccm 10nmPtPd VariedT rep2.xls'
 A_arr = 10.e6
 T_a = 7.2e3
 data250.A_arr = A_arr
@@ -40,7 +40,7 @@ data500 = multi_term.Catalyst()
 data500.T_a = data250.T_a
 data500.A_arr = data250.A_arr
 data500.Vdot = 500. * 1.e-6 / 60.
-data500.source = '500sccm 10nmPtPd VariedT rep2.xls'
+data500.source = '../Conversion Data/500sccm 10nmPtPd VariedT rep2.xls'
 # Define the path to the .xls file(s) containing the conversion data.
 # import the worksheet as a sheet object
 data500.worksheet = xlrd.open_workbook(filename=data500.source).sheet_by_index(0)
@@ -60,7 +60,7 @@ data750 = multi_term.Catalyst()
 data750.T_a = data250.T_a
 data750.A_arr = data250.A_arr
 data750.Vdot = 750. * 1.e-6 / 60.
-data750.source = '750sccm 10nmPtPd VariedT rep2.xls'
+data750.source = '../Conversion Data/750sccm 10nmPtPd VariedT rep2.xls'
 # Define the path to the .xls file(s) containing the conversion data.
 # import the worksheet as a sheet object
 data750.worksheet = xlrd.open_workbook(filename=data750.source).sheet_by_index(0)
@@ -80,7 +80,7 @@ data1000 = multi_term.Catalyst()
 data1000.T_a = data250.T_a
 data1000.A_arr = data250.A_arr
 data1000.Vdot = 1000. * 1.e-6 / 60.
-data1000.source = '1000sccm 10nmPtPd VariedT rep2.xls'
+data1000.source = '../Conversion Data/1000sccm 10nmPtPd VariedT rep2.xls'
 # Define the path to the .xls file(s) containing the conversion data.
 # import the worksheet as a sheet object
 data1000.worksheet = xlrd.open_workbook(filename=data1000.source).sheet_by_index(0)
