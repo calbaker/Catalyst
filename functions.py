@@ -62,9 +62,7 @@ def get_Da(self, T, A_arr, T_a):
     thiele = ( k_arr * self.thickness**2 / D_C3H8_air_eff )   
     Da = ( D_C3H8_air_eff / D_C3H8_air * self.height /
     self.thickness * sp.sqrt(thiele) * sp.tanh(sp.sqrt(thiele))
-    ) # THIS FORMULA IS NOT CORRECT FOR MULTI TERM!!!!!
-        # ****************************** ###########################
-        # ?????????????????? 
+    ) 
     return Da
 
 def set_Da(self):
