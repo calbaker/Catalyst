@@ -11,7 +11,6 @@ class Catalyst(object):
 
     def __init__(self):
         """Sets values of constants"""
-        expdata.ExpData.__init__(self)
         self.CtoK = 273.15 # conversion from Celsius to Kelvin
         self.P = 100. # Pressure of flow (kPa)
 
