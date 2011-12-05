@@ -16,5 +16,5 @@ cat.A_arr = 1.005e7
 
 cat.eta_t = np.zeros(50)
 
-for i in range(cat.eta_t.shape[0]):
+# for i in range(cat.eta_t.shape[0]):
     
