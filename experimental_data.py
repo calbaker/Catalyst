@@ -1,8 +1,11 @@
 """Module for class definition for experimental data with model curve
 fitting capability."""
 
-import scipy as sp
+import numpy as np
 from scipy.optimize import curve_fit
+
+import multi_term
+import first_term
 
 class ExpData(object):
     """Class for keeping track of experimental data"""
@@ -10,7 +13,7 @@ class ExpData(object):
     def __init__(self):
         """Sets constants and initializes parent class."""
         self.T_ambient = 300. # ambient temperature (K)
-        self.p0 = sp.array([5.e16, 27.e3])
+        self.p0 = np.array([5.e16, 27.e3])
 
     def set_params(self):
         """Uses scipy optimize curve_fit to determine Arrhenius
@@ -31,6 +34,14 @@ class ExpData(object):
 
     def get_S_r(self):
         """Returns sum of residuals squared for all data points."""
-        S_r = sp.sum((self.eta_model - self.eta_exp)**2.)
+        S_r = np.sum((self.eta_model - self.eta_exp)**2.)
         return S_r
         
+class ExpDataMulti(ExpData,multi_term.Catalyst):
+    """Class for handling experimental calibration of the multiterm
+    catalyst model."""
+
+    def __init__(self):
+        """This should initialize both parent classes."""
+        self.__class__.__mro__[1].__init__(self)
+        self.__class__.__mro__[2].__init__(self)        
