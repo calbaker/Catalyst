@@ -7,12 +7,12 @@ import xlrd
 import os
 os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
 
-import multi_term
-reload(multi_term)
+import experimental_data as expdata
+reload(expdata)
 
 plt.close('all')
 
-data250 = multi_term.Catalyst()
+data250 = expdata.ExpDataMulti()
 data250.Vdot = 250. * 1.e-6 / 60.
 data250.source = '../Conversion Data/250sccm 10nmPtPd VariedT rep2.xls'
 A_arr = 10.e6
@@ -36,7 +36,7 @@ data250.p0 = sp.array([A_arr, T_a])
 data250.set_params()
 data250.set_eta()
 
-data500 = multi_term.Catalyst()
+data500 = expdata.ExpDataMulti()
 data500.T_a = data250.T_a
 data500.A_arr = data250.A_arr
 data500.Vdot = 500. * 1.e-6 / 60.
@@ -56,7 +56,7 @@ data500.eta_exp = (data500.HCin_raw - data500.HCout_raw) / data500.HCin_raw
 data500.Vdot_array = sp.array([data500.Vdot])
 data500.set_eta()
 
-data750 = multi_term.Catalyst()
+data750 = expdata.ExpDataMulti()
 data750.T_a = data250.T_a
 data750.A_arr = data250.A_arr
 data750.Vdot = 750. * 1.e-6 / 60.
@@ -76,7 +76,7 @@ data750.eta_exp = (data750.HCin_raw - data750.HCout_raw) / data750.HCin_raw
 data750.Vdot_array = sp.array([data750.Vdot])
 data750.set_eta()
 
-data1000 = multi_term.Catalyst()
+data1000 = expdata.ExpDataMulti()
 data1000.T_a = data250.T_a
 data1000.A_arr = data250.A_arr
 data1000.Vdot = 1000. * 1.e-6 / 60.
