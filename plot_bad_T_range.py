@@ -24,15 +24,15 @@ data.source = '750sccm 10nmPtPd VariedT rep2.xls'
 # import the worksheet as a sheet object
 data.worksheet = xlrd.open_workbook(filename=data.source).sheet_by_index(0)
 # Import conversion data from worksheet and store as scipy arrays
-data.T_raw = sp.array(data.worksheet.col_values(0, start_rowx=4, 
+data.T_raw = np.array(data.worksheet.col_values(0, start_rowx=4, 
                                                  end_rowx=None)) 
 data.T_exp = data.T_raw
-data.HCout_raw = sp.array(data.worksheet.col_values(4, start_rowx=4, 
+data.HCout_raw = np.array(data.worksheet.col_values(4, start_rowx=4, 
                                                      end_rowx=None))
-data.HCin_raw = sp.array(data.worksheet.col_values(8, start_rowx=4,
+data.HCin_raw = np.array(data.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data.eta_exp = (data.HCin_raw - data.HCout_raw) / data.HCin_raw
-data.Vdot_array = sp.array([data.Vdot])
+data.Vdot_array = np.array([data.Vdot])
 data.set_eta()
 
 data_empty = multi_term.Catalyst()
@@ -45,12 +45,12 @@ data_empty.T_a = T_a
 # import the worksheet as a sheet object
 data_empty.worksheet = xlrd.open_workbook(filename=data_empty.source).sheet_by_index(0)
 # Import conversion data from worksheet and store as scipy arrays
-data_empty.T_raw = sp.array(data_empty.worksheet.col_values(0, start_rowx=4, 
+data_empty.T_raw = np.array(data_empty.worksheet.col_values(0, start_rowx=4, 
                                                  end_rowx=None)) 
 data_empty.T_exp = data_empty.T_raw
-data_empty.HCout_raw = sp.array(data_empty.worksheet.col_values(4, start_rowx=4, 
+data_empty.HCout_raw = np.array(data_empty.worksheet.col_values(4, start_rowx=4, 
                                                      end_rowx=None))
-data_empty.HCin_raw = sp.array(data_empty.worksheet.col_values(8, start_rowx=4,
+data_empty.HCin_raw = np.array(data_empty.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data_empty.eta_exp = (data_empty.HCin_raw - data_empty.HCout_raw) / data_empty.HCin_raw
 

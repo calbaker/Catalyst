@@ -15,14 +15,14 @@ cat1.x_array = np.linspace(0., 100., 100)
 cat1.y_array = np.linspace(-1., 1., 100)
 cat1.A_arr = 5576796142069.6602
 cat1.T_a = 15325.877039480061
-cat1.T_array = sp.linspace(300., 425., 50)
-cat1.Vdot_array = sp.linspace(100., 1000., 50) * 1.e-6 / 60. 
+cat1.T_array = np.linspace(300., 425., 50)
+cat1.Vdot_array = np.linspace(100., 1000., 50) * 1.e-6 / 60. 
 cat1.set_eta()
 cat1.Pe = 500.
 cat1.Da = 1.
 cat1.set_Yxy(cat1.Pe,cat1.Da)
 
-Da_range = sp.linspace(0, 5., 100)
+Da_range = np.linspace(0, 5., 100)
 lambda_fit = cat1.get_lambda(Da_range)
 
 # Plot configuration
@@ -50,8 +50,8 @@ plt.savefig('Plots/4eigen_fit.png')
 
 fig_species = plt.figure()
 x_2d, y_2d = np.meshgrid(cat1.x_array, cat1.y_array)
-# TICKS = sp.arange(0,1.5,0.1)
-LEVELS = sp.arange(0, 1.2, 0.1)
+# TICKS = np.arange(0,1.5,0.1)
+LEVELS = np.arange(0, 1.2, 0.1)
 FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T) 
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
 plt.grid()
@@ -71,8 +71,8 @@ plt.savefig('Plots/species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
 fig_eta = plt.figure()
 cat1.Pe_2d = cat1.Pe_array.T
 dummy, cat1.Da_2d = np.meshgrid(cat1.Pe_array[:,0], cat1.Da_array)
-TICKS = sp.arange(0,1.5,0.1)
-LEVELS = sp.arange(0, 1.05, 0.05)
+TICKS = np.arange(0,1.5,0.1)
+LEVELS = np.arange(0, 1.05, 0.05)
 FCS = plt.contourf(cat1.Pe_2d, cat1.Da_2d, cat1.eta.T) 
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
 plt.grid()
@@ -87,8 +87,8 @@ plt.savefig('Plots/eta.png')
 
 fig_eta_dim = plt.figure()
 cat1.Vdot_2d, cat1.T_2d = np.meshgrid(cat1.Vdot_array, cat1.T_array)
-TICKS = sp.arange(0,1.5,0.1)
-LEVELS = sp.arange(0, 1.05, 0.05)
+TICKS = np.arange(0,1.5,0.1)
+LEVELS = np.arange(0, 1.05, 0.05)
 FCS = plt.contourf(cat1.Vdot_2d * 60. * 1.e6, cat1.T_2d, cat1.eta.T) 
 CB = plt.colorbar(FCS, orientation='vertical')#, format='%.2f')
 plt.grid()

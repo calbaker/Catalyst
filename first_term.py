@@ -18,7 +18,7 @@ class One_Term_Catalyst(ExpData):
         self.Da = 1. # Damkoehler number
         self.Pe = 500. # Peclet number
 
-        self.lambda_and_Da = sp.array(
+        self.lambda_and_Da = np.array(
             [[0.001,0.0316], [0.002,0.0447], [0.003,0.0547], 
             [0.01,0.100], [0.02,0.141], [0.03,0.172], 
              [0.1,0.31], [0.2,0.43], [0.3,0.52], [0.4,0.59],
@@ -29,9 +29,9 @@ class One_Term_Catalyst(ExpData):
              [5000., 1.57]])    
         
         # Graphically determined eigenvalues corresponding to Da
-        self.Da_array = sp.arange(1., 20., 0.5)
+        self.Da_array = np.arange(1., 20., 0.5)
         # Range of Da for plotting conversion efficiency
-        self.Pe_array = sp.arange(1., 100., 2.)
+        self.Pe_array = np.arange(1., 100., 2.)
         # Range of Pe for plotting conversion efficiency
         self.length_ = 100.
         # dimensionless channel length
@@ -43,9 +43,9 @@ class One_Term_Catalyst(ExpData):
         # Thickness of wash coat or height of porous media (m).  This
         # was h_{pore} in the pdf.
         self.width = 20e-3 # channel width (m)
-        self.Vdot_array = sp.linspace(100., 1000., 50) * 1.e-6 / 60. 
+        self.Vdot_array = np.linspace(100., 1000., 50) * 1.e-6 / 60. 
         # volume flow rate (m^3/s)
-        self.T_array = sp.linspace(250., 450., 50) 
+        self.T_array = np.linspace(250., 450., 50) 
         # temperature of flow (C)
         self.T_ambient = 300.
         # ambient temperature (K) at which flow rate is measured
@@ -78,8 +78,8 @@ class One_Term_Catalyst(ExpData):
         """Sets float non-dimensional Y at any particular non-d (x,y)
         point""" 
         lambda1 = self.get_lambda(Da)
-        Y = ( lambda1 / lambda1 * sp.exp(-lambda1**2. / (4. * Pe) *
-        x_) * sp.cos(lambda1 * y_) )     
+        Y = ( lambda1 / lambda1 * np.exp(-lambda1**2. / (4. * Pe) *
+        x_) * np.cos(lambda1 * y_) )     
         return Y
 
     def set_Yxy(self,Pe,Da):
@@ -88,8 +88,8 @@ class One_Term_Catalyst(ExpData):
         self.Yxy = np.zeros([np.size(self.x_array),
         np.size(self.y_array)])
 
-        for i in sp.arange(sp.size(self.x_array)):
-            for j in sp.arange(sp.size(self.y_array)):
+        for i in np.arange(np.size(self.x_array)):
+            for j in np.arange(np.size(self.y_array)):
                 self.Yxy[i,j] = ( self.get_Y(self.x_array[i],
             self.y_array[j], Pe, Da) )
     
@@ -97,6 +97,6 @@ class One_Term_Catalyst(ExpData):
         """Returns species conversion efficiency, eta, as a function
         of required argument Da."""
         Lambda = self.get_lambda(Da)
-        eta = ( 1. - sp.exp(-Lambda**2. / (4. * self.Pe_ij) *
+        eta = ( 1. - np.exp(-Lambda**2. / (4. * self.Pe_ij) *
         self.length_) )  
         return eta

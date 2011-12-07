@@ -26,7 +26,7 @@ def plot_solution(Da):
     fig1.subplots_adjust(bottom=0.15)
     fig1.subplots_adjust(left=0.25)
     plt.plot(lambda_guess, solution, label='Da =' + str(Da))
-    # plt.plot(lambda_guess, sp.absolute(solution), label='absolute')
+    # plt.plot(lambda_guess, np.absolute(solution), label='absolute')
     # plt.xlim(0, 2)
     plt.ylim(-20, 20)
     plt.grid()

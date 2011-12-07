@@ -23,16 +23,16 @@ data250.T_a = T_a
 # import the worksheet as a sheet object
 data250.worksheet = xlrd.open_workbook(filename=data250.source).sheet_by_index(0)
 # Import conversion data from worksheet and store as scipy arrays
-data250.T_raw = sp.array(data250.worksheet.col_values(0, start_rowx=4, 
+data250.T_raw = np.array(data250.worksheet.col_values(0, start_rowx=4, 
                                                  end_rowx=None)) 
 data250.T_exp = data250.T_raw
-data250.HCout_raw = sp.array(data250.worksheet.col_values(4, start_rowx=4, 
+data250.HCout_raw = np.array(data250.worksheet.col_values(4, start_rowx=4, 
                                                      end_rowx=None))
-data250.HCin_raw = sp.array(data250.worksheet.col_values(8, start_rowx=4,
+data250.HCin_raw = np.array(data250.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data250.eta_exp = (data250.HCin_raw - data250.HCout_raw) / data250.HCin_raw
-data250.Vdot_array = sp.array([data250.Vdot])
-data250.p0 = sp.array([A_arr, T_a])
+data250.Vdot_array = np.array([data250.Vdot])
+data250.p0 = np.array([A_arr, T_a])
 data250.set_params()
 data250.set_eta()
 
@@ -45,15 +45,15 @@ data500.source = '../Conversion Data/500sccm 10nmPtPd VariedT rep2.xls'
 # import the worksheet as a sheet object
 data500.worksheet = xlrd.open_workbook(filename=data500.source).sheet_by_index(0)
 # Import conversion data from worksheet and store as scipy arrays
-data500.T_raw = sp.array(data500.worksheet.col_values(0, start_rowx=4, 
+data500.T_raw = np.array(data500.worksheet.col_values(0, start_rowx=4, 
                                                  end_rowx=None)) 
 data500.T_exp = data500.T_raw
-data500.HCout_raw = sp.array(data500.worksheet.col_values(4, start_rowx=4, 
+data500.HCout_raw = np.array(data500.worksheet.col_values(4, start_rowx=4, 
                                                      end_rowx=None))
-data500.HCin_raw = sp.array(data500.worksheet.col_values(8, start_rowx=4,
+data500.HCin_raw = np.array(data500.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data500.eta_exp = (data500.HCin_raw - data500.HCout_raw) / data500.HCin_raw
-data500.Vdot_array = sp.array([data500.Vdot])
+data500.Vdot_array = np.array([data500.Vdot])
 data500.set_eta()
 
 data750 = expdata.ExpDataMulti()
@@ -65,15 +65,15 @@ data750.source = '../Conversion Data/750sccm 10nmPtPd VariedT rep2.xls'
 # import the worksheet as a sheet object
 data750.worksheet = xlrd.open_workbook(filename=data750.source).sheet_by_index(0)
 # Import conversion data from worksheet and store as scipy arrays
-data750.T_raw = sp.array(data750.worksheet.col_values(0, start_rowx=4, 
+data750.T_raw = np.array(data750.worksheet.col_values(0, start_rowx=4, 
                                                  end_rowx=None)) 
 data750.T_exp = data750.T_raw
-data750.HCout_raw = sp.array(data750.worksheet.col_values(4, start_rowx=4, 
+data750.HCout_raw = np.array(data750.worksheet.col_values(4, start_rowx=4, 
                                                      end_rowx=None))
-data750.HCin_raw = sp.array(data750.worksheet.col_values(8, start_rowx=4,
+data750.HCin_raw = np.array(data750.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data750.eta_exp = (data750.HCin_raw - data750.HCout_raw) / data750.HCin_raw
-data750.Vdot_array = sp.array([data750.Vdot])
+data750.Vdot_array = np.array([data750.Vdot])
 data750.set_eta()
 
 data1000 = expdata.ExpDataMulti()
@@ -85,15 +85,15 @@ data1000.source = '../Conversion Data/1000sccm 10nmPtPd VariedT rep2.xls'
 # import the worksheet as a sheet object
 data1000.worksheet = xlrd.open_workbook(filename=data1000.source).sheet_by_index(0)
 # Import conversion data from worksheet and store as scipy arrays
-data1000.T_raw = sp.array(data1000.worksheet.col_values(0, start_rowx=4, 
+data1000.T_raw = np.array(data1000.worksheet.col_values(0, start_rowx=4, 
                                                  end_rowx=None)) 
 data1000.T_exp = data1000.T_raw
-data1000.HCout_raw = sp.array(data1000.worksheet.col_values(4, start_rowx=4, 
+data1000.HCout_raw = np.array(data1000.worksheet.col_values(4, start_rowx=4, 
                                                      end_rowx=None))
-data1000.HCin_raw = sp.array(data1000.worksheet.col_values(8, start_rowx=4,
+data1000.HCin_raw = np.array(data1000.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data1000.eta_exp = (data1000.HCin_raw - data1000.HCout_raw) / data1000.HCin_raw
-data1000.Vdot_array = sp.array([data1000.Vdot])
+data1000.Vdot_array = np.array([data1000.Vdot])
 data1000.set_eta()
 
 # Plot configuration

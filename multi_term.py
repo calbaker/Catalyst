@@ -1,5 +1,4 @@
 import numpy as np
-import scipy as sp
 import scipy.interpolate as interp
 
 import properties as prop
@@ -14,7 +13,7 @@ class Catalyst(object):
         self.CtoK = 273.15 # conversion from Celsius to Kelvin
         self.P = 100. # Pressure of flow (kPa)
 
-        self.lambda_and_Da = sp.array(
+        self.lambda_and_Da = np.array(
             [[0.001,0.0316,3.142,6.28,9.42],
              [0.002,0.0447,3.141,6.28,9.42],
              [0.003,0.0547,3.141,6.28,9.42], 
@@ -43,9 +42,9 @@ class Catalyst(object):
         # Thickness of wash coat or height of porous media (m).  This
         # was h_{pore} in the pdf.
         self.width = 20e-3 # channel width (m)
-        self.Vdot_array = sp.linspace(100., 1000., 50) * 1.e-6 / 60. 
+        self.Vdot_array = np.linspace(100., 1000., 50) * 1.e-6 / 60. 
         # volume flow rate (m^3/s)
-        self.T_array = sp.linspace(250., 450., 50) 
+        self.T_array = np.linspace(250., 450., 50) 
         # temperature of flow (C)
         self.T_ambient = 300.
         # ambient temperature (K) at which flow rate is measured
@@ -54,9 +53,9 @@ class Catalyst(object):
         self.T_a = 7.206e3 # activation temperature (K)
         self.porosity = 0.97
         self.fuel = prop.ideal_gas(species='C3H8')
-
-    air = prop.ideal_gas()
-    set_eta = func.set_eta
+        self.air = prop.ideal_gas()
+        
+        set_eta = func.set_eta
     get_diffusivity = func.get_diffusivity
     get_Pe = func.get_Pe
     set_Pe = func.set_Pe
@@ -81,18 +80,18 @@ class Catalyst(object):
         lambda2 = interp.splev(Da, spline2)
         lambda3 = interp.splev(Da, spline3)
         lambda4 = interp.splev(Da, spline4)
-        lambda_i = sp.array([lambda1,lambda2,lambda3,lambda4]) 
+        lambda_i = np.array([lambda1,lambda2,lambda3,lambda4]) 
         return lambda_i
 
     def get_A(self,lambda_i):
-        A = ( 2. * sp.sin(lambda_i) / (lambda_i + sp.sin(lambda_i) *
-        sp.sin(lambda_i)) ) 
+        A = ( 2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
+        np.sin(lambda_i)) ) 
         return A
 
     def get_Y(self, x_, y_, Pe, lambda_i,A_i):
         """Sets float non-dimensional Y at any particular non-d (x,y)
         point""" 
-        Y = ( sp.sum(A_i * np.exp(-4. * lambda_i**2. / Pe * x_) *
+        Y = ( np.sum(A_i * np.exp(-4. * lambda_i**2. / Pe * x_) *
         np.cos(lambda_i * y_)) )   
         return Y
 
@@ -104,8 +103,8 @@ class Catalyst(object):
         self.Yxy = np.zeros([np.size(self.x_array),
         np.size(self.y_array)])
 
-        for i in sp.arange(sp.size(self.x_array)):
-            for j in sp.arange(sp.size(self.y_array)):
+        for i in np.arange(np.size(self.x_array)):
+            for j in np.arange(np.size(self.y_array)):
                 self.Yxy[i,j] = ( self.get_Y(self.x_array[i],
             self.y_array[j], Pe, lambda_i, A_i) )
     
@@ -114,7 +113,7 @@ class Catalyst(object):
         of required arguments Da and Pe"""
         lambda_i = self.get_lambda(Da)
         A_i = self.get_A(lambda_i)
-        eta = ( (sp.sum(A_i / lambda_i * sp.sin(lambda_i),0) - sp.sum(A_i
-        / lambda_i * sp.exp(-lambda_i**2 / (4. * self.Pe_ij) *
-        self.length_) * sp.sin(lambda_i),0)) )
+        eta = ( (np.sum(A_i / lambda_i * np.sin(lambda_i),0) - np.sum(A_i
+        / lambda_i * np.exp(-lambda_i**2 / (4. * self.Pe_ij) *
+        self.length_) * np.sin(lambda_i),0)) )
         return eta

@@ -11,7 +11,7 @@ mpl.close('all')
 
 cat2 = One_Term_Catalyst()
 
-cat2.T_array = sp.arange(200., 800., 20.)
+cat2.T_array = np.arange(200., 800., 20.)
 cat2.set_Da()
 cat2.set_Pe()
 cat2.set_eta_dimensional()
@@ -30,8 +30,8 @@ mpl.rcParams['lines.linewidth'] = 1.5
 mpl.rcParams['lines.markersize'] = 10
 
 fig_eta_real = mpl.figure()
-TICKS = sp.arange(0,1.1,0.1)
-LEVELS = sp.arange(0.0, 1.05, 0.05)
+TICKS = np.arange(0,1.1,0.1)
+LEVELS = np.arange(0.0, 1.05, 0.05)
 FCS = mpl.contourf(Vdot2d, T2d, cat2.eta_ij.T, LEVELS)
 CB = mpl.colorbar(FCS, orientation='horizontal')
 mpl.grid()

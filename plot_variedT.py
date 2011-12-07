@@ -14,8 +14,8 @@ real_cat = ft.One_Term_Catalyst()
 real_cat.A_arr = 50.e10
 real_cat.T_a = 16.e3
 
-real_cat.T_array = sp.arange(200., 650., 10.)
-real_cat.Vdot = sp.array([100., 300.]) * 1.e-6 / 60. 
+real_cat.T_array = np.arange(200., 650., 10.)
+real_cat.Vdot = np.array([100., 300.]) * 1.e-6 / 60. 
 
 real_cat.set_Da()
 real_cat.set_Pe()
@@ -24,36 +24,36 @@ real_cat.set_eta_dim()
 data1 = expdata.Data()
 data1.source = '300sccm 20nmPtPd VariedT.xls'
 data1.Vdot_setpoint = 300.
-data1.T = sp.array([350., 400., 450., 500., 550., 600.])
-data1.HCin = sp.array([3830., 3880., 3860., 3800., 3840., 3850.])
-data1.HCout = sp.array([3780., 3730., 3660., 3560., 3380., 1714.]) 
+data1.T = np.array([350., 400., 450., 500., 550., 600.])
+data1.HCin = np.array([3830., 3880., 3860., 3800., 3840., 3850.])
+data1.HCout = np.array([3780., 3730., 3660., 3560., 3380., 1714.]) 
 data1.set_eta_T()
 
 data2 = expdata.Data()
 data2.source = '100sccm 20nmPtPd VariedT.xls'
 data2.Vdot_setpoint = 100.
-data2.T = sp.array([450., 475., 500., 500., 550., 600.]) 
-data2.HCin = sp.array([5620., 6450., 6450., 5620., 4470., 3800.]) 
-data2.HCout = sp.array([4290., 2660., 1757., 3120., 334., 115.])   
+data2.T = np.array([450., 475., 500., 500., 550., 600.]) 
+data2.HCin = np.array([5620., 6450., 6450., 5620., 4470., 3800.]) 
+data2.HCout = np.array([4290., 2660., 1757., 3120., 334., 115.])   
 data2.set_eta_T()
 
 data3 = expdata.Data()
 data3.source = '100sccm 20nmPtPd VariedT rep1.xls'
 data3.Vdot_setpoint = 100.
-data3.T = sp.array([450., 475., 500., 525., 550., 575., 600., 600.])
-data3.HCin = sp.array([4310., 4270., 4240., 4250., 4120., 4080.,
+data3.T = np.array([450., 475., 500., 525., 550., 575., 600., 600.])
+data3.HCin = np.array([4310., 4270., 4240., 4250., 4120., 4080.,
                        3170., 4330.])
-data3.HCout = sp.array([3410., 2960., 2390., 1629., 1233., 620., 350.,
+data3.HCout = np.array([3410., 2960., 2390., 1629., 1233., 620., 350.,
                         492.])
 data3.set_eta_T()
 
 data4 = expdata.Data()
 data4.source = '100sccm 20nmPtPd VariedT rep2.xls'
 data4.Vdot_setpoint = 100.
-data4.T = sp.array([425., 450., 475., 500., 525., 550., 575., 600., 600.])
-data4.HCin = sp.array([3920., 3860., 3850., 3820., 3830., 3640.,
+data4.T = np.array([425., 450., 475., 500., 525., 550., 575., 600., 600.])
+data4.HCin = np.array([3920., 3860., 3850., 3820., 3830., 3640.,
                        3760., 2890., 3920.])
-data4.HCout = sp.array([3470., 3280., 2950., 2480., 2160., 1489.,
+data4.HCout = np.array([3470., 3280., 2950., 2480., 2160., 1489.,
                         841., 390., 636.])
 data4.set_eta_T()
 
@@ -70,7 +70,7 @@ mpl.rcParams['lines.linewidth'] = 1.5
 mpl.rcParams['lines.markersize'] = 10
 
 mpl.figure()
-for i in sp.arange(sp.size(real_cat.eta_dim,0)):
+for i in np.arange(np.size(real_cat.eta_dim,0)):
     mpl.plot(real_cat.T_array, real_cat.eta_dim[i,:]*1e2,
              label=str(real_cat.Vdot[i] * 60 * 1e6) + ' sccm')  
 
