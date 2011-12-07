@@ -12,7 +12,7 @@ def set_eta(self):
     for i in np.arange(np.size(self.Pe_array,0)):
         for j in np.arange(np.size(self.Da_array)):
             self.Pe_ij = self.Pe_array[i,j]
-            self.eta[i,j] = self.get_eta(self.Da_array[j])  
+            self.eta[i,j] = self.get_eta(self.Pe_ij, self.Da_array[j])   
 
 def get_diffusivity(self, T, P):
     """Sets thermal diffusivity based on BSL Transport Phenomena

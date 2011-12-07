@@ -1,9 +1,10 @@
 import numpy as np
-
+import types
 import scipy.interpolate as interp
 
 import properties as prop
 import functions as func
+reload(func)
 from experimental_data import ExpData
 
 class One_Term_Catalyst(ExpData):
@@ -94,10 +95,9 @@ class One_Term_Catalyst(ExpData):
                 self.Yxy[i,j] = ( self.get_Y(self.x_array[i],
             self.y_array[j], Pe, Da) )
     
-    def get_eta(self, Da):
+    def get_eta(self, Pe, Da):
         """Returns species conversion efficiency, eta, as a function
         of required argument Da."""
         Lambda = self.get_lambda(Da)
-        eta = ( 1. - np.exp(-Lambda**2. / (4. * self.Pe_ij) *
-        self.length_) )  
+        eta = ( 1. - np.exp(-Lambda**2. / (4. * Pe) * self.length_) )   
         return eta

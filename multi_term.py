@@ -4,6 +4,7 @@ import types
 
 import properties as prop
 import functions as func
+reload(func)
 
 class Catalyst(object):
     """Class for representing catalyst reactor modeled by multi term
@@ -110,12 +111,12 @@ class Catalyst(object):
                 self.Yxy[i,j] = ( self.get_Y(self.x_array[i],
             self.y_array[j], Pe, lambda_i, A_i) )
     
-    def get_eta(self, Da):
+    def get_eta(self, Pe, Da):
         """Returns species conversion efficiency, eta, as a function
         of required arguments Da and Pe"""
         lambda_i = self.get_lambda(Da)
         A_i = self.get_A(lambda_i)
         eta = ( (np.sum(A_i / lambda_i * np.sin(lambda_i),0) - np.sum(A_i
-        / lambda_i * np.exp(-lambda_i**2 / (4. * self.Pe_ij) *
-        self.length_) * np.sin(lambda_i),0)) )
+        / lambda_i * np.exp(-lambda_i**2 / (4. * Pe) * self.length_) *
+        np.sin(lambda_i),0)) ) 
         return eta
