@@ -29,7 +29,7 @@ class ExpData(object):
         of required argument T. Used by set_params."""
         self.Pe_ij = self.get_Pe(self.Vdot,T) 
         Da = self.get_Da(T, A_arr, T_a)
-        eta = self.get_eta(Da)
+        eta = self.get_eta(self.Pe_ij, Da)
         return eta
 
     def get_S_r(self):
