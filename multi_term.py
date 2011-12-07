@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.interpolate as interp
+import types
 
 import properties as prop
 import functions as func
@@ -55,12 +56,13 @@ class Catalyst(object):
         self.fuel = prop.ideal_gas(species='C3H8')
         self.air = prop.ideal_gas()
         
-        set_eta = func.set_eta
-    get_diffusivity = func.get_diffusivity
-    get_Pe = func.get_Pe
-    set_Pe = func.set_Pe
-    get_Da = func.get_Da
-    set_Da = func.set_Da
+        self.set_eta = types.MethodType(func.set_eta, self)
+        self.get_diffusivity = types.MethodType(func.get_diffusivity,
+        self) 
+        self.get_Pe = types.MethodType(func.get_Pe, self)
+        self.set_Pe = types.MethodType(func.set_Pe, self)
+        self.get_Da = types.MethodType(func.get_Da, self)
+        self.set_Da = types.MethodType(func.set_Da, self)
     
     def get_lambda(self, Da):
         """Uses fit algorithm to represent lambda as a function of Da
