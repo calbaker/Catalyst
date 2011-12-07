@@ -1,5 +1,5 @@
 import matplotlib.pyplot as plt
-import scipy as sp
+import numpy as np
 
 data1.A_arr = 5.e16
 data1.T_a = 26900.

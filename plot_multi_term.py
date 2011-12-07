@@ -1,6 +1,6 @@
 """Module for plotting results of first term model."""
 
-import scipy as sp
+
 import numpy as np
 import matplotlib.pyplot as plt
 import os

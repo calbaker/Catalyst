@@ -1,7 +1,7 @@
 """Module for plotting results of first term model with experimental
 data and fitting capability."""
 
-import scipy as sp
+import numpy as np
 import matplotlib.pyplot as plt
 import xlrd
 import os
