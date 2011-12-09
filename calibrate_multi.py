@@ -130,7 +130,7 @@ plt.plot(data1000.T_array, data1000.eta.T * 100., '-m',
 
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')
-#plt.ylim(ymax=30)
+plt.ylim(ymax=37)
 # plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
 plt.grid()
