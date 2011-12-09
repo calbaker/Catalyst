@@ -5,7 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import xlrd
 import os
-os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
 
 import multi_term
 reload(multi_term)

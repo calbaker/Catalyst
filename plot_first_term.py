@@ -4,7 +4,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
 
 import first_term 
 reload(first_term)

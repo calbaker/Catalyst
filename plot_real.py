@@ -4,7 +4,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import xlrd
 import os
-os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
 
 from first_term import *
 import experimental_data as expdata

@@ -3,7 +3,6 @@
 import numpy as np
 import matplotlib.pyplot as mpl
 import os
-os.chdir('/home/chad/Documents/UT Stuff/Research/Catalyst/Model')
 
 import first_term as ft
 import experimental_data as expdata
