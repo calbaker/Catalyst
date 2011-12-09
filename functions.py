@@ -60,7 +60,7 @@ def get_Da(self, T, A_arr, T_a):
     D_C3H8_air = self.get_diffusivity(T, self.P)
     D_C3H8_air_eff = ( D_C3H8_air * self.porosity ) 
     thiele = ( k_arr * self.thickness**2 / D_C3H8_air_eff )   
-    Da = ( D_C3H8_air_eff / D_C3H8_air * self.height /
+    Da = ( 0.5 * D_C3H8_air_eff / D_C3H8_air * self.height /
     self.thickness * np.sqrt(thiele) * np.tanh(np.sqrt(thiele))
     ) 
     return Da
