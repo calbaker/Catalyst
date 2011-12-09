@@ -5,9 +5,8 @@ import scipy.interpolate as interp
 import properties as prop
 import functions as func
 reload(func)
-from experimental_data import ExpData
 
-class One_Term_Catalyst(ExpData):
+class One_Term_Catalyst(object):
     """Class for representing catalyst reactor modeled by 1 term
     expansion""" 
 
