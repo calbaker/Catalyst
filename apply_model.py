@@ -19,12 +19,13 @@ cat.T = 450.
 
 cat.thickness0 = 5.e-6
 
-A_arr_nondim = np.linspace(0.5, 2, 50)
+A_arr_nondim = np.linspace(0.5, 4, 50)
 cat.A_arr_array = A_arr_nondim * cat.A_arr0
-cat.thickness_array = np.linspace(1,150,50) * 1.e-6
+cat.thickness_array = np.linspace(1, 1500, 50) * 1.e-6
 cat.eta2d = np.zeros([cat.thickness_array.size, cat.A_arr_array.size])
 
-Pt_normal = np.zeros([cat.thickness_array.size, cat.A_arr_array.size])
+
+cat.total_Pt0 = cat.A_arr0 * cat.thickness0
 
 for i in range(cat.eta2d.shape[0]):
     cat.thickness = cat.thickness_array[i]
@@ -33,7 +34,11 @@ for i in range(cat.eta2d.shape[0]):
         cat.Pe = cat.get_Pe(cat.Vdot, cat.T)
         cat.Da = cat.get_Da(cat.T, cat.A_arr, cat.T_a)
         cat.eta2d[i,j] = cat.get_eta(cat.Pe, cat.Da)
-        total_Pt[i,j] = cat.A_arr / cat.A_arr0 * cat.thick
+
+cat.Pt_normal = ( cat.A_arr / cat.A_arr0 * cat.thickness /
+                  cat.thickness0 )
+cat.eta_normal = cat.eta2d / cat.Pt_normal
+cat.eta_normal = cat.eta_normal / cat.eta_normal.max()
 
 # Plot configuration
 FONTSIZE = 18
@@ -48,10 +53,24 @@ plt.rcParams['lines.markersize'] = 10
 X,Y = np.meshgrid(cat.thickness_array * 1e6, A_arr_nondim) 
 
 LEVELS = np.linspace(0,0.56,15)
+
 plt.figure()
 FCS = plt.contourf(X, Y, cat.eta2d, levels=LEVELS) 
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
 CB.set_label("Conversion Efficiency")
+plt.xlabel(r'Washcoat Thickness ($\mu$m)')
+plt.ylabel('Normalized Pt/Pd Loading')
+
+min = np.log10(cat.eta_normal.min())
+max = np.log10(cat.eta_normal.max())
+LEVELS = (cat.eta_normal.max() - np.logspace(max,min,24) + 10.**min)
+
+#LEVELS = np.linspace(0.5, 1, 12) * cat.eta_normal.max()
+
+plt.figure()
+FCS = plt.contourf(X, Y, cat.eta_normal, levels=LEVELS) 
+CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
+CB.set_label("Normalized Conversion Efficiency")
 plt.xlabel(r'Washcoat Thickness ($\mu$m)')
 plt.ylabel('Normalized Pt/Pd Loading')
 
