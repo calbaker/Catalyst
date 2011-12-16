@@ -24,7 +24,6 @@ def get_diffusivity(self, T, P):
     self.fuel.P = P
     self.fuel.set_TempPres_dependents()
     D_C3H8_air = ( 2./3. * np.sqrt(self.air.k_B * T /
-
     np.pi * 0.5 * (1. / self.air.m + 1. / self.fuel.m)) / (np.pi *
     (0.5 * (self.air.d + self.fuel.d))**2.) / self.air.n )
     # Bindary diffusion coefficient from Bird, Stewart, Lightfoot
