@@ -12,8 +12,8 @@ reload(multi_term)
 plt.close('all')
 
 cat = multi_term.Catalyst()
-cat.A_arr0 = 10.62e6
-cat.T_a = 6.784e3  
+cat.A_arr0 = 11.29e6
+cat.T_a = 6.822e3  
 
 cat.Vdot = 500.e-6 / 60. 
 cat.T = 450.

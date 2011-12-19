@@ -12,8 +12,8 @@ cat4 = multi_term.Catalyst()
 
 cat4.x_array = np.linspace(0., 100., 100)
 cat4.y_array = np.linspace(-1., 1., 100)
-cat4.A_arr = 10.62e6
-cat4.T_a = 6.784e3
+cat4.A_arr = 11.29e6
+cat4.T_a = 6.822e3
 cat4.T_array = np.linspace(250., 450., 50)
 cat4.Vdot_array = np.linspace(100., 1000., 50) * 1.e-6 / 60. 
 cat4.set_eta()
