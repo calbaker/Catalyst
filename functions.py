@@ -63,8 +63,11 @@ def get_Da(self, T, A_arr, T_a):
     # Crude approximation of mean free path (m) of propane in air from
     # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
     Kn = mfp / self.Kn_length
+    print "\n\nKnudsen length =", self.Kn_length
+    print "mean free path =", mfp
+    print "Knudsen number =", Kn 
     D_C3H8_Kn = D_C3H8_air / Kn 
-    if Kn.any() <= 1.:
+    if Kn <= 1.:
         D_C3H8_air_eff = ( self.porosity / self.tortuosity *
     D_C3H8_air )   
     else:
