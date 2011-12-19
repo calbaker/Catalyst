@@ -54,7 +54,7 @@ class Catalyst(object):
         # Arrhenius coefficient (1/s ???)
         self.T_a = 7.206e3 # activation temperature (K)
         self.porosity = 0.97 
-        self.tortuosity = porosity**-1 
+        self.tortuosity = self.porosity**-1 
         self.Kn_length = 100e-9
         # Knudsen length (m) scale
         self.fuel = prop.ideal_gas(species='C3H8')
