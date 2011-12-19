@@ -57,7 +57,20 @@ def get_Da(self, T, A_arr, T_a):
     T = T + self.CtoK
     k_arr = ( A_arr * np.exp(-T_a / T) )
     D_C3H8_air = self.get_diffusivity(T, self.P)
-    D_C3H8_air_eff = ( D_C3H8_air * self.porosity ) 
+    # Bindary diffusion coefficient from Bird, Stewart, Lightfoot
+    # Transport Phenomena 2nd Ed. Equation 17.3-10
+    self.mfp = ( (np.sqrt(2.) * np.pi * self.air.d**2. *
+    self.air.n)**-1. ) 
+    # Crude approximation of mean free path (m) of propane in air from
+    # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
+    self.Kn = self.mfp / self.Kn_length
+    self.D_C3H8_Kn = self.D_C3H8_air / self.Kn 
+    if Kn <= 1.:
+        D_C3H8_air_eff = ( self.porosity / self.tortuosity *
+    D_C3H8_air )  
+    else:
+        D_C3H8_air_eff = ( 2. * self.porosity / self.tortuosity *
+    (D_C3H8_air * D_C3H8_Kn) / (D_C3H8_air + D_C3H8_Kn) )         
     thiele = ( k_arr * self.thickness**2 / D_C3H8_air_eff )   
     Da = ( 0.5 * D_C3H8_air_eff / D_C3H8_air * self.height /
     self.thickness * np.sqrt(thiele) * np.tanh(np.sqrt(thiele))
