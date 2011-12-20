@@ -63,16 +63,24 @@ def get_Da(self, T, A_arr, T_a):
     # Crude approximation of mean free path (m) of propane in air from
     # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
     Kn = mfp / self.Kn_length
-    print "\n\nKnudsen length =", self.Kn_length
-    print "mean free path =", mfp
-    print "Knudsen number =", Kn 
     D_C3H8_Kn = D_C3H8_air / Kn 
-    if Kn <= 1.:
-        D_C3H8_air_eff = ( self.porosity / self.tortuosity *
-    D_C3H8_air )   
+
+    if np.isscalar(Kn):
+        if Kn <= 1.:
+            D_C3H8_air_eff = ( self.porosity / self.tortuosity *
+    D_C3H8_air )    
+        else:
+            D_C3H8_air_eff = ( 2. * self.porosity / self.tortuosity *
+    (D_C3H8_air * D_C3H8_Kn) / (D_C3H8_air + D_C3H8_Kn) )          
+
     else:
-        D_C3H8_air_eff = ( 2. * self.porosity / self.tortuosity *
-    (D_C3H8_air * D_C3H8_Kn) / (D_C3H8_air + D_C3H8_Kn) )         
+        if Kn.any() <= 1.:
+            D_C3H8_air_eff = ( self.porosity / self.tortuosity *
+    D_C3H8_air )    
+        else:
+            D_C3H8_air_eff = ( 2. * self.porosity / self.tortuosity *
+    (D_C3H8_air * D_C3H8_Kn) / (D_C3H8_air + D_C3H8_Kn) )          
+
     thiele = ( k_arr * self.thickness**2 / D_C3H8_air_eff )   
     Da = ( 0.5 * D_C3H8_air_eff / D_C3H8_air * self.height /
     self.thickness * np.sqrt(thiele) * np.tanh(np.sqrt(thiele))
