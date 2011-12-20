@@ -43,10 +43,11 @@ for j in range(cat.Kn_length_array.size):
 
 
 # Plot configuration
-FONTSIZE = 18
+FONTSIZE = 30
+plt.rcParams['font.size'] = FONTSIZE - 6
 plt.rcParams['axes.labelsize'] = FONTSIZE
 plt.rcParams['axes.titlesize'] = FONTSIZE
-plt.rcParams['legend.fontsize'] = FONTSIZE - 5
+plt.rcParams['legend.fontsize'] = FONTSIZE - 6
 plt.rcParams['xtick.labelsize'] = FONTSIZE
 plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 2.
@@ -61,13 +62,13 @@ plt.figure()
 for i in range(cat.Kn_length_array.size):
     plt.plot(cat.thickness_array * 1.e6, cat.eta_Pt_density[:,i] *
              100., MARKERS[i], label=LABELS[i]) 
-plt.xlabel(r'Nanowire Height ($\mu$m)')
+plt.xlabel(r'Nanowire Length ($\mu$m)')
 plt.ylabel('Conversion Efficiency (%)')
 #ax1.yaxis.set_major_formatter(FORMATTER)
 plt.grid()
 plt.ylim(ymin=0)
-plt.legend(loc='lower right',title='Knudsen Length ($\mu$m)')
-plt.subplots_adjust(left=0.15)
+plt.legend(loc='lower right',title='Knudsen Length', ncol=2)
+plt.subplots_adjust(left=0.17,bottom=0.17)
 plt.savefig('Plots/applied/eta_Pt_density.pdf')
 plt.savefig('Plots/applied/eta_Pt_density.png')
 
@@ -80,8 +81,8 @@ plt.ylabel('Conversion Efficiency (%)')
 #ax1.yaxis.set_major_formatter(FORMATTER)
 plt.grid()
 plt.ylim(0,20)
-plt.legend(loc='lower left',title=r"Knudsen Length ($\mu$m)")
-plt.subplots_adjust(left=0.15)
+plt.legend(loc='lower left',title=r"Knudsen Length", ncol=2)
+plt.subplots_adjust(left=0.17,bottom=0.17)
 plt.savefig('Plots/applied/eta_Pt_total.pdf')
 plt.savefig('Plots/applied/eta_Pt_total.png')
 
