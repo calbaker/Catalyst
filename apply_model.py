@@ -76,7 +76,7 @@ plt.figure()
 for i in range(cat.Kn_length_array.size):
     plt.plot(cat.thickness_array * 1.e6, cat.eta_Pt_total[:,i] *
              100., MARKERS[i], label=LABELS[i]) 
-plt.xlabel(r'Nanowire Height ($\mu$m)')
+plt.xlabel(r'Nanowire Length ($\mu$m)')
 plt.ylabel('Conversion Efficiency (%)')
 #ax1.yaxis.set_major_formatter(FORMATTER)
 plt.grid()
