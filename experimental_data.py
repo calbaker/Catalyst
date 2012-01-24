@@ -5,7 +5,9 @@ import numpy as np
 from scipy.optimize import curve_fit
 
 import multi_term
+reload(multi_term)
 import first_term
+reload(first_term)
 
 class ExpData(object):
     """Class for keeping track of experimental data"""
