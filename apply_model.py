@@ -50,7 +50,7 @@ plt.rcParams['axes.titlesize'] = FONTSIZE
 plt.rcParams['legend.fontsize'] = FONTSIZE - 6
 plt.rcParams['xtick.labelsize'] = FONTSIZE
 plt.rcParams['ytick.labelsize'] = FONTSIZE
-plt.rcParams['lines.linewidth'] = 2.
+plt.rcParams['lines.linewidth'] = 4. 
 plt.rcParams['lines.markersize'] = 10
 
 
