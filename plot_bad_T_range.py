@@ -6,7 +6,9 @@ import matplotlib.pyplot as plt
 import xlrd
 import os
 
-import multi_term
+import experimental_data as expdata
+reload(expdata)
+import multi_term 
 reload(multi_term)
 
 plt.close('all')
@@ -32,6 +34,8 @@ data.HCin_raw = np.array(data.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 data.eta_exp = (data.HCin_raw - data.HCout_raw) / data.HCin_raw
 data.Vdot_array = np.array([data.Vdot])
+data.A_arr = A_arr
+data.T_a = T_a 
 data.set_eta()
 
 data_empty = multi_term.Catalyst()
