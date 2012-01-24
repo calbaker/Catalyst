@@ -11,7 +11,7 @@ reload(expdata)
 
 plt.close('all')
 
-data0 = expdata.Data()
+data0 = expdata.ExpData()
 data0.Vdot = 1000. * 1.e-6 / 60.
 data0.source = 'alumina_holder_only.xls'
 # Define the path to the .xls file(s) containing the conversion data.
@@ -31,7 +31,7 @@ data0.T_array = np.arange(305., 655., 5.)
 data0.Vdot_array = np.array([data0.Vdot])
 data0.eta_mean = (data0.HCin - data0.HCout) / data0.HCin
 
-data1 = expdata.Data()
+data1 = expdata.ExpData()
 # data1.T_a = data3.T_a
 # data1.A_arr = data3.A_arr
 data1.Vdot = 250. * 1.e-6 / 60.
@@ -62,7 +62,7 @@ data1.p0 = np.array([4.95e9, 10.666e3])
 data1.set_params()
 data1.set_eta_dim()
 
-data2 = expdata.Data()
+data2 = expdata.ExpData()
 data2.T_a = data1.T_a
 data2.A_arr = data1.A_arr
 data2.Vdot = 750. * 1.e-6 / 60.
@@ -89,7 +89,7 @@ data2.Vdot_array = np.array([data2.Vdot])
 data2.set_eta()
 data2.set_eta_dim()
 
-data3 = expdata.Data()
+data3 = expdata.ExpData()
 data3.T_a = data1.T_a
 data3.A_arr = data1.A_arr
 data3.Vdot = 1000. * 1.e-6 / 60.
