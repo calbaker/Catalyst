@@ -3,5 +3,6 @@ determines conversion efficiency as a function of flow rate and
 temperature.  
 
 It requires a modules from another project called Properties.  The
-properties.py modules is used to evaluate the properties of ideal
+properties.py module is used to evaluate the properties of ideal
 gases.
+
