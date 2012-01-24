@@ -1,3 +1,6 @@
+"""Generates two contour plots for species concentration in two
+dimensions, one for first term and one for multi term."""
+
 import numpy as np
 
 import matplotlib.pyplot as plt
