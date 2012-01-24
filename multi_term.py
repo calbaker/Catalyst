@@ -66,6 +66,8 @@ class Catalyst(object):
         self) 
         self.get_Pe = types.MethodType(func.get_Pe, self)
         self.set_Pe = types.MethodType(func.set_Pe, self)
+        self.get_Kn = types.MethodType(func.get_Kn, self)
+        self.get_mfp = types.MethodType(func.get_mfp, self)
         self.get_Da = types.MethodType(func.get_Da, self)
         self.set_Da = types.MethodType(func.set_Da, self)
     

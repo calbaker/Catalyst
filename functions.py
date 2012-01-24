@@ -50,38 +50,62 @@ def set_Pe(self):
             self.Pe_array[i,j] = (
         self.get_Pe(self.Vdot_array[i],self.T_array[j]) )
 
+def get_mfp(self, n):
+    """Returns crude approximation of mean free path (m) of propane in air from
+    Bird, Stewart, Lightfoot Eq. 17.3-3. 
+    Parameters
+    ___________
+    n : number density of air (# / m^3)
+    
+    Returns
+    ___________
+    mfp : mean free path (m) of air molecule"""
+
+    self.mfp = ( (np.sqrt(2.) * np.pi * self.air.d**2. * n)**-1. )   
+    return self.mfp
+
+def get_Kn(self, n):
+    """Returns Knudsen number for air. self.Kn_length must be set
+    first.  
+    
+    Returns
+    ___________
+    Kn : Knudsen number"""
+    mfp = self.get_mfp(n)
+    self.Kn = mfp / self.Kn_length
+    return self.Kn
+
 def get_Da(self, T, A_arr, T_a):
     """Returns Damkoehler for a particular temperature (K),
     porosity, catalyst loading and a whole slew of other things."""
     T = T + self.CtoK
     k_arr = ( A_arr * np.exp(-T_a / T) )
-    D_C3H8_air = self.get_diffusivity(T, self.P)
+    self.D_C3H8_air = self.get_diffusivity(T, self.P)
     # Bindary diffusion coefficient from Bird, Stewart, Lightfoot
     # Transport Phenomena 2nd Ed. Equation 17.3-10
-    mfp = ( (np.sqrt(2.) * np.pi * self.air.d**2. * self.air.n)**-1. )  
-    # Crude approximation of mean free path (m) of propane in air from
-    # Bird, Stewart, Lightfoot Eq. 17.3-3. Needs improvement.
-    Kn = mfp / self.Kn_length
-    D_C3H8_Kn = D_C3H8_air / Kn 
 
-    if np.isscalar(Kn):
-        if Kn <= 1.:
-            D_C3H8_air_eff = ( self.porosity / self.tortuosity *
-    D_C3H8_air )    
+    self.Kn = self.get_Kn(self.air.n)
+
+    self.D_C3H8_Kn = self.D_C3H8_air / self.Kn 
+
+    if np.isscalar(self.Kn):
+        if self.Kn <= 1.:
+            self.D_C3H8_air_eff = ( self.porosity / self.tortuosity *
+    self.D_C3H8_air )    
         else:
-            D_C3H8_air_eff = ( 2. * self.porosity / self.tortuosity *
-    (D_C3H8_air * D_C3H8_Kn) / (D_C3H8_air + D_C3H8_Kn) )          
+            self.D_C3H8_air_eff = ( 2. * self.porosity / self.tortuosity *
+    (self.D_C3H8_air * self.D_C3H8_Kn) / (self.D_C3H8_air + self.D_C3H8_Kn) )          
 
     else:
-        if Kn.any() <= 1.:
-            D_C3H8_air_eff = ( self.porosity / self.tortuosity *
-    D_C3H8_air )    
+        if self.Kn.any() <= 1.:
+            self.D_C3H8_air_eff = ( self.porosity / self.tortuosity *
+    self.D_C3H8_air )    
         else:
-            D_C3H8_air_eff = ( 2. * self.porosity / self.tortuosity *
-    (D_C3H8_air * D_C3H8_Kn) / (D_C3H8_air + D_C3H8_Kn) )          
+            self.D_C3H8_air_eff = ( 2. * self.porosity / self.tortuosity *
+    (self.D_C3H8_air * self.D_C3H8_Kn) / (self.D_C3H8_air + self.D_C3H8_Kn) )          
 
-    thiele = ( k_arr * self.thickness**2 / D_C3H8_air_eff )   
-    Da = ( 0.5 * D_C3H8_air_eff / D_C3H8_air * self.height /
+    thiele = ( k_arr * self.thickness**2 / self.D_C3H8_air_eff )   
+    Da = ( 0.5 * self.D_C3H8_air_eff / self.D_C3H8_air * self.height /
     self.thickness * np.sqrt(thiele) * np.tanh(np.sqrt(thiele))
     ) 
     return Da

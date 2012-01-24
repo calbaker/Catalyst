@@ -11,8 +11,8 @@ reload(multi_term)
 
 plt.close('all')
 
-A_arr = 10.e6
-T_a = 7.2e3
+A_arr = 1.129e7
+T_a = 6822.
 
 data = multi_term.Catalyst()
 data.Vdot = 750. * 1.e-6 / 60.
