@@ -16,19 +16,17 @@ def set_eta(self):
             self.eta[i,j] = self.get_eta(self.Pe_ij, self.Da_array[j])   
 
 def get_diffusivity(self, T, P):
-    """Sets thermal diffusivity based on BSL Transport Phenomena
-    Eq. 17.3-10"""
+    """Returns binary diffusion coefficient from Bird, Stewart,
+    Lightfoot Transport Phenomena 2nd Ed. Equation 17.3-10"""
     self.air.T = T
     self.air.P = P
     self.air.set_TempPres_dependents()
     self.fuel.T = T
     self.fuel.P = P
     self.fuel.set_TempPres_dependents()
-    D_C3H8_air = ( 2./3. * np.sqrt(const.k_B * T /
-    np.pi * 0.5 * (1. / self.air.m + 1. / self.fuel.m)) / (np.pi *
-    (0.5 * (self.air.d + self.fuel.d))**2.) / self.air.n )
-    # Bindary diffusion coefficient from Bird, Stewart, Lightfoot
-    # Transport Phenomena 2nd Ed. Equation 17.3-10
+    D_C3H8_air = ( 2./3. * np.sqrt(const.k_B * T / np.pi * 0.5 * (1. /
+    self.air.m + 1. / self.fuel.m)) / (np.pi * (0.5 * (self.air.d +
+    self.fuel.d))**2.) / self.air.n ) 
     return D_C3H8_air 
 
 def get_Pe(self, Vdot, T):
