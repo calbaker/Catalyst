@@ -75,7 +75,7 @@ plt.plot(data.T_exp, data.eta_exp * 100., 'sr', linestyle='',
 plt.plot(data.T_array, data.eta.T * 100., '-r',
          label='750sccm model')
 
-plt.plot(data_empty.T_exp, data_empty.eta_exp * 100., 'sm', linestyle='',
+plt.plot(data_empty.T_exp, data_empty.eta_exp * 100., 'om', linestyle='',
          label='1000sccm control')
 
 plt.xlabel(r'Temperature ($^\circ$C)')

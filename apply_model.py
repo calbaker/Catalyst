@@ -55,7 +55,7 @@ plt.rcParams['lines.markersize'] = 10
 
 
 FORMATTER = tic.FormatStrFormatter('%1.1f')
-MARKERS = ['-k', '--b', '-.r', ':m', '-g']
+MARKERS = ['-k', '-.b', '--r', ':m', '-.g']
 LABELS = list(['1 nm', '5 nm', '10 nm', '50 nm', '100 nm'])
 
 plt.figure()

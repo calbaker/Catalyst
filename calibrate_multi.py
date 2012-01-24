@@ -113,17 +113,17 @@ plt.plot(data250.T_exp, data250.eta_exp * 100., 'sr', linestyle='',
 plt.plot(data250.T_array, data250.eta.T * 100., '-r',
          label='250sccm model')
 
-plt.plot(data500.T_exp, data500.eta_exp * 100., 'sg', linestyle='',
+plt.plot(data500.T_exp, data500.eta_exp * 100., 'og', linestyle='',
          label='500sccm exp')
 plt.plot(data500.T_array, data500.eta.T * 100., '-g',
          label='500sccm model')
 
-plt.plot(data750.T_exp, data750.eta_exp * 100., 'sb', linestyle='',
+plt.plot(data750.T_exp, data750.eta_exp * 100., 'v', linestyle='',
          label='750sccm exp')
 plt.plot(data750.T_array, data750.eta.T * 100., '-b',
          label='750sccm model')
 
-plt.plot(data1000.T_exp, data1000.eta_exp * 100., 'sm', linestyle='',
+plt.plot(data1000.T_exp, data1000.eta_exp * 100., '*m', linestyle='',
          label='1000sccm exp')
 plt.plot(data1000.T_array, data1000.eta.T * 100., '-m',
          label='1000sccm model')
