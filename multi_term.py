@@ -3,6 +3,7 @@ import scipy.interpolate as interp
 import types
 
 import properties as prop
+reload(prop)
 import functions as func
 reload(func)
 
