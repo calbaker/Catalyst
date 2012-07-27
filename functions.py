@@ -104,9 +104,9 @@ def get_Da(self, T, A_arr, T_a):
             self.D_C3H8_air_eff = ( 2. * self.porosity / self.tortuosity *
     (self.D_C3H8_air * self.D_C3H8_Kn) / (self.D_C3H8_air + self.D_C3H8_Kn) )          
 
-    thiele = ( k_arr * self.thickness**2 / self.D_C3H8_air_eff )   
+    self.phi = ( k_arr * self.thickness**2 / self.D_C3H8_air_eff )   
     Da = ( 0.5 * self.D_C3H8_air_eff / self.D_C3H8_air * self.height /
-    self.thickness * np.sqrt(thiele) * np.tanh(np.sqrt(thiele))
+    self.thickness * np.sqrt(self.phi) * np.tanh(np.sqrt(self.phi))
     ) 
     return Da
 
@@ -114,7 +114,9 @@ def set_Da(self):
     """Sets Dahmkohler number for temperature range of
     interest."""
     self.Da_array = np.empty(np.size(self.T_array))
+    self.phi_array = np.empty(np.size(self.T_array))
 
     for i in range(np.size(self.T_array)):
         self.Da_array[i] = (
         self.get_Da(self.T_array[i],self.A_arr,self.T_a) ) 
+        self.phi_array[i] = self.phi

@@ -25,8 +25,10 @@ cat.A_arr_array = ( cat.A_arr0 / (cat.thickness_array /
                                   cat.thickness0) )
 cat.Kn_length_array = np.array([1., 5., 10., 50., 100.]) * 1.e-9
 
-cat.eta_Pt_density = np.zeros([cat.thickness_array.size, cat.A_arr_array.size])
-cat.eta_Pt_total = np.zeros([cat.thickness_array.size, cat.A_arr_array.size])
+cat.eta_Pt_density = np.zeros([cat.thickness_array.size, cat.Kn_length_array.size])
+cat.eta_Pt_total = np.zeros([cat.thickness_array.size, cat.Kn_length_array.size])
+cat.Da_array = np.zeros([cat.thickness_array.size, cat.Kn_length_array.size])
+cat.phi_array = np.zeros([cat.thickness_array.size, cat.Kn_length_array.size])
 
 cat.Pe = cat.get_Pe(cat.Vdot, cat.T)
 
@@ -36,6 +38,8 @@ for j in range(cat.Kn_length_array.size):
         cat.thickness = cat.thickness_array[i]
         cat.A_arr = cat.A_arr_array[i]
         cat.Da = cat.get_Da(cat.T, cat.A_arr, cat.T_a)
+        cat.Da_array[i,j] = cat.Da
+        cat.phi_array[i,j] = cat.phi
         cat.eta_Pt_total[i,j] = cat.get_eta(cat.Pe, cat.Da)
         cat.A_arr = cat.A_arr0
         cat.Da = cat.get_Da(cat.T, cat.A_arr, cat.T_a)
@@ -85,5 +89,33 @@ plt.legend(loc='lower left',title=r"Knudsen Length", ncol=2)
 plt.subplots_adjust(left=0.17,bottom=0.17)
 plt.savefig('Plots/applied/eta_Pt_total.pdf')
 plt.savefig('Plots/applied/eta_Pt_total.png')
+
+plt.figure()
+for i in range(cat.Kn_length_array.size):
+    plt.plot(cat.thickness_array * 1.e6, cat.Da_array[:,i] *
+             100., MARKERS[i], label=LABELS[i]) 
+plt.xlabel(r'Nanowire Length ($\mu$m)')
+plt.ylabel('Da')
+#ax1.yaxis.set_major_formatter(FORMATTER)
+plt.grid()
+plt.ylim(0,20)
+plt.legend(loc='lower left',title=r"Knudsen Length", ncol=2)
+plt.subplots_adjust(left=0.17,bottom=0.17)
+plt.savefig('Plots/applied/Da.pdf')
+plt.savefig('Plots/applied/Da.png')
+
+plt.figure()
+for i in range(cat.Kn_length_array.size):
+    plt.plot(cat.thickness_array * 1.e6, cat.phi_array[:,i] *
+             100., MARKERS[i], label=LABELS[i]) 
+plt.xlabel(r'Nanowire Length ($\mu$m)')
+plt.ylabel('phi')
+#ax1.yaxis.set_major_formatter(FORMATTER)
+plt.grid()
+plt.ylim(0,20)
+plt.legend(loc='lower left',title=r"Knudsen Length", ncol=2)
+plt.subplots_adjust(left=0.17,bottom=0.17)
+plt.savefig('Plots/applied/phi.pdf')
+plt.savefig('Plots/applied/phi.png')
 
 plt.show()
