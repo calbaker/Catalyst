@@ -9,11 +9,11 @@ reload(first_term)
 import multi_term 
 reload(multi_term)
 
-x_array = np.linspace(0., 100., 100)
+x_array = np.linspace(0., 10., 100)
 y_array = np.linspace(-1., 1., 100)
 
 Pe = 50.
-Da = 1.
+Da = 0.1
 
 cat4 = multi_term.Catalyst()
 cat4.x_array = x_array
@@ -21,6 +21,7 @@ cat4.y_array = y_array
 cat4.Pe = Pe
 cat4.Da = Da
 cat4.set_Yxy(Pe,Da)
+cat4.Yxy = cat4.Yxy / cat4.Yxy.max()
 
 cat1 = first_term.One_Term_Catalyst()
 cat1.x_array = x_array
@@ -28,7 +29,7 @@ cat1.y_array = y_array
 cat1.Pe = Pe
 cat1.Da = Da
 cat1.set_Yxy(Pe,Da)
-
+cat1.Yxy = cat1.Yxy / cat1.Yxy.max()
 
 # Plot configuration
 FONTSIZE = 30
@@ -40,13 +41,14 @@ plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 10
 
-TICKS = np.arange(0,1.2,0.2)
-LEVELS = np.arange(0, 1.1, 0.1)
+MIN = cat4.Yxy.min()
+TICKS4 = np.logspace(np.log10(MIN), np.log10(1), 5)
+LEVELS4 = np.logspace(np.log10(MIN), np.log10(1), 12)
 
 x_2d, y_2d = np.meshgrid(x_array, y_array)
 fig_eta = plt.figure()
-FCS = plt.contourf(x_2d, y_2d, cat4.Yxy.T, levels=LEVELS)
-CB = plt.colorbar(FCS, orientation='vertical', ticks=TICKS)
+FCS = plt.contourf(x_2d, y_2d, cat4.Yxy.T, levels=LEVELS4)
+CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKS4)
 plt.grid()
 plt.xlabel(r'$\tilde{x}$')
 plt.ylabel(r'$\tilde{y}$')
@@ -61,11 +63,13 @@ plt.savefig('Plots/4species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
 plt.savefig('Plots/4species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
             + '.png')  
 
+MIN = cat1.Yxy.min()
+TICKS1 = np.logspace(np.log10(MIN), np.log10(1), 5)
+LEVELS1 = np.logspace(np.log10(MIN), np.log10(1), 12)
+
 fig_species = plt.figure()
-# TICKS = np.arange(0,1.5,0.1)
-LEVELS = np.arange(0, 1.2, 0.1)
-FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T, levels=LEVELS) 
-CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKS)
+FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T, levels=LEVELS1) 
+CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKS1)
 plt.grid()
 plt.xlabel(r'$\tilde{x}$')
 plt.ylabel(r'$\tilde{y}$')
