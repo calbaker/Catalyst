@@ -11,30 +11,50 @@ class Catalyst(object):
     """Class for representing catalyst reactor modeled by multi term
     expansion""" 
 
-    def __init__(self):
+    CtoK = 273.15 # conversion from Celsius to Kelvin
+
+    def __init__(self, **kwargs):
         """Sets values of constants"""
-        self.CtoK = 273.15 # conversion from Celsius to Kelvin
         self.P = 100. # Pressure of flow (kPa)
 
         self.lambda_and_Da = np.array(
-            [[0.001,0.0316,3.142,6.28,9.42],
-             [0.002,0.0447,3.141,6.28,9.42],
-             [0.003,0.0547,3.141,6.28,9.42], 
-             [0.01,0.100,3.144,6.28,9.43],
-             [0.02,0.141,3.15,6.28,9.43],
-             [0.03,0.172,3.15,6.29,9.43], 
-             [0.1,0.31,3.17,6.30,9.44],
-             [0.2,0.43,3.20,6.31,9.45],
-             [0.3,0.52,3.23,6.33,9.46],
-             [0.4,0.59,3.26,6.35,9.46],
-             [0.5,0.65,3.29,6.36,9.48],
-             [1.0,0.86,3.43,6.44,9.53],
-             [2.0,1.08,3.64,6.58,9.63],
-             [5.0,1.31,4.03,6.91,9.89],
-             [10.0,1.43,4.30,7.23,10.2],
-             [5000.,1.57,4.71,7.85,11.0]] )
-        # Graphically determined eigenvalues corresponding to Da
+            [[0.001, 0.0316, 3.142, 6.28, 9.42],
+             [0.002, 0.0447, 3.141, 6.28, 9.42],
+             [0.003, 0.0547, 3.141, 6.28, 9.42], 
+             [0.01,  0.100,  3.144, 6.28, 9.43],
+             [0.02,  0.141,  3.15,  6.28, 9.43], 
+             [0.03,  0.172,  3.15,  6.29, 9.43],  
+             [0.1,   0.31,   3.17,  6.30, 9.44], 
+             [0.2,   0.43,   3.20,  6.31, 9.45], 
+             [0.3,   0.52,   3.23,  6.33, 9.46], 
+             [0.4,   0.59,   3.26,  6.35, 9.46], 
+             [0.5,   0.65,   3.29,  6.36, 9.48], 
+             [1.0,   0.86,   3.43,  6.44, 9.53], 
+             [2.0,   1.08,   3.64,  6.58, 9.63], 
+             [5.0,   1.31,   4.03,  6.91, 9.89], 
+             [10.0,  1.43,   4.30,  7.23, 10.2], 
+             [5000., 1.57,   4.71,  7.85, 11.0]])
+        # Graphically determined eigenvalues corresponding to Da.
+        # First column is Da, second column is lamba_0, third column
+        # is lambda_1, and so on...
 
+        self.lambda_array = self.lambda_and_Da[:,0]
+
+        if 'terms' in kwargs:
+            self.terms = kwargs['terms']
+            if self.terms > 4:
+                self.terms = 4
+                print "lambda are available for no more than 4 terms."
+            self.lambda_and_Da = self.lambda_and_Da[:, : self.terms + 1]
+
+        self.A_arr = 1.e7
+        # Arrhenius coefficient (1/s ???)
+        self.T_a = 7.206e3 # activation temperature (K)
+        self.porosity = 0.97 
+        self.tortuosity = self.porosity**-1 
+
+        self.Kn_length = 100e-9
+        # Knudsen length (m) scale
         self.length_ = 100.
         # dimensionless channel length
         self.height = 0.003
@@ -51,92 +71,48 @@ class Catalyst(object):
         # temperature of flow (C)
         self.T_ambient = 300.
         # ambient temperature (K) at which flow rate is measured
-        self.A_arr = 1.e7
-        # Arrhenius coefficient (1/s ???)
-        self.T_a = 7.206e3 # activation temperature (K)
-        self.porosity = 0.97 
-        self.tortuosity = self.porosity**-1 
-        self.Kn_length = 100e-9
-        # Knudsen length (m) scale
+
         self.fuel = prop.ideal_gas(species='C3H8')
         self.air = prop.ideal_gas()
         
-        self.set_eta = types.MethodType(func.set_eta, self)
-        self.get_diffusivity = types.MethodType(func.get_diffusivity,
-        self) 
-        self.get_Pe = types.MethodType(func.get_Pe, self)
-        self.set_Pe = types.MethodType(func.set_Pe, self)
-        self.get_Kn = types.MethodType(func.get_Kn, self)
-        self.get_mfp = types.MethodType(func.get_mfp, self)
-        self.get_Da = types.MethodType(func.get_Da, self)
-        self.set_Da = types.MethodType(func.set_Da, self)
-    
     def get_lambda(self, Da):
-        """Uses fit algorithm to represent lambda as a function of Da
-        with handpicked values.
-        Da is necessary argument.  Returns value of lambda at
-        specified Da.""" 
+
+        """Uses spline fit to represent lambda as a function of Da.
+
+        Values are handpicked from graph of lambda v Da.  Da is
+        necessary argument.  Returns value of lambda at specified
+        Da.""" 
+
         Da = np.float32(Da)
-        spline1 = interp.splrep(self.lambda_and_Da[:,0],
-        self.lambda_and_Da[:,1]) 
-        spline2 = interp.splrep(self.lambda_and_Da[:,0],
-        self.lambda_and_Da[:,2]) 
-        spline3 = interp.splrep(self.lambda_and_Da[:,0],
-        self.lambda_and_Da[:,3]) 
-        spline4 = interp.splrep(self.lambda_and_Da[:,0],
-        self.lambda_and_Da[:,4]) 
-        lambda1 = interp.splev(Da, spline1)
-        lambda2 = interp.splev(Da, spline2)
-        lambda3 = interp.splev(Da, spline3)
-        lambda4 = interp.splev(Da, spline4)
-        lambda_i = np.array([lambda1,lambda2,lambda3,lambda4]) 
+
+        self.spline = []
+        self.lambda_i = []
+
+        for i in range(1, self.lambda_and_Da.shape[1] - 1):
+            self.spline.append(interp.splrep(self.lambda_array,
+            self.lambda_and_Da[:,i])) 
+            self.lambda_i[i]= interp.splev(Da, self.spline[i])
+
         return lambda_i
 
-    def get_A(self,lambda_i):
-        A = ( 2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
-        np.sin(lambda_i)) ) 
+    def get_A(self, lambda_i):
+
+        """Returns pre-exponential Arrhenius coefficient.
+
+        Input:
+        lambda_i : array of eigen values"""
+
+        A = (2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
+        np.sin(lambda_i))).sum() 
+
         return A
 
     def get_Y(self, x_, y_, Pe, lambda_i,A_i):
-        """Sets float non-dimensional Y at any particular non-d (x,y)
-        point""" 
+
+        """Sets non-dimensional Y at any particular non-d (x,y) point""" 
         Y = ( np.sum(A_i * np.exp(-4. * lambda_i**2. / Pe * x_) *
         np.cos(lambda_i * y_)) )   
         return Y
-
-    def set_Yxy(self,Pe,Da):
-        """Sets non-dimensional Y over a 2d array of non-dimensional
-        x_ and y_"""
-        lambda_i = self.get_lambda(Da)
-        A_i = self.get_A(lambda_i)
-        self.Yxy = np.zeros([np.size(self.x_array),
-        np.size(self.y_array)])
-
-        for i in np.arange(np.size(self.x_array)):
-            for j in np.arange(np.size(self.y_array)):
-                self.Yxy[i,j] = ( self.get_Y(self.x_array[i],
-            self.y_array[j], Pe, lambda_i, A_i) )
-    
-    def get_eta(self, Pe, Da):
-        """Returns species conversion efficiency, eta, as a function
-        of required arguments Da and Pe"""
-        lambda_i = self.get_lambda(Da)
-        A_i = self.get_A(lambda_i)
-        eta = ( (np.sum(A_i / lambda_i * np.sin(lambda_i),0) - np.sum(A_i
-        / lambda_i * np.exp(-lambda_i**2 / (4. * Pe) * self.length_) *
-        np.sin(lambda_i),0)) ) 
-        return eta
-
-    def set_eta(self):
-        """Sets conversion efficiency over a range of Pe and Da."""
-        self.set_Da()
-        self.set_Pe()
-        self.eta = np.zeros([np.size(self.Pe_array,0),
-                             np.size(self.Da_array)])
-        for i in np.arange(np.size(self.Pe_array,0)):
-            for j in np.arange(np.size(self.Da_array)):
-                self.Pe_ij = self.Pe_array[i,j]
-                self.eta[i,j] = self.get_eta(self.Pe_ij, self.Da_array[j])   
 
     def get_diffusivity(self, T, P):
         """Returns binary diffusion coefficient from Bird, Stewart,
@@ -157,8 +133,10 @@ class Catalyst(object):
         return D_C3H8_air 
 
     def get_Pe(self, Vdot, T):
+
         """Returns Peclet number for a particular flow rate (m^3/s),
         temperature (K), and geometry"""
+
         T = T + self.CtoK
         D_C3H8_air = self.get_diffusivity(T, self.P)
         U = (Vdot / (self.width * self.height) * (T / self.T_ambient)) 
@@ -166,90 +144,36 @@ class Catalyst(object):
 
         return Pe
 
-    def set_Pe(self):
-        """Sets Peclet number for a temperature and flow rate range of
-        interest."""
-        self.Pe_array = (np.empty([np.size(self.Vdot_array),
-        np.size(self.T_array)])) 
-
-        for i in range(np.size(self.Vdot_array)):
-            for j in range(np.size(self.T_array)):
-                self.Pe_array[i,j] = (
-                    self.get_Pe(self.Vdot_array[i],self.T_array[j]) )
-
     def get_mfp(self, n):
-        """Returns crude approximation of mean free path (m) of propane in air from
-        Bird, Stewart, Lightfoot Eq. 17.3-3. 
-        Parameters
-        ___________
+
+        """Returns crude approximation of mfp (m) of propane in air 
+
+        Method from Bird, Stewart, Lightfoot Eq. 17.3-3.  
+
+        Input:
+
         n : number density of air (# / m^3)
         
-        Returns
-        ___________
+        Output: 
+
         mfp : mean free path (m) of air molecule"""
 
-        self.mfp = ( (np.sqrt(2.) * np.pi * self.air.d**2. * n)**-1. )   
+        mfp = ( (np.sqrt(2.) * np.pi * self.air.d**2. * n)**-1. )   
 
-        return self.mfp
+        return mfp
 
     def get_Kn(self, n):
+
         """Returns Knudsen number for air. self.Kn_length must be set
         first.  
         
         Returns
         ___________
         Kn : Knudsen number"""
+
         mfp = self.get_mfp(n)
+
         self.Kn = mfp / self.Kn_length
 
         return self.Kn
 
-    def get_Da(self, T, A_arr, T_a):
-        """Returns Damkoehler for a particular temperature (K),
-        porosity, catalyst loading and a whole slew of other things."""
-
-        T = T + self.CtoK
-        k_arr = ( A_arr * np.exp(-T_a / T) )
-        self.D_C3H8_air = self.get_diffusivity(T, self.P)
-        # Bindary diffusion coefficient from Bird, Stewart, Lightfoot
-        # Transport Phenomena 2nd Ed. Equation 17.3-10
-
-        self.Kn = self.get_Kn(self.air.n)
-
-        self.D_C3H8_Kn = self.D_C3H8_air / self.Kn 
-
-        if np.isscalar(self.Kn):
-            if self.Kn <= 1.:
-                self.D_C3H8_air_eff = ( self.porosity / self.tortuosity *
-                                    self.D_C3H8_air )    
-            else:
-                self.D_C3H8_air_eff = ( 2. * self.porosity / self.tortuosity *
-                                        (self.D_C3H8_air *
-                                         self.D_C3H8_Kn) /
-                                        (self.D_C3H8_air +
-                                         self.D_C3H8_Kn) )              
-
-        else:
-            if self.Kn.any() <= 1.:
-                self.D_C3H8_air_eff = ( self.porosity / self.tortuosity *
-                                        self.D_C3H8_air )    
-            else:
-                self.D_C3H8_air_eff = ( 2. * self.porosity / self.tortuosity *
-                                    (self.D_C3H8_air * self.D_C3H8_Kn) / (self.D_C3H8_air + self.D_C3H8_Kn) )          
-
-        self.phi = ( k_arr * self.thickness**2 / self.D_C3H8_air_eff )   
-        Da = ( 0.5 * self.D_C3H8_air_eff / self.D_C3H8_air * self.height /
-               self.thickness * np.sqrt(self.phi) * np.tanh(np.sqrt(self.phi))
-               ) 
-        return Da
-
-    def set_Da(self):
-        """Sets Dahmkohler number for temperature range of
-        interest."""
-        self.Da_array = np.empty(np.size(self.T_array))
-        self.phi_array = np.empty(np.size(self.T_array))
-
-        for i in range(np.size(self.T_array)):
-            self.Da_array[i] = (
-                self.get_Da(self.T_array[i],self.A_arr,self.T_a) ) 
-            self.phi_array[i] = self.phi
