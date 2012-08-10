@@ -83,27 +83,29 @@ class Catalyst(object):
 
         """Sets non-dimensional Y at specified non-d (x, y) point"""
 
-        A = self.get_A(T)
+        A_i = self.get_A(T)
         lambda_i = self.get_lambda(T)
         Pe = self.get_Pe
 
         Y = (
-            np.sum(A * np.exp(-4. * lambda_i ** 2. / Pe * x_) *
-            np.cos(lambda_i * y_))
+            (A_i * np.exp(-4. * lambda_i ** 2. / Pe * x_) *
+            np.cos(lambda_i * y_)).sum()
             )
 
         return Y
 
-    def get_A(self, T):
+    def get_A_i(self, T):
 
         """Returns pre-exponential Arrhenius coefficient."""
 
         lambda_i = self.get_lambda(T)
 
-        A = (2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
-        np.sin(lambda_i))).sum()
+        A_i = (
+            2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
+            np.sin(lambda_i))
+            )
 
-        return A
+        return A_i
 
     def get_lambda(self, T):
 
@@ -281,34 +283,42 @@ class Catalyst(object):
         self.fuel.P = self.P
         self.fuel.set_TempPres_dependents()
 
-    def set_eta(self):
-        
+    def set_eta_ij(self):
+
         """Sets conversion efficiency over a range of Pe and Da."""
 
-        self.eta = np.zeros(
-            [np.size(self.Pe_array, 0),
-             np.size(self.Da_array)]
+        self.Pe_ij = np.zeros(
+            [self.Vdot_array.size, self.T_array.size]
             )
-        self.Pe
-        
-        for i in np.arange(np.size(self.Pe_array, 0)):
-            for j in np.arange(np.size(self.Da_array)):
-        
-                self.eta[i, j] = (
-                    self.get_eta(self.Pe_ij, self.Da_array[j])
-                    )
+        self.Da_j = np.zeros(self.T_array.size)
+        self.eta = np.zeros(self.Pe_ij.shape)
+
+        for i in np.arange(self.Vdot_array.size):
+            for j in np.arange(np.size(self.T_array.size)):
+                Vdot = self.Vdot_array[i]
+                T = self.T_array[j]
+
+                self.eta_ij[i, j] = self.get_eta(Vdot, T)
+                self.Da_j[j] = self.get_Da(T)
+                self.Pe_ij[i, j] = self.get_Pe(Vdot, T)
 
     def get_eta(self, Vdot, T):
-        
+
         """Returns conversion efficiency.
 
         Inputs:
-        
+
         Vdot : flow rate (m^3/s)
         T : temperature (K).
         """
 
+        A_i = self.get_A_i(T)
+        lambda_i = self.get_lambda(T)
         Pe = self.get_Pe(Vdot, T)
-        Da = self.get_Da(T)
 
-        eta = 
+        eta = (
+            (A_i / lamba_i * np.sin(lambda_i) * (1. -
+            np.exp(-lambda_i ** 2. / (4. * Pe) * x_))).sum()
+            )
+
+        return eta

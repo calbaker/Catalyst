@@ -41,7 +41,7 @@ cat.eta_exp = (cat.HCin_raw - cat.HCout_raw) / cat.HCin_raw
 cat.Vdot_array = np.array([cat.Vdot])
 cat.A_arr = A_arr
 cat.T_a = T_a 
-cat.set_eta()
+cat.set_eta_ij()
 
 cat_empty = catalyst.Catalyst()
 # cat_empty.source = 'alumina_holder_only.xls' # this data needs to be
