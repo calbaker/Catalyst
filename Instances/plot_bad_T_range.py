@@ -36,7 +36,7 @@ cat.set_eta_ij()
 cat_empty = catalyst.Catalyst()
 # cat_empty.source = 'alumina_holder_only.xls' # this data needs to be
 # cleared with Hall and Ezekoye
-cat_empty.source = '1000sccm empty tube rep2.xls'
+cat_empty.source = '../data/1000sccm empty tube rep2.xls'
 cat_empty.A_arr = A_arr
 cat_empty.T_a = T_a
 cat_empty.Vdot = 1000. * 1.e-6 / 60. 
@@ -60,7 +60,7 @@ plt.figure()
 
 plt.plot(cat.T_exp, cat.eta_exp * 100., 'sr', linestyle='',
          label='750sccm exp')
-plt.plot(cat.T_array, cat.eta.T * 100., '-r',
+plt.plot(cat.T_array, cat.eta_ij.T * 100., '-r',
          label='750sccm model')
 
 plt.plot(cat_empty.T_exp, cat_empty.eta_exp * 100., 'om', linestyle='',
@@ -73,7 +73,7 @@ plt.xlim(xmax=700)
 # plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
 plt.grid()
-plt.savefig('Plots/high_temp_bad.pdf')
-plt.savefig('Plots/high_temp_bad.png')
+plt.savefig('../Plots/high_temp_bad.pdf')
+plt.savefig('../Plots/high_temp_bad.png')
 
 plt.show()
