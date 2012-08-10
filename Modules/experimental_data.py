@@ -3,11 +3,12 @@ fitting capability."""
 
 import numpy as np
 from scipy.optimize import curve_fit
+import xlrd
 
 import catalyst
 reload(catalyst)
 
-class ExpData(object):
+class ExpCat(object):
 
     """Class for keeping track of experimental data"""
 
@@ -23,11 +24,12 @@ class ExpData(object):
         """Uses scipy optimize curve_fit to determine Arrhenius
         parameters that result in best curve fit."""
 
-        popt, pcov = curve_fit(self.get_eta_dim, self.T_exp,
+        self.popt, self.pcov = curve_fit(self.get_eta_dim, self.T_exp,
         self.eta_exp, p0 = self.p0) 
-        self.A_arr = popt[0]
-        self.T_a = popt[1]
-        self.set_eta()
+        self.A_arr = self.popt[0]
+        self.T_a = self.popt[1]
+
+        self.set_eta_ij()
 
     def get_eta_dim(self, T, A_arr, T_a):
 
@@ -47,3 +49,23 @@ class ExpData(object):
         S_r = np.sum((self.eta_model - self.eta_exp)**2.)
 
         return S_r
+
+    def import_data(self):
+
+        """Imports data from excel sheet."""
+
+        self.worksheet = xlrd.open_workbook(filename=self.source).sheet_by_index(0)
+        # Import conversion data from worksheet and store as scipy arrays
+        self.T_raw = np.array(
+            self.worksheet.col_values(0, start_rowx=4, end_rowx=None)
+            ) 
+        self.HCout_raw = np.array(
+            self.worksheet.col_values(4, start_rowx=4, end_rowx=None)
+            )
+        self.HCin_raw = np.array(
+            self.worksheet.col_values(8, start_rowx=4, end_rowx=None)
+            )
+        self.eta_exp = (
+            (self.HCin_raw - self.HCout_raw) / self.HCin_raw
+            )
+        
