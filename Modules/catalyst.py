@@ -18,8 +18,6 @@ class Catalyst(object):
     """Class for representing catalyst reactor modeled by multi term
     expansion"""
 
-    CtoK = 273.15  # conversion from Celsius to Kelvin
-
     def __init__(self, **kwargs):
         """Sets values of constants"""
         self.P = 101.325  # Pressure of flow (kPa)
@@ -75,32 +73,53 @@ class Catalyst(object):
         # channel length (m)
         self.width = 20e-3  # channel width (m)
 
-        self.T_ambient = 300.
+        self.x_ = self.length / self.height
+        # dimensionless x.  this will need to be reevaluated if length
+        # or height is changed.
+
+        self.T_ambient = 300. + 273.15
         # ambient temperature (K) at which flow rate is measured
 
         self.fuel = prop.ideal_gas(species='C3H8')
         self.air = prop.ideal_gas()
 
-    def get_Y(self, x_, y_, **kwargs):
+    def set_all_parameters(self, Vdot, T):
+
+        """Sets all parameters and properties for Vdot, T.  
+
+        Inputs:
+        Vdot : volume flow rate (m^3/s)
+        T : temperature (K)"""
+
+    def get_Y(self, x_, y_, *args, **kwargs):
 
         """Sets non-dimensional Y at specified non-d (x, y) point.
         
         """
         
-        if 'Pe' in kwargs:
-            Pe = kwargs['Pe']
+        if 'T' in kwargs:
+            T = kwargs['T']
+            lambda_i = self.get_lambda(self.T)
+            A_i = self.get_A_i(T)
+
+            if 'Vdot' in kwargs:
+                Vdot = kwargs['Vdot']
+                Pe = self.get_Pe(Vdot, T)
+            
         else:
-            Pe = self.get_Pe(???)
+            Pe = args[2]
+
+
 
         if 'A_i' in kwargs:
             A_i = kwargs['A_i']
         else:
-            A_i = self.get_A(self.T)
+            A_i = self.get_A(T)
 
         if 'lambda_i' in kwargs:
             lambda_i = kwargs['lambda_i']
         else:
-            lambda_i = self.get_lambda(self.T)
+
 
         Y = (
             (A_i * np.exp(-4. * lambda_i ** 2. / Pe * x_) *
@@ -172,7 +191,6 @@ class Catalyst(object):
 
         if 'T' in kwargs:
             T = kwargs['T']
-            T = T + self.CtoK
             D_C3H8_air = self.get_D_C3H8_air(T)
             D_C3H8_air_eff = self.get_D_C3H8_air_eff(T)
             thiele = self.get_thiele(T)
@@ -226,8 +244,6 @@ class Catalyst(object):
         things up.  This can be returned by get_D_C3H8_air.
 
         """
-
-        T = T + self.CtoK
 
         if D_C3H8_air in kwargs:
             D_C3H8_air = kwargs['D_C3H8_air']
@@ -344,31 +360,53 @@ class Catalyst(object):
 
     def get_D_C3H8_air_Kn(self, T):
 
-        """Returns Knudsen diffusion coefficient for fuel/air."""
+        """Returns Knudsen diffusion coefficient for fuel/air.
 
-        D_C3H8_air = self.get_D_C3H8_air(T)
-        Kn = self.get_Kn(T)
+                
+        Kn and D_C3H8_air from get_Kn, get_D_C3H8_air, and
+        get_D_C3H8_air_Kn or T as keyword argument.  
+        """
 
+        if T in kwargs:
+            T = kwargs['T']
+            Kn            = self.get_Kn(T)
+            D_C3H8_air    = self.get_D_C3H8_air(T)
+        else:
+            Kn            = args[0]
+            D_C3H8_air    = args[1]
+        
         D_C3H8_air_Kn = D_C3H8_air / Kn
 
         return D_C3H8_air_Kn
 
-    def get_D_C3H8_air(self, T):
+    def get_D_C3H8_air(self, *args, **kwargs):
 
         """Returns binary diffusion coefficient for fuel/air.
 
         Method is from Bird, Stewart, Lightfoot Transport Phenomena
-        2nd Ed. Equation 17.3-10"""
+        2nd Ed. Equation 17.3-10
 
-        self.set_TempPres_dependents(T)
+        Expects:
+        n : number density (#/m^3
+
+        or keyword argument
+        T : temperature (K)
+
+        Output:
+
+        mfp : mean free path (m) of air molecule"""
+
+        if T in kwargs:
+            T = kwargs['T']
+            self.set_TempPres_dependents(T)
+            n = self.air.n
+        else:
+            n = args[0]
 
         D_C3H8_air = (
-            2. / 3. * np.sqrt(const.k_B * T / np.pi * 0.5 *
-                                       (1. / self.air.m + 1. /
-                                       self.fuel.m)) / (np.pi * (0.5 *
-                                       (self.air.d +
-                                       self.fuel.d)) ** 2.) /
-                                       self.air.n
+            2. / 3. * np.sqrt(const.k_B * T / np.pi * 0.5 * (1. /
+            self.air.m + 1. / self.fuel.m)) / (np.pi * (0.5 *
+            (self.air.d + self.fuel.d)) ** 2.) / self.air.n
             )
 
         return D_C3H8_air
@@ -393,6 +431,8 @@ class Catalyst(object):
 
         """Sets conversion efficiency over a range of Pe and Da."""
 
+        self.x_ = self.length / self.height
+
         self.Pe_ij = np.zeros(
             [self.Vdot_array.size, self.T_array.size]
             )
@@ -412,16 +452,15 @@ class Catalyst(object):
 
         """Returns conversion efficiency.
 
-        Inputs:
+        Expected Inputs:
+        A_i from get_A_i
+        lambda_i from get_lambda
+        Pe from get_Pe        
 
+        Or these keyword inputs:
         Vdot : flow rate (m^3/s)
         T : temperature (K).
         """
-
-        try:
-            self.x_
-        except AttributeError:
-            self.x_ = self.length / self.height
 
         A_i = self.get_A_i(T)
         lambda_i = self.get_lambda(T)
