@@ -136,9 +136,10 @@ class Catalyst(object):
 
         thiele = (k_arr * self.thickness ** 2 / self.D_C3H8_air_eff)
 
-        Da = (0.5 * self.D_C3H8_air_eff / self.D_C3H8_air * self.height /
-                       self.thickness * np.sqrt(thiele) *
-                       np.tanh(np.sqrt(thiele))
+        Da = (
+            0.5 * self.D_C3H8_air_eff / self.D_C3H8_air * self.height
+            / self.thickness * np.sqrt(thiele) *
+            np.tanh(np.sqrt(thiele))
            )
 
         return Da
@@ -148,11 +149,12 @@ class Catalyst(object):
         """Returns Peclet number
 
         Inputs:
+
         Vdot : flow rate (m^3/s)
         T : temperature (K)."""
 
         T = T + self.CtoK
-        
+
         D_C3H8_air = self.get_D_C3H8_air(T)
         U = Vdot / (self.width * self.height) * (T / self.T_ambient)
         Pe = U * self.height / D_C3H8_air
@@ -202,7 +204,7 @@ class Catalyst(object):
         """Returns effective diffusion coefficient in porous media.
 
         I need to put a refernce here for this scaling technique.  I'm
-        pretty sure it is documented in the paper.""" 
+        pretty sure it is documented in the paper."""
 
         Kn = self.get_Kn(T)
         D_C3H8_air = self.get_D_C3H8_air(T)
@@ -216,7 +218,7 @@ class Catalyst(object):
             else:
                 D_C3H8_air_eff = (
                     2. * self.porosity / self.tortuosity * (D_C3H8_air
-            * D_C3H8_air_Kn) / (D_C3H8_air + D_C3H8_air_Kn) 
+            * D_C3H8_air_Kn) / (D_C3H8_air + D_C3H8_air_Kn)
                     )
 
         else:
@@ -278,3 +280,35 @@ class Catalyst(object):
         self.fuel.T = T
         self.fuel.P = self.P
         self.fuel.set_TempPres_dependents()
+
+    def set_eta(self):
+        
+        """Sets conversion efficiency over a range of Pe and Da."""
+
+        self.eta = np.zeros(
+            [np.size(self.Pe_array, 0),
+             np.size(self.Da_array)]
+            )
+        self.Pe
+        
+        for i in np.arange(np.size(self.Pe_array, 0)):
+            for j in np.arange(np.size(self.Da_array)):
+        
+                self.eta[i, j] = (
+                    self.get_eta(self.Pe_ij, self.Da_array[j])
+                    )
+
+    def get_eta(self, Vdot, T):
+        
+        """Returns conversion efficiency.
+
+        Inputs:
+        
+        Vdot : flow rate (m^3/s)
+        T : temperature (K).
+        """
+
+        Pe = self.get_Pe(Vdot, T)
+        Da = self.get_Da(T)
+
+        eta = 
