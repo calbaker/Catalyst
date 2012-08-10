@@ -1,7 +1,9 @@
 """Contains class definition for catalyst."""
 
 # Distribution libraries
+import xlrd
 import numpy as np
+from scipy.optimize import curve_fit
 import scipy.interpolate as interp
 
 # Local libraries
@@ -79,13 +81,26 @@ class Catalyst(object):
         self.fuel = prop.ideal_gas(species='C3H8')
         self.air = prop.ideal_gas()
 
-    def get_Y(self, x_, y_, Pe, T):
+    def get_Y(self, x_, y_, **kwargs):
 
-        """Sets non-dimensional Y at specified non-d (x, y) point"""
+        """Sets non-dimensional Y at specified non-d (x, y) point.
+        
+        """
+        
+        if 'Pe' in kwargs:
+            Pe = kwargs['Pe']
+        else:
+            Pe = self.get_Pe(???)
 
-        A_i = self.get_A(T)
-        lambda_i = self.get_lambda(T)
-        Pe = self.get_Pe
+        if 'A_i' in kwargs:
+            A_i = kwargs['A_i']
+        else:
+            A_i = self.get_A(self.T)
+
+        if 'lambda_i' in kwargs:
+            lambda_i = kwargs['lambda_i']
+        else:
+            lambda_i = self.get_lambda(self.T)
 
         Y = (
             (A_i * np.exp(-4. * lambda_i ** 2. / Pe * x_) *
@@ -94,11 +109,20 @@ class Catalyst(object):
 
         return Y
 
-    def get_A_i(self, T):
+    def get_A_i(self, *args, **kwargs):
 
-        """Returns pre-exponential Arrhenius coefficient."""
+        """Returns pre-exponential Arrhenius coefficient.
 
-        lambda_i = self.get_lambda(T)
+        Inputs: 
+
+        Expects lambda_i or keyword argument T.  The default argument,
+        lambda_i, can be obtained using get_lambda."""
+
+        if 'T' in kwargs:
+            T = kwargs['T']
+            lambda_i = self.get_lambda(T)
+        else:
+            lambda_i = args[0]
 
         A_i = (
             2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
@@ -107,15 +131,24 @@ class Catalyst(object):
 
         return A_i
 
-    def get_lambda(self, T):
+    def get_lambda(self, *args, **kwargs):
 
         """Uses spline fit to represent lambda as a function of Da.
+
+        Inputs:
+        
+        Expects Da or keyword argument T.  The default argument, Da,
+        can be obtained using get_Da.
 
         Values are handpicked from graph of lambda v Da.  Da is
         necessary argument.  Returns value of lambda at specified
         Da."""
 
-        Da = np.float32(self.get_Da(T))
+        if 'T' in kwargs:
+            T = kwargs['T']
+            Da = np.float32(self.get_Da(T))
+        else:
+            Da = args[0]
 
         spline = []
         lambda_i = np.zeros(self.lambda_and_Da.shape[1] - 1)
@@ -127,17 +160,30 @@ class Catalyst(object):
 
         return lambda_i
 
-    def get_Da(self, T):
+    def get_Da(self, *args, **kwargs):
 
-        """Returns Damkoehler for a particular temperature (K),
-        porosity, catalyst loading and a whole slew of other things."""
+        """Returns Damkoehler number.
 
-        T = T + self.CtoK
+        Inputs:
 
-        D_C3H8_air = self.get_D_C3H8_air(T)
-        D_C3H8_air_eff = self.get_D_C3H8_air_eff(T)
+        Expects D_C3H8_air, D_C3H8_air_eff, and thiele or keyword
+        argument T. Defaults can be obtained with get_D_C3H8_air,
+        get_D_C3H8_air_eff, and get_thiele."""
 
-        thiele = self.get_thiele(T)
+        if 'T' in kwargs:
+            T = kwargs['T']
+            T = T + self.CtoK
+            D_C3H8_air = self.get_D_C3H8_air(T)
+            D_C3H8_air_eff = self.get_D_C3H8_air_eff(T)
+            thiele = self.get_thiele(T)
+
+        elif len(args) != 2:
+            print 'Not enough arguments were provided to get_Da'
+            
+        else:
+            D_C3H8_air = args[0]
+            D_C3H8_air_eff = args[1]
+            thiels = args[2]
 
         Da = (
             0.5 * D_C3H8_air_eff / D_C3H8_air * self.height /
@@ -147,35 +193,54 @@ class Catalyst(object):
 
         return Da
 
-    def get_thiele(self, T):
-        
-        """Returns Thiele modulus."""
+    def get_thiele(self, *args, **kwargs):
 
-        k_arr = (self.A_arr * np.exp(-self.T_a / T))
-        D_C3H8_air_eff = self.get_D_C3H8_air_eff(T)
+        """Returns Thiele modulus.
+
+        Inputs:
+
+        Expects k_arr, D_C3H8_air_eff, """
+
+        if 'T' in kwargs:
+            T = kwargs['T']
+            k_arr = (self.A_arr * np.exp(-self.T_a / T))
+            D_C3H8_air_eff = self.get_D_C3H8_air_eff(T)
+        else:
+            k_arr = args[0]
+            D_C3H8_air_eff = args[1]
 
         thiele = (k_arr * self.thickness ** 2 / D_C3H8_air_eff)
 
         return thiele
 
-    def get_Pe(self, Vdot, T):
+    def get_Pe(self, Vdot, T, **kwargs):
 
         """Returns Peclet number
 
         Inputs:
 
         Vdot : flow rate (m^3/s)
-        T : temperature (K)."""
+        T : temperature (K).
+        
+        D_C3H8_air can be given as a keyword argument to speed
+        things up.  This can be returned by get_D_C3H8_air.
+
+        """
 
         T = T + self.CtoK
 
-        D_C3H8_air = self.get_D_C3H8_air(T)
+        if D_C3H8_air in kwargs:
+            D_C3H8_air = kwargs['D_C3H8_air']
+        else:
+            D_C3H8_air = self.get_D_C3H8_air(T)
+
         U = Vdot / (self.width * self.height) * (T / self.T_ambient)
+
         Pe = U * self.height / D_C3H8_air
 
         return Pe
 
-    def get_mfp(self, T):
+    def get_mfp(self, *args, **kwargs):
 
         """Returns crude approximation of mfp (m) of propane in air
 
@@ -183,14 +248,22 @@ class Catalyst(object):
 
         Input:
 
+        Expects
+        n : number density (#/m^3
+
+        or keyword argument
         T : temperature (K)
 
         Output:
 
         mfp : mean free path (m) of air molecule"""
 
-        self.set_TempPres_dependents(T)
-        n = self.air.n
+        if T in kwargs:
+            T = kwargs['T']
+            self.set_TempPres_dependents(T)
+            n = self.air.n
+        else:
+            n = args[0]
 
         mfp = (
             (np.sqrt(2.) * np.pi * self.air.d ** 2. * n) ** -1.
@@ -198,31 +271,52 @@ class Catalyst(object):
 
         return mfp
 
-    def get_Kn(self, T):
+    def get_Kn(self, *args, **kwargs):
 
-        """Returns Knudsen number for air. self.Kn_length must be set
-        first.
+        """Returns Knudsen number for air.
 
+        Inputs:
+        
+        Expects mean free path from get_mfp or optionally T as a
+        keyword argument.  
+
+        self.Kn_length must be set.
+        
         Returns
         ___________
         Kn : Knudsen number"""
 
-        mfp = self.get_mfp(T)
+        if T in kwargs:
+            T = kwargs['T']
+            mfp = self.get_mfp(T)
+        else:
+            mfp = args[0]
 
         Kn = mfp / self.Kn_length
 
         return Kn
 
-    def get_D_C3H8_air_eff(self, T):
+    def get_D_C3H8_air_eff(self, *args, **kwargs):
 
         """Returns effective diffusion coefficient in porous media.
+        
+        Inputs:
+        
+        Kn, D_C3H8_air, and D_C3H8_air_Kn from get_Kn, get_D_C3H8_air,
+        and get_D_C3H8_air_Kn or T as keyword argument
 
         I need to put a refernce here for this scaling technique.  I'm
         pretty sure it is documented in the paper."""
 
-        Kn = self.get_Kn(T)
-        D_C3H8_air = self.get_D_C3H8_air(T)
-        D_C3H8_air_Kn = self.get_D_C3H8_air_Kn(T)
+        if T in kwargs:
+            T = kwargs['T']
+            Kn            = self.get_Kn(T)
+            D_C3H8_air    = self.get_D_C3H8_air(T)
+            D_C3H8_air_Kn = self.get_D_C3H8_air_Kn(T)
+        else:
+            Kn            = args[0]
+            D_C3H8_air    = args[1]
+            D_C3H8_air_Kn = args[2]
 
         if np.isscalar(Kn):
             if Kn <= 1.:
@@ -306,7 +400,7 @@ class Catalyst(object):
         self.eta_ij = np.zeros(self.Pe_ij.shape)
 
         for i in np.arange(self.Vdot_array.size):
-            for j in np.arange(np.size(self.T_array.size)):
+            for j in np.arange(self.T_array.size):
                 Vdot = self.Vdot_array[i]
                 T = self.T_array[j]
 
@@ -339,3 +433,62 @@ class Catalyst(object):
             )
 
         return eta
+
+    def import_data(self):
+
+        """Imports data from excel sheet."""
+
+        self.worksheet = xlrd.open_workbook(filename=self.source).sheet_by_index(0)
+        # Import conversion data from worksheet and store as scipy arrays
+        self.T_exp = np.array(
+            self.worksheet.col_values(0, start_rowx=4, end_rowx=None)
+            )
+        self.HCout_raw = np.array(
+            self.worksheet.col_values(4, start_rowx=4, end_rowx=None)
+            )
+        self.HCin_raw = np.array(
+            self.worksheet.col_values(8, start_rowx=4, end_rowx=None)
+            )
+        self.eta_exp = (
+            (self.HCin_raw - self.HCout_raw) / self.HCin_raw
+            )
+        self.T_array = np.linspace(self.T_exp[0], self.T_exp[-1], 50)
+
+    def set_fit_params(self):
+
+        """Uses scipy optimize curve_fit to determine Arrhenius
+        parameters that result in best curve fit."""
+
+        self.p0 = np.array([self.A_arr, self.T_a])
+        # initial guess at A_arr and T_a
+
+        self.popt, self.pcov = curve_fit(
+            self.get_eta_dim, self.T_exp, self.eta_exp, p0 = self.p0
+            )
+
+        self.A_arr = self.popt[0]
+        self.T_a = self.popt[1]
+
+        self.set_eta_ij()
+
+    def get_eta_dim(self, T, A_arr, T_a):
+
+        """Returns species conversion efficiency, eta, as a function
+        of required argument T. Used by set_params."""
+
+        self.A_arr = A_arr
+        self.T_a = T_a
+
+        self.Pe_ij = self.get_Pe(self.Vdot, T)
+
+        eta = self.get_eta(self.Vdot, T)
+
+        return eta
+
+    def get_S_r(self):
+
+        """Returns sum of residuals squared for all data points."""
+
+        S_r = np.sum((self.eta_model - self.eta_exp)**2.)
+
+        return S_r
