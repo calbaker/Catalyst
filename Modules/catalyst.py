@@ -117,15 +117,15 @@ class Catalyst(object):
 
         Da = np.float32(self.get_Da(T))
 
-        self.spline = []
-        self.lambda_i = []
+        spline = []
+        lambda_i = np.zeros(self.lambda_and_Da.shape[1] - 1)
 
-        for i in range(1, self.lambda_and_Da.shape[1] - 1):
-            self.spline.append(interp.splrep(self.lambda_array,
+        for i in range(0, self.lambda_and_Da.shape[1] - 1):
+            spline.append(interp.splrep(self.lambda_array,
             self.lambda_and_Da[:, i]))
-            self.lambda_i[i] = interp.splev(Da, self.spline[i])
+            lambda_i[i] = interp.splev(Da, spline[i])
 
-        return self.lambda_i
+        return lambda_i
 
     def get_Da(self, T):
 
@@ -134,17 +134,29 @@ class Catalyst(object):
 
         T = T + self.CtoK
 
-        k_arr = (self.A_arr * np.exp(-self.T_a / T))
+        D_C3H8_air = self.get_D_C3H8_air(T)
+        D_C3H8_air_eff = self.get_D_C3H8_air_eff(T)
 
-        thiele = (k_arr * self.thickness ** 2 / self.D_C3H8_air_eff)
+        thiele = self.get_thiele(T)
 
         Da = (
-            0.5 * self.D_C3H8_air_eff / self.D_C3H8_air * self.height
-            / self.thickness * np.sqrt(thiele) *
+            0.5 * D_C3H8_air_eff / D_C3H8_air * self.height /
+            self.thickness * np.sqrt(thiele) *
             np.tanh(np.sqrt(thiele))
            )
 
         return Da
+
+    def get_thiele(self, T):
+        
+        """Returns Thiele modulus."""
+
+        k_arr = (self.A_arr * np.exp(-self.T_a / T))
+        D_C3H8_air_eff = self.get_D_C3H8_air_eff(T)
+
+        thiele = (k_arr * self.thickness ** 2 / D_C3H8_air_eff)
+
+        return thiele
 
     def get_Pe(self, Vdot, T):
 
@@ -254,7 +266,7 @@ class Catalyst(object):
         Method is from Bird, Stewart, Lightfoot Transport Phenomena
         2nd Ed. Equation 17.3-10"""
 
-        self.set_TempPres_dependents(T, self.P)
+        self.set_TempPres_dependents(T)
 
         D_C3H8_air = (
             2. / 3. * np.sqrt(const.k_B * T / np.pi * 0.5 *
@@ -291,7 +303,7 @@ class Catalyst(object):
             [self.Vdot_array.size, self.T_array.size]
             )
         self.Da_j = np.zeros(self.T_array.size)
-        self.eta = np.zeros(self.Pe_ij.shape)
+        self.eta_ij = np.zeros(self.Pe_ij.shape)
 
         for i in np.arange(self.Vdot_array.size):
             for j in np.arange(np.size(self.T_array.size)):
@@ -312,13 +324,18 @@ class Catalyst(object):
         T : temperature (K).
         """
 
+        try:
+            self.x_
+        except AttributeError:
+            self.x_ = self.length / self.height
+
         A_i = self.get_A_i(T)
         lambda_i = self.get_lambda(T)
         Pe = self.get_Pe(Vdot, T)
 
         eta = (
-            (A_i / lamba_i * np.sin(lambda_i) * (1. -
-            np.exp(-lambda_i ** 2. / (4. * Pe) * x_))).sum()
+            (A_i / lambda_i * np.sin(lambda_i) * (1. -
+            np.exp(-lambda_i ** 2. / (4. * Pe) * self.x_))).sum()
             )
 
         return eta

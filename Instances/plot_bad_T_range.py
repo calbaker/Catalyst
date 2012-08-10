@@ -19,9 +19,6 @@ reload(catalyst)
 
 plt.close('all')
 
-A_arr = 1.129e7
-T_a = 6822.
-
 cat = catalyst.Catalyst()
 cat.Vdot = 750. * 1.e-6 / 60.
 
@@ -38,9 +35,13 @@ cat.HCout_raw = np.array(cat.worksheet.col_values(4, start_rowx=4,
 cat.HCin_raw = np.array(cat.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
 cat.eta_exp = (cat.HCin_raw - cat.HCout_raw) / cat.HCin_raw
+
 cat.Vdot_array = np.array([cat.Vdot])
-cat.A_arr = A_arr
-cat.T_a = T_a 
+cat.T_array = np.linspace(cat.T_raw.min(), cat.T_raw.max(), 50.)
+
+cat.A_arr = 1.129e7
+cat.T_a = 6822.
+
 cat.set_eta_ij()
 
 cat_empty = catalyst.Catalyst()
