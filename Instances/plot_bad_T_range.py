@@ -1,61 +1,60 @@
-"""Module for plotting results of first term model with experimental
-data and fitting capability."""
+"""Generates plot of hydrocarbon conversion efficiency versus temperature comparing
+performance of catalyst with control experiment.  This plot is used in paper.
+"""
 
 import numpy as np
 import matplotlib.pyplot as plt
 import xlrd
-import os
 
 import experimental_data as expdata
 reload(expdata)
-import multi_term 
-reload(multi_term)
+import catalyst 
+reload(catalyst)
 
 plt.close('all')
 
 A_arr = 1.129e7
 T_a = 6822.
 
-data = multi_term.Catalyst()
-data.Vdot = 750. * 1.e-6 / 60.
-# data.source = 'alumina_holder_only.xls' # this data needs to be
-# cleared with Hall and Ezekoye
-data.source = '750sccm 10nmPtPd VariedT rep2.xls'
-# Define the path to the .xls file(s) containing the conversion data.
-# import the worksheet as a sheet object
-data.worksheet = xlrd.open_workbook(filename=data.source).sheet_by_index(0)
-# Import conversion data from worksheet and store as scipy arrays
-data.T_raw = np.array(data.worksheet.col_values(0, start_rowx=4, 
-                                                 end_rowx=None)) 
-data.T_exp = data.T_raw
-data.HCout_raw = np.array(data.worksheet.col_values(4, start_rowx=4, 
-                                                     end_rowx=None))
-data.HCin_raw = np.array(data.worksheet.col_values(8, start_rowx=4,
-                                                    end_rowx=None))
-data.eta_exp = (data.HCin_raw - data.HCout_raw) / data.HCin_raw
-data.Vdot_array = np.array([data.Vdot])
-data.A_arr = A_arr
-data.T_a = T_a 
-data.set_eta()
+cat = catalyst.Catalyst()
+cat.Vdot = 750. * 1.e-6 / 60.
 
-data_empty = multi_term.Catalyst()
-# data_empty.source = 'alumina_holder_only.xls' # this data needs to be
-# cleared with Hall and Ezekoye
-data_empty.source = '1000sccm empty tube rep2.xls'
-data_empty.A_arr = A_arr
-data_empty.T_a = T_a
-# Define the path to the .xls file(s) containing the conversion data.
+cat.source = '../data/750sccm 10nmPtPd VariedT rep2.xls'
+# Define the path to the .xls file(s) containing the conversion cat.
 # import the worksheet as a sheet object
-data_empty.worksheet = xlrd.open_workbook(filename=data_empty.source).sheet_by_index(0)
+cat.worksheet = xlrd.open_workbook(filename=cat.source).sheet_by_index(0)
 # Import conversion data from worksheet and store as scipy arrays
-data_empty.T_raw = np.array(data_empty.worksheet.col_values(0, start_rowx=4, 
+cat.T_raw = np.array(cat.worksheet.col_values(0, start_rowx=4, 
                                                  end_rowx=None)) 
-data_empty.T_exp = data_empty.T_raw
-data_empty.HCout_raw = np.array(data_empty.worksheet.col_values(4, start_rowx=4, 
+cat.T_exp = cat.T_raw
+cat.HCout_raw = np.array(cat.worksheet.col_values(4, start_rowx=4, 
                                                      end_rowx=None))
-data_empty.HCin_raw = np.array(data_empty.worksheet.col_values(8, start_rowx=4,
+cat.HCin_raw = np.array(cat.worksheet.col_values(8, start_rowx=4,
                                                     end_rowx=None))
-data_empty.eta_exp = (data_empty.HCin_raw - data_empty.HCout_raw) / data_empty.HCin_raw
+cat.eta_exp = (cat.HCin_raw - cat.HCout_raw) / cat.HCin_raw
+cat.Vdot_array = np.array([cat.Vdot])
+cat.A_arr = A_arr
+cat.T_a = T_a 
+cat.set_eta()
+
+cat_empty = catalyst.Catalyst()
+# cat_empty.source = 'alumina_holder_only.xls' # this data needs to be
+# cleared with Hall and Ezekoye
+cat_empty.source = '1000sccm empty tube rep2.xls'
+cat_empty.A_arr = A_arr
+cat_empty.T_a = T_a
+# Define the path to the .xls file(s) containing the conversion cat.
+# import the worksheet as a sheet object
+cat_empty.worksheet = xlrd.open_workbook(filename=cat_empty.source).sheet_by_index(0)
+# Import conversion data from worksheet and store as scipy arrays
+cat_empty.T_raw = np.array(cat_empty.worksheet.col_values(0, start_rowx=4, 
+                                                 end_rowx=None)) 
+cat_empty.T_exp = cat_empty.T_raw
+cat_empty.HCout_raw = np.array(cat_empty.worksheet.col_values(4, start_rowx=4, 
+                                                     end_rowx=None))
+cat_empty.HCin_raw = np.array(cat_empty.worksheet.col_values(8, start_rowx=4,
+                                                    end_rowx=None))
+cat_empty.eta_exp = (cat_empty.HCin_raw - cat_empty.HCout_raw) / cat_empty.HCin_raw
 
 
 # Plot configuration
@@ -70,12 +69,12 @@ plt.rcParams['lines.markersize'] = 8
 
 plt.figure()
 
-plt.plot(data.T_exp, data.eta_exp * 100., 'sr', linestyle='',
+plt.plot(cat.T_exp, cat.eta_exp * 100., 'sr', linestyle='',
          label='750sccm exp')
-plt.plot(data.T_array, data.eta.T * 100., '-r',
+plt.plot(cat.T_array, cat.eta.T * 100., '-r',
          label='750sccm model')
 
-plt.plot(data_empty.T_exp, data_empty.eta_exp * 100., 'om', linestyle='',
+plt.plot(cat_empty.T_exp, cat_empty.eta_exp * 100., 'om', linestyle='',
          label='1000sccm control')
 
 plt.xlabel(r'Temperature ($^\circ$C)')
