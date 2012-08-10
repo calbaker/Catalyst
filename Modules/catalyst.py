@@ -10,173 +10,271 @@ reload(prop)
 import constants as const
 reload(const)
 
-class Catalyst(object):
-    """Class for representing catalyst reactor modeled by multi term
-    expansion""" 
 
-    CtoK = 273.15 # conversion from Celsius to Kelvin
+class Catalyst(object):
+
+    """Class for representing catalyst reactor modeled by multi term
+    expansion"""
+
+    CtoK = 273.15  # conversion from Celsius to Kelvin
 
     def __init__(self, **kwargs):
         """Sets values of constants"""
-        self.P = 100. # Pressure of flow (kPa)
+        self.P = 101.325  # Pressure of flow (kPa)
 
         self.lambda_and_Da = np.array(
             [[0.001, 0.0316, 3.142, 6.28, 9.42],
              [0.002, 0.0447, 3.141, 6.28, 9.42],
-             [0.003, 0.0547, 3.141, 6.28, 9.42], 
+             [0.003, 0.0547, 3.141, 6.28, 9.42],
              [0.01,  0.100,  3.144, 6.28, 9.43],
-             [0.02,  0.141,  3.15,  6.28, 9.43], 
-             [0.03,  0.172,  3.15,  6.29, 9.43],  
-             [0.1,   0.31,   3.17,  6.30, 9.44], 
-             [0.2,   0.43,   3.20,  6.31, 9.45], 
-             [0.3,   0.52,   3.23,  6.33, 9.46], 
-             [0.4,   0.59,   3.26,  6.35, 9.46], 
-             [0.5,   0.65,   3.29,  6.36, 9.48], 
-             [1.0,   0.86,   3.43,  6.44, 9.53], 
-             [2.0,   1.08,   3.64,  6.58, 9.63], 
-             [5.0,   1.31,   4.03,  6.91, 9.89], 
-             [10.0,  1.43,   4.30,  7.23, 10.2], 
+             [0.02,  0.141,  3.15,  6.28, 9.43],
+             [0.03,  0.172,  3.15,  6.29, 9.43],
+             [0.1,   0.31,   3.17,  6.30, 9.44],
+             [0.2,   0.43,   3.20,  6.31, 9.45],
+             [0.3,   0.52,   3.23,  6.33, 9.46],
+             [0.4,   0.59,   3.26,  6.35, 9.46],
+             [0.5,   0.65,   3.29,  6.36, 9.48],
+             [1.0,   0.86,   3.43,  6.44, 9.53],
+             [2.0,   1.08,   3.64,  6.58, 9.63],
+             [5.0,   1.31,   4.03,  6.91, 9.89],
+             [10.0,  1.43,   4.30,  7.23, 10.2],
              [5000., 1.57,   4.71,  7.85, 11.0]])
         # Graphically determined eigenvalues corresponding to Da.
         # First column is Da, second column is lamba_0, third column
         # is lambda_1, and so on...
 
-        self.lambda_array = self.lambda_and_Da[:,0]
+        self.lambda_array = self.lambda_and_Da[:, 0]
 
         if 'terms' in kwargs:
             self.terms = kwargs['terms']
-            if self.terms > 4:
-                self.terms = 4
+            if self.terms > self.lambda_and_Da.shape[1] - 1:
+                self.terms = self.lambda_and_Da.shape[1] - 1
                 print "lambda are available for no more than 4 terms."
             self.lambda_and_Da = self.lambda_and_Da[:, : self.terms + 1]
 
         self.A_arr = 1.e7
         # Arrhenius coefficient (1/s ???)
-        self.T_a = 7.206e3 # activation temperature (K)
-        self.porosity = 0.97 
-        self.tortuosity = self.porosity**-1 
+        self.T_a = 7.206e3  # activation temperature (K)
 
+        # Nanowire morphology
+        self.porosity = 0.97  # porosity of nanowires
+        self.tortuosity = self.porosity ** -1
+        # tortuosity of nanowires
         self.Kn_length = 100e-9
         # Knudsen length (m) scale
-        self.length_ = 100.
-        # dimensionless channel length
-        self.height = 0.003
-        # channel height (m)
-        self.length = 76.2e-3 * 2.
-        # channel length (m)
         self.thickness = 5.e-6
         # Thickness of wash coat or height of porous media (m).  This
         # was h_{pore} in the pdf.
-        self.width = 20e-3 # channel width (m)
-        self.Vdot_array = np.linspace(100., 1000., 50) * 1.e-6 / 60. 
-        # volume flow rate (m^3/s)
-        self.T_array = np.linspace(250., 450., 50) 
-        # temperature of flow (C)
+
+        # Channel geometry
+        self.height = 0.0025
+        # channel height (m)
+        self.length = 76.2e-3 * 2.
+        # channel length (m)
+        self.width = 20e-3  # channel width (m)
+
         self.T_ambient = 300.
         # ambient temperature (K) at which flow rate is measured
 
         self.fuel = prop.ideal_gas(species='C3H8')
         self.air = prop.ideal_gas()
-        
-    def get_Y(self, x_, y_, Pe, lambda_i,A_i):
 
-        """Sets non-dimensional Y at any particular non-d (x,y) point""" 
-        Y = ( np.sum(A_i * np.exp(-4. * lambda_i**2. / Pe * x_) *
-        np.cos(lambda_i * y_)) )   
+    def get_Y(self, x_, y_, Pe, T):
+
+        """Sets non-dimensional Y at specified non-d (x, y) point"""
+
+        A = self.get_A(T)
+        lambda_i = self.get_lambda(T)
+        Pe = self.get_Pe
+
+        Y = (
+            np.sum(A * np.exp(-4. * lambda_i ** 2. / Pe * x_) *
+            np.cos(lambda_i * y_))
+            )
+
         return Y
 
-    def get_A(self, lambda_i):
+    def get_A(self, T):
 
-        """Returns pre-exponential Arrhenius coefficient.
+        """Returns pre-exponential Arrhenius coefficient."""
 
-        Input:
-        lambda_i : array of eigen values"""
+        lambda_i = self.get_lambda(T)
 
         A = (2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
-        np.sin(lambda_i))).sum() 
+        np.sin(lambda_i))).sum()
 
         return A
 
-    def get_lambda(self, Da):
+    def get_lambda(self, T):
 
         """Uses spline fit to represent lambda as a function of Da.
 
         Values are handpicked from graph of lambda v Da.  Da is
         necessary argument.  Returns value of lambda at specified
-        Da.""" 
+        Da."""
 
-        Da = np.float32(Da)
+        Da = np.float32(self.get_Da(T))
 
         self.spline = []
         self.lambda_i = []
 
         for i in range(1, self.lambda_and_Da.shape[1] - 1):
             self.spline.append(interp.splrep(self.lambda_array,
-            self.lambda_and_Da[:,i])) 
-            self.lambda_i[i]= interp.splev(Da, self.spline[i])
+            self.lambda_and_Da[:, i]))
+            self.lambda_i[i] = interp.splev(Da, self.spline[i])
 
-        return lambda_i
+        return self.lambda_i
+
+    def get_Da(self, T):
+
+        """Returns Damkoehler for a particular temperature (K),
+        porosity, catalyst loading and a whole slew of other things."""
+
+        T = T + self.CtoK
+
+        k_arr = (self.A_arr * np.exp(-self.T_a / T))
+
+        thiele = (k_arr * self.thickness ** 2 / self.D_C3H8_air_eff)
+
+        Da = (0.5 * self.D_C3H8_air_eff / self.D_C3H8_air * self.height /
+                       self.thickness * np.sqrt(thiele) *
+                       np.tanh(np.sqrt(thiele))
+           )
+
+        return Da
 
     def get_Pe(self, Vdot, T):
 
-        """Returns Peclet number for a particular flow rate (m^3/s),
-        temperature (K), and geometry"""
+        """Returns Peclet number
+
+        Inputs:
+        Vdot : flow rate (m^3/s)
+        T : temperature (K)."""
 
         T = T + self.CtoK
-        D_C3H8_air = self.get_diffusivity(T, self.P)
-        U = (Vdot / (self.width * self.height) * (T / self.T_ambient)) 
+        
+        D_C3H8_air = self.get_D_C3H8_air(T)
+        U = Vdot / (self.width * self.height) * (T / self.T_ambient)
         Pe = U * self.height / D_C3H8_air
 
         return Pe
 
-    def get_mfp(self, n):
+    def get_mfp(self, T):
 
-        """Returns crude approximation of mfp (m) of propane in air 
+        """Returns crude approximation of mfp (m) of propane in air
 
-        Method from Bird, Stewart, Lightfoot Eq. 17.3-3.  
+        Method from Bird, Stewart, Lightfoot Eq. 17.3-3.
 
         Input:
 
-        n : number density of air (# / m^3)
-        
-        Output: 
+        T : temperature (K)
+
+        Output:
 
         mfp : mean free path (m) of air molecule"""
 
-        mfp = ( (np.sqrt(2.) * np.pi * self.air.d**2. * n)**-1. )   
+        self.set_TempPres_dependents(T)
+        n = self.air.n
+
+        mfp = (
+            (np.sqrt(2.) * np.pi * self.air.d ** 2. * n) ** -1.
+            )
 
         return mfp
 
-    def get_Kn(self, n):
+    def get_Kn(self, T):
 
         """Returns Knudsen number for air. self.Kn_length must be set
-        first.  
-        
+        first.
+
         Returns
         ___________
         Kn : Knudsen number"""
 
-        mfp = self.get_mfp(n)
+        mfp = self.get_mfp(T)
 
-        self.Kn = mfp / self.Kn_length
+        Kn = mfp / self.Kn_length
 
-        return self.Kn
+        return Kn
 
-    def get_diffusivity(self, T, P):
-        """Returns binary diffusion coefficient from Bird, Stewart,
-        Lightfoot Transport Phenomena 2nd Ed. Equation 17.3-10"""
-        self.air.T = T
-        self.air.P = P
-        self.air.set_TempPres_dependents()
-        self.fuel.T = T
-        self.fuel.P = P
-        self.fuel.set_TempPres_dependents()
+    def get_D_C3H8_air_eff(self, T):
 
-        D_C3H8_air = (2./3. * np.sqrt(const.k_B * T / np.pi * 0.5 *
+        """Returns effective diffusion coefficient in porous media.
+
+        I need to put a refernce here for this scaling technique.  I'm
+        pretty sure it is documented in the paper.""" 
+
+        Kn = self.get_Kn(T)
+        D_C3H8_air = self.get_D_C3H8_air(T)
+        D_C3H8_air_Kn = self.get_D_C3H8_air_Kn(T)
+
+        if np.isscalar(Kn):
+            if Kn <= 1.:
+                D_C3H8_air_eff = (
+                    self.porosity / self.tortuosity * D_C3H8_air
+                    )
+            else:
+                D_C3H8_air_eff = (
+                    2. * self.porosity / self.tortuosity * (D_C3H8_air
+            * D_C3H8_air_Kn) / (D_C3H8_air + D_C3H8_air_Kn) 
+                    )
+
+        else:
+            if Kn.any() <= 1.:
+                D_C3H8_air_eff = (
+                    self.porosity / self.tortuosity * D_C3H8_air
+                    )
+            else:
+                D_C3H8_air_eff = (
+                    2. * self.porosity / self.tortuosity * (D_C3H8_air
+            * D_C3H8_air_Kn) / (D_C3H8_air + D_C3H8_air_Kn)
+                    )
+
+        return D_C3H8_air_eff
+
+    def get_D_C3H8_air_Kn(self, T):
+
+        """Returns Knudsen diffusion coefficient for fuel/air."""
+
+        D_C3H8_air = self.get_D_C3H8_air(T)
+        Kn = self.get_Kn(T)
+
+        D_C3H8_air_Kn = D_C3H8_air / Kn
+
+        return D_C3H8_air_Kn
+
+    def get_D_C3H8_air(self, T):
+
+        """Returns binary diffusion coefficient for fuel/air.
+
+        Method is from Bird, Stewart, Lightfoot Transport Phenomena
+        2nd Ed. Equation 17.3-10"""
+
+        self.set_TempPres_dependents(T, self.P)
+
+        D_C3H8_air = (
+            2. / 3. * np.sqrt(const.k_B * T / np.pi * 0.5 *
                                        (1. / self.air.m + 1. /
                                        self.fuel.m)) / (np.pi * (0.5 *
                                        (self.air.d +
-                                       self.fuel.d))**2.) /
-                                       self.air.n)    
-        return D_C3H8_air 
+                                       self.fuel.d)) ** 2.) /
+                                       self.air.n
+            )
 
+        return D_C3H8_air
+
+    def set_TempPres_dependents(self, T):
+
+        """Performance this function on both fuel and air.
+
+        Input:
+        T : temperature (K)
+
+        Requires that self.P is set."""
+
+        self.air.T = T
+        self.air.P = self.P
+        self.air.set_TempPres_dependents()
+        self.fuel.T = T
+        self.fuel.P = self.P
+        self.fuel.set_TempPres_dependents()
