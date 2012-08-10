@@ -1,11 +1,14 @@
+"""Contains class definition for catalyst."""
+
+# Distribution libraries
 import numpy as np
 import scipy.interpolate as interp
-import types
 
+# Local libraries
 import properties as prop
 reload(prop)
-import functions as func
-reload(func)
+import constants as const
+reload(const)
 
 class Catalyst(object):
     """Class for representing catalyst reactor modeled by multi term
@@ -75,6 +78,25 @@ class Catalyst(object):
         self.fuel = prop.ideal_gas(species='C3H8')
         self.air = prop.ideal_gas()
         
+    def get_Y(self, x_, y_, Pe, lambda_i,A_i):
+
+        """Sets non-dimensional Y at any particular non-d (x,y) point""" 
+        Y = ( np.sum(A_i * np.exp(-4. * lambda_i**2. / Pe * x_) *
+        np.cos(lambda_i * y_)) )   
+        return Y
+
+    def get_A(self, lambda_i):
+
+        """Returns pre-exponential Arrhenius coefficient.
+
+        Input:
+        lambda_i : array of eigen values"""
+
+        A = (2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
+        np.sin(lambda_i))).sum() 
+
+        return A
+
     def get_lambda(self, Da):
 
         """Uses spline fit to represent lambda as a function of Da.
@@ -94,43 +116,6 @@ class Catalyst(object):
             self.lambda_i[i]= interp.splev(Da, self.spline[i])
 
         return lambda_i
-
-    def get_A(self, lambda_i):
-
-        """Returns pre-exponential Arrhenius coefficient.
-
-        Input:
-        lambda_i : array of eigen values"""
-
-        A = (2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
-        np.sin(lambda_i))).sum() 
-
-        return A
-
-    def get_Y(self, x_, y_, Pe, lambda_i,A_i):
-
-        """Sets non-dimensional Y at any particular non-d (x,y) point""" 
-        Y = ( np.sum(A_i * np.exp(-4. * lambda_i**2. / Pe * x_) *
-        np.cos(lambda_i * y_)) )   
-        return Y
-
-    def get_diffusivity(self, T, P):
-        """Returns binary diffusion coefficient from Bird, Stewart,
-        Lightfoot Transport Phenomena 2nd Ed. Equation 17.3-10"""
-        self.air.T = T
-        self.air.P = P
-        self.air.set_TempPres_dependents()
-        self.fuel.T = T
-        self.fuel.P = P
-        self.fuel.set_TempPres_dependents()
-
-        D_C3H8_air = (2./3. * np.sqrt(const.k_B * T / np.pi * 0.5 *
-                                       (1. / self.air.m + 1. /
-                                       self.fuel.m)) / (np.pi * (0.5 *
-                                       (self.air.d +
-                                       self.fuel.d))**2.) /
-                                       self.air.n)    
-        return D_C3H8_air 
 
     def get_Pe(self, Vdot, T):
 
@@ -176,4 +161,22 @@ class Catalyst(object):
         self.Kn = mfp / self.Kn_length
 
         return self.Kn
+
+    def get_diffusivity(self, T, P):
+        """Returns binary diffusion coefficient from Bird, Stewart,
+        Lightfoot Transport Phenomena 2nd Ed. Equation 17.3-10"""
+        self.air.T = T
+        self.air.P = P
+        self.air.set_TempPres_dependents()
+        self.fuel.T = T
+        self.fuel.P = P
+        self.fuel.set_TempPres_dependents()
+
+        D_C3H8_air = (2./3. * np.sqrt(const.k_B * T / np.pi * 0.5 *
+                                       (1. / self.air.m + 1. /
+                                       self.fuel.m)) / (np.pi * (0.5 *
+                                       (self.air.d +
+                                       self.fuel.d))**2.) /
+                                       self.air.n)    
+        return D_C3H8_air 
 

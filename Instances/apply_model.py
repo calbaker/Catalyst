@@ -1,17 +1,21 @@
 """Script for running the model on new and exciting things."""
 
+import os
+import sys
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.ticker as tic
-import os
 
+cmd_folder = os.path.dirname('../Modules/')
+if cmd_folder not in sys.path:
+    sys.path.insert(0, cmd_folder)
 
-import multi_term
-reload(multi_term)
+import catalyst
+reload(catalyst)
 
 plt.close('all')
 
-cat = multi_term.Catalyst()
+cat = catalyst.Catalyst()
 cat.A_arr0 = 11.29e6
 cat.T_a = 6.822e3  
 
