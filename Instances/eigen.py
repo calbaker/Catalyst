@@ -21,6 +21,8 @@ plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 10
 
+plt.close()
+
 fig1 = plt.figure()
 fig1.subplots_adjust(bottom=0.15)
 fig1.subplots_adjust(left=0.25)
@@ -34,7 +36,8 @@ plt.ylabel(r'$1 - \frac{\lambda_n}{Da} \tan \lambda_n$')
 # plt.title('Eigenvalues\nDa='+str(Da))
 # plt.legend(loc='best')
 
-plt.savefig('Plots/eigen.pdf')
-plt.savefig('Plots/eigen.png')
-
 plt.show()
+
+plt.savefig('../Plots/eigen.pdf')
+plt.savefig('../Plots/eigen.png')
+
