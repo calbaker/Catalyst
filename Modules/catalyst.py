@@ -160,7 +160,7 @@ class Catalyst(object):
         """
 
         Da = np.float32(self.get_Da(T))
-
+        
         self.lambda_i = np.zeros(self.lambda_and_Da.shape[1] - 1)
 
         for i in range(len(self.lambda_splines)):
@@ -406,12 +406,57 @@ class Catalyst(object):
         A_i = self.get_A_i(T)
         Pe = self.get_Pe(Vdot, T)
             
-        eta = (
+        self.eta = (
             (A_i / self.lambda_i * np.sin(self.lambda_i) * (1. -
             np.exp(-self.lambda_i ** 2. / (4. * Pe) * self.x_))).sum()
             )
 
-        return eta
+        return self.eta
+
+    def get_eta_fit(self, T, A_arr, T_a):
+        
+        """Returns eta with inputs that are used by curve_fit
+        
+        Inputs:
+        T: temperature (K)
+
+        used by curve_fit as fit parameters:
+        A_arr : pre-exponential coefficient for Arrhenius kinetics
+        T_a : activation temperature (K)
+
+        """
+
+        self.A_arr = A_arr
+        self.T_a = T_a
+        
+        self.get_eta(self.Vdot, T)
+        
+        return self.eta
+
+    def set_fit_params(self):
+
+        """Uses scipy optimize curve_fit to determine Arrhenius
+        parameters that result in best curve fit."""
+
+        self.p0 = np.array([self.A_arr, self.T_a])
+        # initial guess at A_arr and T_a
+
+        self.popt, self.pcov = curve_fit(
+            self.get_eta_fit, self.T_exp, self.eta_exp, p0=self.p0 
+            )
+
+        self.A_arr = self.popt[0]
+        self.T_a = self.popt[1]
+
+        self.set_eta_ij()
+
+    def get_S_r(self):
+
+        """Returns sum of residuals squared for all data points."""
+
+        S_r = np.sum((self.eta_model - self.eta_exp) ** 2.)
+
+        return S_r
 
     def import_data(self):
 
@@ -435,27 +480,3 @@ class Catalyst(object):
             )
         self.T_array = np.linspace(self.T_exp[0], self.T_exp[-1], 50)
 
-    def set_fit_params(self):
-
-        """Uses scipy optimize curve_fit to determine Arrhenius
-        parameters that result in best curve fit."""
-
-        self.p0 = np.array([self.A_arr, self.T_a])
-        # initial guess at A_arr and T_a
-
-        self.popt, self.pcov = curve_fit(
-            self.get_eta_dim, self.T_exp, self.eta_exp, p0=self.p0
-            )
-
-        self.A_arr = self.popt[0]
-        self.T_a = self.popt[1]
-
-        self.set_eta_ij()
-
-    def get_S_r(self):
-
-        """Returns sum of residuals squared for all data points."""
-
-        S_r = np.sum((self.eta_model - self.eta_exp) ** 2.)
-
-        return S_r
