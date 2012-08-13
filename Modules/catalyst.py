@@ -93,6 +93,8 @@ class Catalyst(object):
 
         self.fuel = prop.ideal_gas(species='C3H8')
         self.air = prop.ideal_gas()
+        self.air.P = self.P
+        self.fuel.P = self.P
 
     def get_Y(self, x_, y_):
 
@@ -227,9 +229,9 @@ class Catalyst(object):
 
         U = Vdot / (self.width * self.height) * (T / self.T_ambient)
 
-        Pe = U * self.height / D_C3H8_air
+        self.Pe = U * self.height / D_C3H8_air
 
-        return Pe
+        return self.Pe
 
     def get_mfp(self, T):
 
@@ -345,33 +347,23 @@ class Catalyst(object):
         mfp : mean free path (m) of air molecule"""
 
         self.set_TempPres_dependents(T)
-        n = self.air.n
 
-        D_C3H8_air = (
+        self.D_C3H8_air = (
             2. / 3. * np.sqrt(const.k_B * T / np.pi * 0.5 * (1. /
             self.air.m + 1. / self.fuel.m)) / (np.pi * (0.5 *
-            (self.air.d + self.fuel.d)) ** 2.) / n
+            (self.air.d + self.fuel.d)) ** 2.) / self.air.n
             )
 
-        return D_C3H8_air
+        return self.D_C3H8_air
 
-    def set_TempPres_dependents(self, *args):
+    def set_TempPres_dependents(self, T):
 
         """Performance this function on both fuel and air.
 
-        Optional Input:
+        Input:
         T : temperature (K)
 
-        If no input is provided, self.T will be used.  This does not
-        provide any speed up.
-
         Requires that self.P is set."""
-
-        if len(args) == 1:
-            T = args[0]
-
-        else:
-            T = self.T
 
         self.air.T = T
         self.air.P = self.P
@@ -398,62 +390,25 @@ class Catalyst(object):
                 self.Vdot = self.Vdot_array[i]
                 self.T = self.T_array[j]
 
-                D = self.get_D_C3H8_air(self.T)
-                D_eff = self.get_D_C3H8_air_eff(self.T)
-                thiele = self.get_thiele(self.T)
+                self.eta_ij[i, j] = self.get_eta(self.Vdot, self.T)
+                self.Da_j[j] = self.Da
+                self.Pe_ij[i, j] = self.Pe
 
-                Da = self.get_Da(D, D_eff, thiele)
-                lambda_i = self.get_lambda(Da)
-                A_i = self.get_A_i(lambda_i)
-                Pe = self.get_Pe(self.Vdot, self.T, D)
-
-                self.Da_j[j] = Da
-                self.Pe_ij[i, j] = Pe
-
-                self.eta_ij[i, j] = self.get_eta(A_i, lambda_i, Pe)
-
-    def get_eta(self, *args, **kwargs):
+    def get_eta(self, Vdot, T):
 
         """Returns conversion efficiency.
 
-        Expected Inputs:
-        A_i from get_A_i
-        lambda_i from get_lambda
-        Pe from get_Pe
-
-        Or these keyword inputs:
+        Inputs:
         Vdot : flow rate (m^3/s)
         T : temperature (K).
-
-        of if no inputs are given, self.T and self.Vdot will be used.
         """
 
-        if len(args) == 3:
-            A_i = args[0]
-            lambda_i = args[1]
-            Pe = args[2]
-
-        else:
-
-            if 'T' in kwargs:
-                T = kwargs['T']
-
-            else:
-                T = self.T
-
-            A_i = self.get_A_i(T)
-            lambda_i = self.get_lambda(T)
-
-            if 'Vdot' in kwargs:
-                Vdot = kwargs['Vdot']
-            else:
-                Vdot = self.Vdot
-
-            Pe = self.get_Pe(Vdot, T)
-
+        A_i = self.get_A_i(T)
+        Pe = self.get_Pe(Vdot, T)
+            
         eta = (
-            (A_i / lambda_i * np.sin(lambda_i) * (1. -
-            np.exp(-lambda_i ** 2. / (4. * Pe) * self.x_))).sum()
+            (A_i / self.lambda_i * np.sin(self.lambda_i) * (1. -
+            np.exp(-self.lambda_i ** 2. / (4. * Pe) * self.x_))).sum()
             )
 
         return eta
@@ -496,20 +451,6 @@ class Catalyst(object):
         self.T_a = self.popt[1]
 
         self.set_eta_ij()
-
-    def get_eta_dim(self, T, A_arr, T_a):
-
-        """Returns species conversion efficiency, eta, as a function
-        of required argument T. Used by set_params."""
-
-        self.A_arr = A_arr
-        self.T_a = T_a
-
-        self.Pe_ij = self.get_Pe(self.Vdot, T)
-
-        eta = self.get_eta(self.Vdot, T)
-
-        return eta
 
     def get_S_r(self):
 
