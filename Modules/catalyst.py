@@ -50,13 +50,18 @@ class Catalyst(object):
         # is lambda_1, and so on...
 
         self.lambda_array = self.lambda_and_Da[:, 0]
+        self.init_lambda_splines()
 
         if 'terms' in kwargs:
             self.terms = kwargs['terms']
             if self.terms > self.lambda_and_Da.shape[1] - 1:
                 self.terms = self.lambda_and_Da.shape[1] - 1
                 print "lambda are available for no more than 4 terms."
-            self.lambda_and_Da = self.lambda_and_Da[:, : self.terms + 1]
+            self.lambda_and_Da = (
+                self.lambda_and_Da[:, : self.terms + 1]
+                )
+        else:
+            self.terms = self.lambda_and_Da.shape[1] - 1
 
         self.A_arr = 1.e7
         # Arrhenius coefficient (1/s ???)
@@ -89,7 +94,7 @@ class Catalyst(object):
         self.fuel = prop.ideal_gas(species='C3H8')
         self.air = prop.ideal_gas()
 
-    def get_Y(self, x_, y_, *args):
+    def get_Y(self, x_, y_):
 
         """Sets non-dimensional Y at specified non-d (x, y) point.
 
@@ -98,175 +103,116 @@ class Catalyst(object):
         x_ : streamwise coordinate scaled by channel height
         y_ : transverse coordinate scaled by channel height
 
-        Optional:
-
-        A_i which comes from get_A_i
-        lambda_i which comes from get_lambda
-        Pe which comes from get_Pe
-
-        If no arguments are given, the method uses self.T and
-        self.Vdot to get the necessary parameters.
-
         """
 
-        if len(args) == 3:
-            A_i = args[0]
-            lambda_i = args[1]
-            Pe = args[2]
+        T = self.T
+        Vdot = self.Vdot
+        A_i = self.get_A_i(T)
+        lambda_i = self.get_lambda(T)
+        Pe = self.get_Pe(Vdot, T)
 
-        else:
-            print "Arguments not provided."
-            print "Using self.T and self.Vdot."
-            T = self.T
-            Vdot = self.Vdot
-            A_i = self.get_A(T)
-            lambda_i = self.get_lambda(T)
-            Pe = self.get_Pe(Vdot, T)
-
-        Y = (
+        self.Y = (
             (A_i * np.exp(-4. * lambda_i ** 2. / Pe * x_) *
             np.cos(lambda_i * y_)).sum()
             )
 
-        return Y
+        return self.Y
 
-    def get_A_i(self, *args):
+    def get_A_i(self, T):
 
         """Returns pre-exponential Arrhenius coefficient.
 
         Inputs:
 
-        Expects lambda_i as argument.  lambda_i can be obtained using
-        get_lambda.
+        T: temperature (K)
+        """
 
-        If no argument is provided, self.T will be used."""
+        lambda_i = self.get_lambda(T)
 
-        if len(args) == 1:
-            lambda_i = args[0]
-
-        else:
-            T = self.T
-            lambda_i = self.get_lambda(T)
-
-        A_i = (
+        self.A_i = (
             2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
             np.sin(lambda_i))
             )
 
-        return A_i
+        return self.A_i
 
-    def get_lambda(self, *args):
+    def init_lambda_splines(self):
+
+        """Sets up spline fitting for get_lambda."""
+
+        self.lambda_splines = []
+
+        for i in range(0, self.lambda_and_Da.shape[1] - 1):
+            self.lambda_splines.append(
+                interp.splrep(self.lambda_array,
+                              self.lambda_and_Da[:, i])
+                )
+
+    def get_lambda(self, T):
 
         """Uses spline fit to represent lambda as a function of Da.
 
         Inputs:
 
-        Expects Da.  Da can be obtained using get_Da.
+        T : temperature (K)
+        """
 
-        If no argument is given, self.T will be used.
+        Da = np.float32(self.get_Da(T))
 
-        Values are handpicked from graph of lambda v Da.  Da is
-        necessary argument.  Returns value of lambda at specified
-        Da."""
+        self.lambda_i = np.zeros(self.lambda_and_Da.shape[1] - 1)
 
-        if len(args) == 1:
-            Da = np.float32(args[0])
+        for i in range(len(self.lambda_splines)):
+            self.lambda_i[i] = interp.splev(Da, self.lambda_splines[i])
 
-        else:
-            T = self.T
-            Da = np.float32(self.get_Da(T))
+        return self.lambda_i
 
-        spline = []
-        lambda_i = np.zeros(self.lambda_and_Da.shape[1] - 1)
-
-        for i in range(0, self.lambda_and_Da.shape[1] - 1):
-            spline.append(interp.splrep(self.lambda_array,
-            self.lambda_and_Da[:, i]))
-            lambda_i[i] = interp.splev(Da, spline[i])
-
-        return lambda_i
-
-    def get_Da(self, *args, **kwargs):
+    def get_Da(self, T):
 
         """Returns Damkoehler number.
 
         Inputs:
 
-        Expects D_C3H8_air, D_C3H8_air_eff, and thiele. These can be
-        obtained with get_D_C3H8_air, get_D_C3H8_air_eff, and
-        get_thiele, respectively.
+        T: temperature (K) 
+        """
 
-        If keyword argument, T, is given, it will be used to obtain
-        all of these.
+        thiele = self.get_thiele(T)
 
-        If no arguments are given, self.T will be used."""
-
-        if len(args) == 3:
-            D_C3H8_air = args[0]
-            D_C3H8_air_eff = args[1]
-            thiele = args[2]
-
-        else:
-
-            if 'T' in kwargs:
-                T = kwargs['T']
-
-            else:
-                T = self.T
-
-            D_C3H8_air = self.get_D_C3H8_air(T)
-            D_C3H8_air_eff = self.get_D_C3H8_air_eff(T)
-            thiele = self.get_thiele(T)
-
-        Da = (
-            0.5 * D_C3H8_air_eff / D_C3H8_air * self.height /
-            self.thickness * np.sqrt(thiele) *
-            np.tanh(np.sqrt(thiele))
+        self.Da = (
+            0.5 * self.D_C3H8_air_eff / self.D_C3H8_air * self.height
+            / self.thickness * np.sqrt(thiele) *
+            np.tanh(np.sqrt(thiele))  
            )
 
-        return Da
+        return self.Da
 
-    def get_thiele(self, *args):
-
-        """Returns Thiele modulus.
-
-        Inputs:
-
-        Expects k_arr and D_C3H8_air_eff.  If no arguments are given,
-        self.T will be used."""
-
-        if len(args) == 2:
-            k_arr = args[0]
-            D_C3H8_air_eff = args[1]
-
-        else:
-            T = self.T
-            k_arr = (self.A_arr * np.exp(-self.T_a / T))
-            D_C3H8_air_eff = self.get_D_C3H8_air_eff(T)
-
-        thiele = (k_arr * self.thickness ** 2 / D_C3H8_air_eff)
-
-        return thiele
-
-    def get_k(self, *args):
+    def get_thiele(self, T):
 
         """Returns Thiele modulus.
 
         Inputs:
 
-        Expects T.  If no arguments are given, self.T will be used."""
+        T: temperature (K)"""
+        
+        k_arr = (self.A_arr * np.exp(-self.T_a / T))
+        D_C3H8_air_eff = self.get_D_C3H8_air_eff(T)
 
-        if len(args) == 1:
-            T = args[0]
+        self.thiele = (k_arr * self.thickness ** 2 / D_C3H8_air_eff)
 
-        else:
-            T = self.T
+        return self.thiele
 
-        k_arr = self.A_arr * np.exp(-self.T_a / T)
+    def get_k(self, T):
 
-        return k_arr
+        """Returns Thiele modulus.
 
-    def get_Pe(self, Vdot, T, *args, **kwargs):
+        Inputs:
+
+        T: temperature (K)"""
+
+        self.k_arr = self.A_arr * np.exp(-self.T_a / T)
+
+        return self.k_arr
+
+    def get_Pe(self, Vdot, T):
 
         """Returns Peclet number
 
@@ -275,16 +221,9 @@ class Catalyst(object):
         Vdot : flow rate (m^3/s)
         T : temperature (K).
 
-        D_C3H8_air can be given as an optional argument to speed
-        things up.  This can be returned by get_D_C3H8_air.
-
         """
 
-        if 'D_C3H8_air' in kwargs:
-            D_C3H8_air = kwargs['D_C3H8_air']
-
-        else:
-            D_C3H8_air = self.get_D_C3H8_air(T)
+        D_C3H8_air = self.get_D_C3H8_air(T)
 
         U = Vdot / (self.width * self.height) * (T / self.T_ambient)
 
@@ -292,7 +231,7 @@ class Catalyst(object):
 
         return Pe
 
-    def get_mfp(self, *args, **kwargs):
+    def get_mfp(self, T):
 
         """Returns crude approximation of mfp (m) of propane in air
 
@@ -300,44 +239,28 @@ class Catalyst(object):
 
         Input:
 
-        Expects
-        n : number density (#/m^3
-
-        If no argument is given, self.T will be used for
         T : temperature (K)
 
         Output:
 
         mfp : mean free path (m) of air molecule"""
 
-        if len(args) == 1:
-            n = args[0]
+        self.air.T = T
+        self.air.set_TempPres_dependents()
 
-        elif 'T' in kwargs:
-            T = kwargs['T']
-            self.set_TempPres_dependents(T)
-            n = self.air.n
-
-        else:
-            T = self.T
-            self.set_TempPres_dependents(T)
-            n = self.air.n
-
-        mfp = (
-            (np.sqrt(2.) * np.pi * self.air.d ** 2. * n) ** -1.
+        self.mfp = (
+            (np.sqrt(2.) * np.pi * self.air.d ** 2. * self.air.n) ** -1.
             )
 
-        return mfp
+        return self.mfp
 
-    def get_Kn(self, *args, **kwargs):
+    def get_Kn(self, T):
 
         """Returns Knudsen number for air.
 
         Inputs:
 
-        Expects mean free path from get_mfp or optionally T as a
-        keyword argument. If no argument is provided, self.T will be
-        used.
+        T: temperature (K)
 
         self.Kn_length must be set.
 
@@ -345,135 +268,84 @@ class Catalyst(object):
         ___________
         Kn : Knudsen number"""
 
-        if len(args) == 1:
-            mfp = args[0]
+        mfp = self.get_mfp(T)
 
-        elif 'T' in kwargs:
-            T = kwargs['T']
-            mfp = self.get_mfp(T)
+        self.Kn = mfp / self.Kn_length
 
-        else:
-            T = self.T
-            mfp = self.get_mfp(T)
+        return self.Kn
 
-        Kn = mfp / self.Kn_length
-
-        return Kn
-
-    def get_D_C3H8_air_eff(self, *args, **kwargs):
+    def get_D_C3H8_air_eff(self, T):
 
         """Returns effective diffusion coefficient in porous media.
 
         Inputs:
 
-        Kn, D_C3H8_air, and D_C3H8_air_Kn from get_Kn, get_D_C3H8_air,
-        and get_D_C3H8_air_Kn or T as keyword argument.  If no
-        arguments are given, self.T will be used.
+        T: temperature (K)
 
         I need to put a refernce here for this scaling technique.  I'm
         pretty sure it is documented in the paper."""
 
-        if 'T' in kwargs:
-            T = kwargs['T']
-            Kn = self.get_Kn(T)
-            D_C3H8_air = self.get_D_C3H8_air(T)
-            D_C3H8_air_Kn = self.get_D_C3H8_air_Kn(T)
-
-        elif len(args) == 3:
-            Kn = args[0]
-            D_C3H8_air = args[1]
-            D_C3H8_air_Kn = args[2]
-
-        else:
-            T = self.T
-            Kn = self.get_Kn(T)
-            D_C3H8_air = self.get_D_C3H8_air(T)
-            D_C3H8_air_Kn = self.get_D_C3H8_air_Kn(T)
+        Kn = self.get_Kn(T)
+        D_C3H8_air_Kn = self.get_D_C3H8_air_Kn(T)
 
         if np.isscalar(Kn):
             if Kn <= 1.:
                 D_C3H8_air_eff = (
-                    self.porosity / self.tortuosity * D_C3H8_air
+                    self.porosity / self.tortuosity * self.D_C3H8_air
                     )
             else:
                 D_C3H8_air_eff = (
-                    2. * self.porosity / self.tortuosity * (D_C3H8_air
-            * D_C3H8_air_Kn) / (D_C3H8_air + D_C3H8_air_Kn)
+                    2. * self.porosity / self.tortuosity *
+            (self.D_C3H8_air * D_C3H8_air_Kn) / (self.D_C3H8_air +
+            D_C3H8_air_Kn) 
                     )
 
         else:
             if Kn.any() <= 1.:
                 D_C3H8_air_eff = (
-                    self.porosity / self.tortuosity * D_C3H8_air
+                    self.porosity / self.tortuosity * self.D_C3H8_air
                     )
             else:
                 D_C3H8_air_eff = (
-                    2. * self.porosity / self.tortuosity * (D_C3H8_air
-            * D_C3H8_air_Kn) / (D_C3H8_air + D_C3H8_air_Kn)
+                    2. * self.porosity / self.tortuosity *
+            (self.D_C3H8_air * D_C3H8_air_Kn) / (self.D_C3H8_air +
+            D_C3H8_air_Kn) 
                     )
+
+        self.D_C3H8_air_eff = D_C3H8_air_eff
 
         return D_C3H8_air_eff
 
-    def get_D_C3H8_air_Kn(self, *args, **kwargs):
+    def get_D_C3H8_air_Kn(self, T):
 
         """Returns Knudsen diffusion coefficient for fuel/air.
 
-
-        Kn and D_C3H8_air from get_Kn, get_D_C3H8_air, and
-        get_D_C3H8_air_Kn or T as keyword argument.  If no arguments
-        are given, self.T will be used.
+        T: temperature (K)
         """
 
-        if 'T' in kwargs:
-            T = kwargs['T']
-            Kn = self.get_Kn(T)
-            D_C3H8_air = self.get_D_C3H8_air(T)
+        Kn = self.get_Kn(T)
+        D_C3H8_air = self.get_D_C3H8_air(T)
 
-        elif len(args) == 2:
-            Kn = args[0]
-            D_C3H8_air = args[1]
+        self.D_C3H8_air_Kn = D_C3H8_air / Kn
 
-        else:
-            T = self.T
-            Kn = self.get_Kn(T)
-            D_C3H8_air = self.get_D_C3H8_air(T)
+        return self.D_C3H8_air_Kn
 
-        D_C3H8_air_Kn = D_C3H8_air / Kn
-
-        return D_C3H8_air_Kn
-
-    def get_D_C3H8_air(self, *args, **kwargs):
+    def get_D_C3H8_air(self, T):
 
         """Returns binary diffusion coefficient for fuel/air.
 
         Method is from Bird, Stewart, Lightfoot Transport Phenomena
         2nd Ed. Equation 17.3-10
 
-        Expects:
+        Inputs:
         T : temperature
-
-        and optionally:
-        n : number density (#/m^3)
-
-        or if no arguments are given, self.T will be used.
 
         Output:
 
         mfp : mean free path (m) of air molecule"""
 
-        if len(args) == 1:
-            T = args[0]
-            self.set_TempPres_dependents(T)
-            n = self.air.n
-
-        elif len(args) == 2:
-            T = args[0]
-            n = args[1]
-
-        else:
-            T = self.T
-            self.set_TempPres_dependents(T)
-            n = self.air.n
+        self.set_TempPres_dependents(T)
+        n = self.air.n
 
         D_C3H8_air = (
             2. / 3. * np.sqrt(const.k_B * T / np.pi * 0.5 * (1. /
