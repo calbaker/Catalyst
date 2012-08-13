@@ -149,6 +149,7 @@ class Catalyst(object):
                 interp.splrep(self.lambda_array,
                               self.lambda_and_Da[:, i])
                 )
+        self.lambda_splines = np.array(self.lambda_splines)
 
     def get_lambda(self, T):
 
@@ -378,6 +379,11 @@ class Catalyst(object):
 
         self.x_ = self.length / self.height
 
+        try:
+            self.Vdot_array
+        except AttributeError:
+            self.Vdot_array = np.array([self.Vdot])
+
         self.Pe_ij = np.zeros(
             [self.Vdot_array.size, self.T_array.size]
             )
@@ -431,6 +437,8 @@ class Catalyst(object):
 
         self.T_array = T_exp
         self.set_eta_ij()
+
+        self.eta_ij = self.eta_ij.reshape(self.eta_ij.size)
         
         return self.eta_ij
 
@@ -441,11 +449,6 @@ class Catalyst(object):
 
         self.p0 = np.array([self.A_arr, self.T_a])
         # initial guess at A_arr and T_a
-
-        try:
-            self.Vdot_array
-        except AttributeError:
-            self.Vdot_array = np.array([self.Vdot])
 
         self.popt, self.pcov = curve_fit(
             self.get_eta_fit, self.T_exp, self.eta_exp, p0=self.p0 
@@ -472,7 +475,7 @@ class Catalyst(object):
         # Import conversion data from worksheet and store as scipy arrays
         self.T_exp = np.array(
             self.worksheet.col_values(0, start_rowx=4, end_rowx=None)
-            )
+            ) + 273.15
         self.HCout_raw = np.array(
             self.worksheet.col_values(4, start_rowx=4, end_rowx=None)
             )
