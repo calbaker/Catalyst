@@ -530,7 +530,7 @@ class Catalyst(object):
                 self.Da_j[j] = self.get_Da(T)
                 self.Pe_ij[i, j] = self.get_Pe(Vdot, T)
 
-    def get_eta(self, Vdot, T):
+    def get_eta(self, *args, **kwargs):
 
         """Returns conversion efficiency.
 
@@ -542,10 +542,23 @@ class Catalyst(object):
         Or these keyword inputs:
         Vdot : flow rate (m^3/s)
         T : temperature (K).
+
+        of if no inputs are given, self.T and self.Vdot will be used.
         """
 
-        A_i = self.get_A_i(T)
-        lambda_i = self.get_lambda(T)
+        if len(args) == 3:
+            A_i = args[0]
+            lambda_i = args[1]
+            Pe = args[2]
+
+        else:
+            if 'T' in kwargs:
+                T = kwargs['T']
+            else:
+                T = self.T
+
+            A_i = self.get_A_i(T)
+            lambda_i = self.get_lambda(T)
         Pe = self.get_Pe(Vdot, T)
 
         eta = (
