@@ -4,7 +4,6 @@ performance of catalyst with control experiment.  This plot is used in paper.
 
 import numpy as np
 import matplotlib.pyplot as plt
-import xlrd
 import os
 import sys
 
@@ -12,8 +11,6 @@ cmd_folder = os.path.dirname('../Modules/')
 if cmd_folder not in sys.path:
     sys.path.insert(0, cmd_folder)
 
-import experimental_data as expdata
-reload(expdata)
 import catalyst 
 reload(catalyst)
 
