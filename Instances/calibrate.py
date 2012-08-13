@@ -3,96 +3,62 @@ data and fitting capability."""
 
 import numpy as np
 import matplotlib.pyplot as plt
-import xlrd
 import os
+import sys
 
+cmd_folder = os.path.dirname('../Modules/')
+if cmd_folder not in sys.path:
+    sys.path.insert(0, cmd_folder)
 
-import experimental_data as expdata
-reload(expdata)
+import catalyst 
+reload(catalyst)
 
-plt.close('all')
+data250 = catalyst.Catalyst()
+data250.source = (
+    '../data/250sccm 10nmPtPd VariedT rep2.xls'
+    )
+data250.import_data()
 
-data250 = expdata.ExpDataMulti()
 data250.Vdot = 250. * 1.e-6 / 60.
-data250.source = '../Conversion Data/250sccm 10nmPtPd VariedT rep2.xls'
+
 A_arr = 10.e6
 T_a = 7.2e3
 data250.A_arr = A_arr
 data250.T_a = T_a
-# Define the path to the .xls file(s) containing the conversion data.
-# import the worksheet as a sheet object
-data250.worksheet = xlrd.open_workbook(filename=data250.source).sheet_by_index(0)
-# Import conversion data from worksheet and store as scipy arrays
-data250.T_raw = np.array(data250.worksheet.col_values(0, start_rowx=4, 
-                                                 end_rowx=None)) 
-data250.T_exp = data250.T_raw
-data250.HCout_raw = np.array(data250.worksheet.col_values(4, start_rowx=4, 
-                                                     end_rowx=None))
-data250.HCin_raw = np.array(data250.worksheet.col_values(8, start_rowx=4,
-                                                    end_rowx=None))
-data250.eta_exp = (data250.HCin_raw - data250.HCout_raw) / data250.HCin_raw
-data250.Vdot_array = np.array([data250.Vdot])
-data250.p0 = np.array([A_arr, T_a])
-data250.set_params()
+
+data250.set_fit_params()
 data250.set_eta()
 
-data500 = expdata.ExpDataMulti()
+data500 = catalyst.Catalyst()
+data500.source = (
+    '../data/500sccm 10nmPtPd VariedT rep2.xls'
+    )
+data500.import_data()
 data500.T_a = data250.T_a
 data500.A_arr = data250.A_arr
 data500.Vdot = 500. * 1.e-6 / 60.
-data500.source = '../Conversion Data/500sccm 10nmPtPd VariedT rep2.xls'
-# Define the path to the .xls file(s) containing the conversion data.
-# import the worksheet as a sheet object
-data500.worksheet = xlrd.open_workbook(filename=data500.source).sheet_by_index(0)
-# Import conversion data from worksheet and store as scipy arrays
-data500.T_raw = np.array(data500.worksheet.col_values(0, start_rowx=4, 
-                                                 end_rowx=None)) 
-data500.T_exp = data500.T_raw
-data500.HCout_raw = np.array(data500.worksheet.col_values(4, start_rowx=4, 
-                                                     end_rowx=None))
-data500.HCin_raw = np.array(data500.worksheet.col_values(8, start_rowx=4,
-                                                    end_rowx=None))
-data500.eta_exp = (data500.HCin_raw - data500.HCout_raw) / data500.HCin_raw
 data500.Vdot_array = np.array([data500.Vdot])
 data500.set_eta()
 
-data750 = expdata.ExpDataMulti()
+data750 = catalyst.Catalyst()
+data750.source = (
+    '../data/750sccm 10nmPtPd VariedT rep2.xls'
+    )
+data750.import_data()
 data750.T_a = data250.T_a
 data750.A_arr = data250.A_arr
 data750.Vdot = 750. * 1.e-6 / 60.
-data750.source = '../Conversion Data/750sccm 10nmPtPd VariedT rep2.xls'
-# Define the path to the .xls file(s) containing the conversion data.
-# import the worksheet as a sheet object
-data750.worksheet = xlrd.open_workbook(filename=data750.source).sheet_by_index(0)
-# Import conversion data from worksheet and store as scipy arrays
-data750.T_raw = np.array(data750.worksheet.col_values(0, start_rowx=4, 
-                                                 end_rowx=None)) 
-data750.T_exp = data750.T_raw
-data750.HCout_raw = np.array(data750.worksheet.col_values(4, start_rowx=4, 
-                                                     end_rowx=None))
-data750.HCin_raw = np.array(data750.worksheet.col_values(8, start_rowx=4,
-                                                    end_rowx=None))
-data750.eta_exp = (data750.HCin_raw - data750.HCout_raw) / data750.HCin_raw
 data750.Vdot_array = np.array([data750.Vdot])
 data750.set_eta()
 
-data1000 = expdata.ExpDataMulti()
+data1000 = catalyst.Catalyst()
+data1000.source = (
+    '../data/1000sccm 10nmPtPd VariedT rep2.xls'
+    )
+data1000.import_data()
 data1000.T_a = data250.T_a
 data1000.A_arr = data250.A_arr
 data1000.Vdot = 1000. * 1.e-6 / 60.
-data1000.source = '../Conversion Data/1000sccm 10nmPtPd VariedT rep2.xls'
-# Define the path to the .xls file(s) containing the conversion data.
-# import the worksheet as a sheet object
-data1000.worksheet = xlrd.open_workbook(filename=data1000.source).sheet_by_index(0)
-# Import conversion data from worksheet and store as scipy arrays
-data1000.T_raw = np.array(data1000.worksheet.col_values(0, start_rowx=4, 
-                                                 end_rowx=None)) 
-data1000.T_exp = data1000.T_raw
-data1000.HCout_raw = np.array(data1000.worksheet.col_values(4, start_rowx=4, 
-                                                     end_rowx=None))
-data1000.HCin_raw = np.array(data1000.worksheet.col_values(8, start_rowx=4,
-                                                    end_rowx=None))
-data1000.eta_exp = (data1000.HCin_raw - data1000.HCout_raw) / data1000.HCin_raw
 data1000.Vdot_array = np.array([data1000.Vdot])
 data1000.set_eta()
 
