@@ -413,7 +413,7 @@ class Catalyst(object):
 
         return self.eta
 
-    def get_eta_fit(self, T, A_arr, T_a):
+    def get_eta_fit(self, T_exp, A_arr, T_a):
         
         """Returns eta with inputs that are used by curve_fit
         
@@ -428,10 +428,11 @@ class Catalyst(object):
 
         self.A_arr = A_arr
         self.T_a = T_a
+
+        self.T_array = T_exp
+        self.set_eta_ij()
         
-        self.get_eta(self.Vdot, T)
-        
-        return self.eta
+        return self.eta_ij
 
     def set_fit_params(self):
 
@@ -441,14 +442,17 @@ class Catalyst(object):
         self.p0 = np.array([self.A_arr, self.T_a])
         # initial guess at A_arr and T_a
 
+        try:
+            self.Vdot_array
+        except AttributeError:
+            self.Vdot_array = np.array([self.Vdot])
+
         self.popt, self.pcov = curve_fit(
             self.get_eta_fit, self.T_exp, self.eta_exp, p0=self.p0 
             )
 
         self.A_arr = self.popt[0]
         self.T_a = self.popt[1]
-
-        self.set_eta_ij()
 
     def get_S_r(self):
 

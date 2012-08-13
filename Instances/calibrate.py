@@ -18,7 +18,6 @@ data250.source = (
     '../data/250sccm 10nmPtPd VariedT rep2.xls'
     )
 data250.import_data()
-
 data250.Vdot = 250. * 1.e-6 / 60.
 
 A_arr = 10.e6
@@ -37,7 +36,6 @@ data500.import_data()
 data500.T_a = data250.T_a
 data500.A_arr = data250.A_arr
 data500.Vdot = 500. * 1.e-6 / 60.
-data500.Vdot_array = np.array([data500.Vdot])
 data500.set_eta()
 
 data750 = catalyst.Catalyst()
@@ -48,7 +46,6 @@ data750.import_data()
 data750.T_a = data250.T_a
 data750.A_arr = data250.A_arr
 data750.Vdot = 750. * 1.e-6 / 60.
-data750.Vdot_array = np.array([data750.Vdot])
 data750.set_eta()
 
 data1000 = catalyst.Catalyst()
@@ -59,7 +56,6 @@ data1000.import_data()
 data1000.T_a = data250.T_a
 data1000.A_arr = data250.A_arr
 data1000.Vdot = 1000. * 1.e-6 / 60.
-data1000.Vdot_array = np.array([data1000.Vdot])
 data1000.set_eta()
 
 # Plot configuration
