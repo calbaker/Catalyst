@@ -91,6 +91,8 @@ class Catalyst(object):
         # Number of streamwise nodes for which Y is returned in
         # numerical model.  
 
+        self.y_ = 1.
+
         self.y_nodes = 50
         # Number of transverse nodes for which Y is returned in
         # numerical model.
@@ -533,11 +535,9 @@ class Catalyst(object):
         
         """Solves for species and conversion numerically."""
 
-        self.get_thiele(self.T)
-        self.get_Pe(self.Vdot, self.T)
-
         Y0 = np.zeros(self.y_nodes)
         self.x_array = np.linspace(0, self.x_, self.x_nodes)
+        self.y_array = np.linspace(0, self.y_, self.y_nodes)
         self.delta_x = self.length / self.x_nodes
         self.delta_y = self.height / self.y_nodes
         
@@ -555,11 +555,7 @@ class Catalyst(object):
             Y[i + 1]) / self.delta_y ** 2
                 )
         
-        self.wall_flux = (
-            -self.height / self.thickness * self.D_C3H8_air_eff /
-        self.D_C3H8_air * self.thiele ** 0.5 * np.tanh(self.thiele **
-        0.5) * Y[0]
-             )
+        self.wall_flux = -self.Da * Y[0]
         Yprime[0] = (
             ((Y[1] - Y[0]) - self.wall_flux) / self.delta_y ** 2
             )

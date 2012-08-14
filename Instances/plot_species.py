@@ -47,6 +47,11 @@ cat1.Yxy = np.concatenate((cat1.Yxy[:, ::-1][:, 1:], cat1.Yxy), 1)
 
 y_array = np.concatenate((-y_array[1:][::-1], y_array), 0)
 
+cat_num = catalyst.Catalyst()
+cat_num.Pe = Pe
+cat_num.Da = Da
+cat_num.solve_numeric()
+
 # Plot configuration
 FONTSIZE = 30
 plt.rcParams['axes.labelsize'] = FONTSIZE
@@ -75,9 +80,9 @@ plt.ylim(-1, 1)
 plt.subplots_adjust(bottom=0.15)
 plt.subplots_adjust(left=0.2)
 plt.subplots_adjust(right=0.7)
-plt.savefig('../Plots/4species Da=' + str(Da) + ' Pe=' + str(Pe)
+plt.savefig('../Plots/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.pdf')
-plt.savefig('../Plots/4species Da=' + str(Da) + ' Pe=' + str(Pe)
+plt.savefig('../Plots/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
 
 fig_species = plt.figure('1 term')
@@ -94,9 +99,26 @@ plt.ylim(-1, 1)
 plt.subplots_adjust(bottom=0.15)
 plt.subplots_adjust(left=0.2)
 plt.subplots_adjust(right=0.7)
-plt.savefig('../Plots/species Da=' + str(Da) + ' Pe=' + str(Pe)
+plt.savefig('../Plots/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.pdf')
-plt.savefig('../Plots/species Da=' + str(Da) + ' Pe=' + str(Pe)
+plt.savefig('../Plots/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
+            + '.png')
+
+x_2d_num, y_2d_num = np.meshgrid(cat_num.x_array, cat_num.y_array)
+
+fig_species = plt.figure('numerical')
+FCS = plt.contourf(x_2d_num, y_2d_num, cat_num.Yxy_num.T)
+CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
+plt.grid()
+plt.xlabel(r'$\tilde{x}$')
+plt.ylabel(r'$\tilde{y}$')
+plt.ylim(-1, 1)
+plt.subplots_adjust(bottom=0.15)
+plt.subplots_adjust(left=0.2)
+plt.subplots_adjust(right=0.7)
+plt.savefig('../Plots/species num Da=' + str(Da) + ' Pe=' + str(Pe)
+            + '.pdf')
+plt.savefig('../Plots/species num Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
 
 plt.show()
