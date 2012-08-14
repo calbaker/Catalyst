@@ -39,8 +39,13 @@ for i in range(x_array.size):
     for j in range(y_array.size):
         y_ = y_array[j]
 
-        cat1.Yxy[i, j] = cat1.get_Y(x_, y_, Pe=Pe, Da=Da)
         cat4.Yxy[i, j] = cat4.get_Y(x_, y_, Pe=Pe, Da=Da)
+        cat1.Yxy[i, j] = cat1.get_Y(x_, y_, Pe=Pe, Da=Da)
+
+cat4.Yxy = np.concatenate((cat4.Yxy[:, ::-1][:, 1:], cat4.Yxy), 1)
+cat1.Yxy = np.concatenate((cat1.Yxy[:, ::-1][:, 1:], cat1.Yxy), 1)
+
+y_array = np.concatenate((-y_array[1:][::-1], y_array), 0)
 
 # Plot configuration
 FONTSIZE = 30
@@ -55,6 +60,8 @@ plt.rcParams['lines.markersize'] = 10
 TICKS = np.arange(0, 1.2, 0.2)
 LEVELS = np.arange(0, 1.1, 0.1)
 
+plt.close()
+
 x_2d, y_2d = np.meshgrid(x_array, y_array)
 fig_eta = plt.figure()
 FCS = plt.contourf(x_2d, y_2d, cat4.Yxy.T)#, levels=LEVELS)
@@ -68,9 +75,9 @@ plt.ylim(-1, 1)
 plt.subplots_adjust(bottom=0.15)
 plt.subplots_adjust(left=0.2)
 plt.subplots_adjust(right=0.7)
-plt.savefig('../Plots/4species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
+plt.savefig('../Plots/4species Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.pdf')
-plt.savefig('../Plots/4species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
+plt.savefig('../Plots/4species Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
 
 fig_species = plt.figure()
@@ -87,9 +94,9 @@ plt.ylim(-1, 1)
 plt.subplots_adjust(bottom=0.15)
 plt.subplots_adjust(left=0.2)
 plt.subplots_adjust(right=0.7)
-plt.savefig('../Plots/species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
+plt.savefig('../Plots/species Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.pdf')
-plt.savefig('../Plots/species Da=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe)
+plt.savefig('../Plots/species Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
 
 plt.show()

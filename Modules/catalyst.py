@@ -29,22 +29,22 @@ class Catalyst(object):
         self.P = 101.325  # Pressure of flow (kPa)
 
         self.lambda_and_Da = np.array(
-            [[0.001, 0.0316, 3.142, 6.28, 9.42],
-             [0.002, 0.0447, 3.141, 6.28, 9.42],
-             [0.003, 0.0547, 3.141, 6.28, 9.42],
-             [0.01,  0.100,  3.144, 6.28, 9.43],
-             [0.02,  0.141,  3.15,  6.28, 9.43],
-             [0.03,  0.172,  3.15,  6.29, 9.43],
-             [0.1,   0.31,   3.17,  6.30, 9.44],
-             [0.2,   0.43,   3.20,  6.31, 9.45],
-             [0.3,   0.52,   3.23,  6.33, 9.46],
-             [0.4,   0.59,   3.26,  6.35, 9.46],
-             [0.5,   0.65,   3.29,  6.36, 9.48],
-             [1.0,   0.86,   3.43,  6.44, 9.53],
-             [2.0,   1.08,   3.64,  6.58, 9.63],
-             [5.0,   1.31,   4.03,  6.91, 9.89],
-             [10.0,  1.43,   4.30,  7.23, 10.2],
-             [5000., 1.57,   4.71,  7.85, 11.0]])
+            [[0.001, 0.0316, 3.142, 6.28, 9.42], 
+             [0.002, 0.0447, 3.141, 6.28, 9.42], 
+             [0.003, 0.0547, 3.141, 6.28, 9.42],  
+             [0.01,  0.100,  3.144, 6.28, 9.43], 
+             [0.02,  0.141,  3.15,  6.28, 9.43], 
+             [0.03,  0.172,  3.15,  6.29, 9.43],  
+             [0.1,   0.31,   3.17,  6.30, 9.44], 
+             [0.2,   0.43,   3.20,  6.31, 9.45], 
+             [0.3,   0.52,   3.23,  6.33, 9.46], 
+             [0.4,   0.59,   3.26,  6.35, 9.46], 
+             [0.5,   0.65,   3.29,  6.36, 9.48], 
+             [1.0,   0.86,   3.43,  6.44, 9.53], 
+             [2.0,   1.08,   3.64,  6.58, 9.63], 
+             [5.0,   1.31,   4.03,  6.91, 9.89], 
+             [10.0,  1.43,   4.30,  7.23, 10.2], 
+             [5000., 1.57,   4.71,  7.85, 11.0]] )
         # Graphically determined eigenvalues corresponding to Da.
         # First column is Da, second column is lamba_0, third column
         # is lambda_1, and so on...
@@ -94,6 +94,19 @@ class Catalyst(object):
         self.air.P = self.P
         self.fuel.P = self.P
 
+    def init_lambda_splines(self):
+
+        """Sets up spline fitting for get_lambda."""
+
+        self.lambda_splines = []
+
+        for i in range(0, self.lambda_and_Da.shape[1] - 1):
+            self.lambda_splines.append(
+                interp.splrep(self.lambda_and_Da[:, 0],
+                              self.lambda_and_Da[:, i + 1])
+                )
+        self.lambda_splines = np.array(self.lambda_splines)
+
     def get_Y(self, x_, y_, **kwargs):
 
         """Sets non-dimensional Y at specified non-d (x, y) point.
@@ -132,19 +145,6 @@ class Catalyst(object):
             )
 
         return self.Y
-
-    def init_lambda_splines(self):
-
-        """Sets up spline fitting for get_lambda."""
-
-        self.lambda_splines = []
-
-        for i in range(0, self.lambda_and_Da.shape[1] - 1):
-            self.lambda_splines.append(
-                interp.splrep(self.lambda_and_Da[:, 0],
-                              self.lambda_and_Da[:, i])
-                )
-        self.lambda_splines = np.array(self.lambda_splines)
 
     def get_lambda(self, *args, **kwargs):
 
