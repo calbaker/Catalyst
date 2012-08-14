@@ -49,8 +49,6 @@ class Catalyst(object):
         # First column is Da, second column is lamba_0, third column
         # is lambda_1, and so on...
 
-        self.lambda_array = self.lambda_and_Da[:, 0]
-
         if 'terms' in kwargs:
             self.terms = kwargs['terms']
             if self.terms > self.lambda_and_Da.shape[1] - 1:
@@ -143,7 +141,7 @@ class Catalyst(object):
 
         for i in range(0, self.lambda_and_Da.shape[1] - 1):
             self.lambda_splines.append(
-                interp.splrep(self.lambda_array,
+                interp.splrep(self.lambda_and_Da[:, 0],
                               self.lambda_and_Da[:, i])
                 )
         self.lambda_splines = np.array(self.lambda_splines)
