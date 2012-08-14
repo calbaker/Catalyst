@@ -53,14 +53,16 @@ plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 8
 
+plt.close()
+
 plt.figure()
 
-plt.plot(cat.T_exp, cat.eta_exp * 100., 'sr', linestyle='',
+plt.plot(cat.T_exp - 273.15, cat.eta_exp * 100., 'sr', linestyle='',
          label='750sccm exp')
-plt.plot(cat.T_array, cat.eta_ij.T * 100., '-r',
+plt.plot(cat.T_array - 273.15, cat.eta_ij.T * 100., '-r',
          label='750sccm model')
 
-plt.plot(cat_empty.T_exp, cat_empty.eta_exp * 100., 'om', linestyle='',
+plt.plot(cat_empty.T_exp - 273.15, cat_empty.eta_exp * 100., 'om', linestyle='',
          label='1000sccm control')
 
 plt.xlabel(r'Temperature ($^\circ$C)')
