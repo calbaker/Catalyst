@@ -439,7 +439,7 @@ class Catalyst(object):
         self.set_eta_ij()
 
         self.eta_ij = self.eta_ij.reshape(self.eta_ij.size)
-        
+
         return self.eta_ij
 
     def set_fit_params(self):
@@ -456,6 +456,9 @@ class Catalyst(object):
 
         self.A_arr = self.popt[0]
         self.T_a = self.popt[1]
+
+        self.T_array = self.T_model
+        self.set_eta_ij()        
 
     def get_S_r(self):
 
@@ -485,5 +488,5 @@ class Catalyst(object):
         self.eta_exp = (
             (self.HCin_raw - self.HCout_raw) / self.HCin_raw
             )
-        self.T_array = np.linspace(self.T_exp[0], self.T_exp[-1], 50)
-
+        self.T_model = np.linspace(self.T_exp[0], self.T_exp[-1], 50)
+        self.T_array = self.T_model
