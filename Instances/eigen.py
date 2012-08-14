@@ -6,11 +6,7 @@ Da = 0.25
 
 lambda_guess = np.arange(0, 14., 0.001)
 
-def get_solution(Da):
-    solution = 1 - lambda_guess / Da * np.tan(lambda_guess)
-    return solution, lambda_guess
-
-solution, lambda_guess = get_solution(Da)
+solution = 1 - lambda_guess / Da * np.tan(lambda_guess)
 
 # Plot configuration
 FONTSIZE = 15
