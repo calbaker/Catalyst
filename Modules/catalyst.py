@@ -50,7 +50,6 @@ class Catalyst(object):
         # is lambda_1, and so on...
 
         self.lambda_array = self.lambda_and_Da[:, 0]
-        self.init_lambda_splines()
 
         if 'terms' in kwargs:
             self.terms = kwargs['terms']
@@ -62,6 +61,7 @@ class Catalyst(object):
                 )
         else:
             self.terms = self.lambda_and_Da.shape[1] - 1
+        self.init_lambda_splines()
 
         self.A_arr = 1.e7
         # Arrhenius coefficient (1/s ???)
@@ -518,5 +518,7 @@ class Catalyst(object):
         self.eta_exp = (
             (self.HCin_raw - self.HCout_raw) / self.HCin_raw
             )
-        self.T_model = np.linspace(self.T_exp[0], self.T_exp[-1], 50)
+        self.T_model = np.linspace(
+            self.T_exp[0] - 50, self.T_exp[-1] + 50, 50
+            )
         self.T_array = self.T_model
