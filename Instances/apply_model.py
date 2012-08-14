@@ -41,12 +41,12 @@ for j in range(cat.Kn_length_array.size):
     for i in range(cat.thickness_array.size):
         cat.thickness = cat.thickness_array[i]
         cat.A_arr = cat.A_arr_array[i]
-        cat.Da = cat.get_Da(cat.T, cat.A_arr, cat.T_a)
+        cat.Da = cat.get_Da(cat.T)
         cat.Da_array[i,j] = cat.Da
-        cat.phi_array[i,j] = cat.phi
+        cat.phi_array[i,j] = cat.thiele
         cat.eta_Pt_total[i,j] = cat.get_eta(cat.Pe, cat.Da)
         cat.A_arr = cat.A_arr0
-        cat.Da = cat.get_Da(cat.T, cat.A_arr, cat.T_a)
+        cat.Da = cat.get_Da(cat.T)
         cat.eta_Pt_density[i,j] = cat.get_eta(cat.Pe, cat.Da)
 
 
