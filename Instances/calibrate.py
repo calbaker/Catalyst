@@ -4,6 +4,7 @@ data and fitting capability."""
 import matplotlib.pyplot as plt
 import os
 import sys
+import numpy as np
 
 cmd_folder = os.path.dirname('../Modules/')
 if cmd_folder not in sys.path:
@@ -12,23 +13,28 @@ if cmd_folder not in sys.path:
 import catalyst 
 reload(catalyst)
 
+T_model = np.linspace(250, 450, 50) + 273.15
+
 data250 = catalyst.Catalyst()
 data250.source = (
     '../data/250sccm 10nmPtPd VariedT rep2.xls'
     )
 data250.import_data()
+data250.T_model = T_model
 data250.Vdot = 250. * 1.e-6 / 60.
 A_arr = 11.29e6
 T_a = 6822.
 data250.A_arr = A_arr
 data250.T_a = T_a
 data250.set_fit_params()
+data250.set_eta_ij()
 
 data500 = catalyst.Catalyst()
 data500.source = (
     '../data/500sccm 10nmPtPd VariedT rep2.xls'
     )
 data500.import_data()
+data500.T_model = T_model
 data500.T_a = data250.T_a
 data500.A_arr = data250.A_arr
 data500.Vdot = 500. * 1.e-6 / 60.
@@ -39,6 +45,7 @@ data750.source = (
     '../data/750sccm 10nmPtPd VariedT rep2.xls'
     )
 data750.import_data()
+data750.T_model = T_model
 data750.T_a = data250.T_a
 data750.A_arr = data250.A_arr
 data750.Vdot = 750. * 1.e-6 / 60.
@@ -49,6 +56,7 @@ data1000.source = (
     '../data/1000sccm 10nmPtPd VariedT rep2.xls'
     )
 data1000.import_data()
+data1000.T_model = T_model
 data1000.T_a = data250.T_a
 data1000.A_arr = data250.A_arr
 data1000.Vdot = 1000. * 1.e-6 / 60.

@@ -488,7 +488,6 @@ class Catalyst(object):
         self.T_a = self.popt[1]
 
         self.T_array = self.T_model
-        self.set_eta_ij()        
 
     def get_S_r(self):
 
