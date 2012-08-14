@@ -18,8 +18,8 @@ data250.source = (
     )
 data250.import_data()
 data250.Vdot = 250. * 1.e-6 / 60.
-A_arr = 10.e6
-T_a = 7.2e3
+A_arr = 11.29e6
+T_a = 6822.
 data250.A_arr = A_arr
 data250.T_a = T_a
 data250.set_fit_params()
@@ -68,24 +68,24 @@ plt.close()
 
 plt.figure()
 
-plt.plot(data250.T_exp, data250.eta_exp * 100., 'sr', linestyle='',
+plt.plot(data250.T_exp - 273.15, data250.eta_exp * 100., 'sr', linestyle='',
          label='250sccm exp')
-plt.plot(data250.T_array, data250.eta_ij.T * 100., '-r',
+plt.plot(data250.T_array - 273.15, data250.eta_ij.T * 100., '-r',
          label='250sccm model')
 
-plt.plot(data500.T_exp, data500.eta_exp * 100., 'og', linestyle='',
+plt.plot(data500.T_exp - 273.15, data500.eta_exp * 100., 'og', linestyle='',
          label='500sccm exp')
-plt.plot(data500.T_array, data500.eta_ij.T * 100., '-g',
+plt.plot(data500.T_array - 273.15, data500.eta_ij.T * 100., '-g',
          label='500sccm model')
 
-plt.plot(data750.T_exp, data750.eta_exp * 100., 'v', linestyle='',
+plt.plot(data750.T_exp - 273.15, data750.eta_exp * 100., 'v', linestyle='',
          label='750sccm exp')
-plt.plot(data750.T_array, data750.eta_ij.T * 100., '-b',
+plt.plot(data750.T_array - 273.15, data750.eta_ij.T * 100., '-b',
          label='750sccm model')
 
-plt.plot(data1000.T_exp, data1000.eta_exp * 100., '*m', linestyle='',
+plt.plot(data1000.T_exp - 273.15, data1000.eta_exp * 100., '*m', linestyle='',
          label='1000sccm exp')
-plt.plot(data1000.T_array, data1000.eta_ij.T * 100., '-m',
+plt.plot(data1000.T_array - 273.15, data1000.eta_ij.T * 100., '-m',
          label='1000sccm model')
 
 plt.xlabel(r'Temperature ($^\circ$C)')
