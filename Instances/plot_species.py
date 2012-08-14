@@ -17,8 +17,9 @@ x_array = np.linspace(0., 10., 100)
 y_array = np.linspace(0, 1., 50)
 
 Pe = 50.
-Da = 0.1
-# reasonable Pe and Da for experimental conditions
+Da = 0.01
+# reasonable Pe and Da for experimental conditions are Pe = 20 to 50
+# and Da = 0.01 to 0.15
 
 cat4 = catalyst.Catalyst()
 cat4.x_array = x_array
@@ -51,9 +52,9 @@ for i in range(x_array.size):
 
 cat4.Yxy = np.concatenate((cat4.Yxy[:, ::-1][:, 1:], cat4.Yxy), 1)
 cat1.Yxy = np.concatenate((cat1.Yxy[:, ::-1][:, 1:], cat1.Yxy), 1)
-# cat_num.Yxy_num = np.concatenate((cat_num.Yxy_num[:, ::-1][:, 1:], cat_num.Yxy_num), 1)
+cat_num.Yxy_num = np.concatenate((cat_num.Yxy_num[:, ::-1][:, 1:], cat_num.Yxy_num), 1)
 
-y_array_sym = np.concatenate((-y_array[1:][::-1], y_array), 0)
+y_array = np.concatenate((-y_array[1:][::-1], y_array), 0)
 
 # Plot configuration
 FONTSIZE = 30
@@ -70,7 +71,7 @@ LEVELS = np.arange(0, 1.1, 0.1)
 
 plt.close()
 
-x_2d, y_2d = np.meshgrid(x_array, y_array_sym)
+x_2d, y_2d = np.meshgrid(x_array, y_array)
 fig_eta = plt.figure('4 terms')
 FCS = plt.contourf(x_2d, y_2d, cat4.Yxy.T)#, levels=LEVELS)
 CB = plt.colorbar(FCS, orientation='vertical')#, ticks=TICKS)
@@ -107,10 +108,8 @@ plt.savefig('../Plots/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
 plt.savefig('../Plots/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
 
-x_2d, y_2d_asym = np.meshgrid(x_array, y_array)
-
 fig_species = plt.figure('numerical')
-FCS = plt.contourf(x_2d, y_2d_asym, cat_num.Yxy_num.T)
+FCS = plt.contourf(x_2d, y_2d, cat_num.Yxy_num.T)
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
 plt.grid()
 plt.xlabel(r'$\tilde{x}$')

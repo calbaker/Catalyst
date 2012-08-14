@@ -545,14 +545,14 @@ class Catalyst(object):
             / self.delta_y ** 2 
                 )
 
-        self.wall_flux = self.Da * Y[0]
-        Yprime[0] = (
-            ((Y[1] - Y[0]) - self.wall_flux) / self.delta_y ** 2
+        self.wall_flux = self.Da * Y[-1]
+        Yprime[-1] = (
+            ((Y[-2] - Y[-1]) - self.wall_flux) / self.delta_y ** 2
             )
         # interface boundary condition.
 
-        Yprime[-1] = (
-            ((Y[-1] - Y[-2]) - 0) / self.delta_y ** 2
+        Yprime[0] = (
+            ((Y[0] - Y[1])) / self.delta_y ** 2
             )
         # symmetry boundary condition
 
