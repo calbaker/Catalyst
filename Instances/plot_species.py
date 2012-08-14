@@ -13,10 +13,10 @@ if cmd_folder not in sys.path:
 import catalyst
 reload(catalyst)
 
-x_array = np.linspace(0., 100., 100)
+x_array = np.linspace(0., 10., 100)
 y_array = np.linspace(0, 1., 50)
 
-Pe = 25.
+Pe = 50.
 Da = 0.1
 # reasonable Pe and Da for experimental conditions
 
@@ -63,7 +63,7 @@ LEVELS = np.arange(0, 1.1, 0.1)
 plt.close()
 
 x_2d, y_2d = np.meshgrid(x_array, y_array)
-fig_eta = plt.figure()
+fig_eta = plt.figure('4 terms')
 FCS = plt.contourf(x_2d, y_2d, cat4.Yxy.T)#, levels=LEVELS)
 CB = plt.colorbar(FCS, orientation='vertical')#, ticks=TICKS)
 plt.grid()
@@ -80,11 +80,11 @@ plt.savefig('../Plots/4species Da=' + str(Da) + ' Pe=' + str(Pe)
 plt.savefig('../Plots/4species Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
 
-fig_species = plt.figure()
+fig_species = plt.figure('1 term')
 # TICKS = np.arange(0,1.5,0.1)
 LEVELS = np.arange(0, 1.2, 0.1)
-FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T, levels=LEVELS)
-CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKS)
+FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T)# , levels=LEVELS)
+CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')# , ticks=TICKS)
 plt.grid()
 plt.xlabel(r'$\tilde{x}$')
 plt.ylabel(r'$\tilde{y}$')
