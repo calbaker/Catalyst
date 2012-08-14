@@ -96,7 +96,7 @@ class Catalyst(object):
         self.air.P = self.P
         self.fuel.P = self.P
 
-    def get_Y(self, x_, y_):
+    def get_Y(self, x_, y_, **kwargs):
 
         """Sets non-dimensional Y at specified non-d (x, y) point.
 
@@ -107,11 +107,26 @@ class Catalyst(object):
 
         """
 
-        T = self.T
-        Vdot = self.Vdot
-        A_i = self.get_A_i(T)
-        lambda_i = self.get_lambda(T)
-        Pe = self.get_Pe(Vdot, T)
+        # T and Vdot are generally going to be constants here so they
+        # are not used as input arguments.  
+        
+        if 'Pe' in kwargs:
+            Pe = kwargs['Pe']
+            
+        else:
+            T = self.T  
+            Vdot = self.Vdot
+            Pe = self.get_Pe(Vdot, T)
+
+        if 'Da' in kwargs:
+            Da = kwargs['Da']
+            A_i = self.get_A_i(Da=Da)
+            lambda_i = self.lambda_i
+        
+        else:
+            T = self.T  
+            A_i = self.get_A_i(T)
+            lambda_i = self.lambda_i
 
         self.Y = (
             (A_i * np.exp(-4. * lambda_i ** 2. / Pe * x_) *
@@ -119,24 +134,6 @@ class Catalyst(object):
             )
 
         return self.Y
-
-    def get_A_i(self, T):
-
-        """Returns pre-exponential Arrhenius coefficient.
-
-        Inputs:
-
-        T: temperature (K)
-        """
-
-        lambda_i = self.get_lambda(T)
-
-        self.A_i = (
-            2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
-            np.sin(lambda_i))
-            )
-
-        return self.A_i
 
     def init_lambda_splines(self):
 
@@ -151,23 +148,56 @@ class Catalyst(object):
                 )
         self.lambda_splines = np.array(self.lambda_splines)
 
-    def get_lambda(self, T):
+    def get_lambda(self, *args, **kwargs):
 
         """Uses spline fit to represent lambda as a function of Da.
 
         Inputs:
 
         T : temperature (K)
+
+        or keyword argument Da from get_Da
         """
 
-        Da = np.float32(self.get_Da(T))
-        
+        if 'Da' in kwargs:
+            Da = kwargs['Da']
+
+        else:
+            T = args[0]
+            Da = np.float32(self.get_Da(T))
+
         self.lambda_i = np.zeros(self.lambda_and_Da.shape[1] - 1)
 
         for i in range(len(self.lambda_splines)):
             self.lambda_i[i] = interp.splev(Da, self.lambda_splines[i])
 
         return self.lambda_i
+
+    def get_A_i(self, *args, **kwargs):
+
+        """Returns pre-exponential Arrhenius coefficient.
+
+        Inputs:
+
+        T: temperature (K)
+
+        or keyword argument Da from get_Da
+        """
+
+        if len(args) == 1:
+            T = args[0]
+            lambda_i = self.get_lambda(T)
+
+        elif 'Da' in kwargs:
+            Da = kwargs['Da']
+            lambda_i = self.get_lambda(Da=Da)
+
+        self.A_i = (
+            2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
+            np.sin(lambda_i))
+            )
+
+        return self.A_i
 
     def get_Da(self, T):
 
