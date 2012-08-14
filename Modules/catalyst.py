@@ -5,6 +5,7 @@ import xlrd
 import numpy as np
 from scipy.optimize import curve_fit
 import scipy.interpolate as interp
+from scipy.integrate import odeint
 
 # Local libraries
 import properties as prop
@@ -85,6 +86,14 @@ class Catalyst(object):
         self.x_ = self.length / self.height
         # dimensionless x.  this will need to be reevaluated if length
         # or height is changed.
+
+        self.x_nodes = 100
+        # Number of streamwise nodes for which Y is returned in
+        # numerical model.  
+
+        self.y_nodes = 50
+        # Number of transverse nodes for which Y is returned in
+        # numerical model.
 
         self.T_ambient = 300. + 273.15
         # ambient temperature (K) at which flow rate is measured
@@ -519,3 +528,44 @@ class Catalyst(object):
             self.T_exp[0] - 50, self.T_exp[-1] + 50, 50
             )
         self.T_array = self.T_model
+
+    def solve_numeric(self):
+        
+        """Solves for species and conversion numerically."""
+
+        self.get_thiele(self.T)
+        self.get_Pe(self.Vdot, self.T)
+
+        Y0 = np.zeros(self.y_nodes)
+        self.x_array = np.linspace(0, self.x_, self.x_nodes)
+        self.delta_x = self.length / self.x_nodes
+        self.delta_y = self.height / self.y_nodes
+        
+        self.Yxy_num = odeint(self.get_Yprime, y0=Y0, t=self.x_array)
+
+    def get_Yprime(self, Y, x):
+        
+        """Returns Yprime for numerical solver."""
+
+        Yprime = np.zeros(Y.size)
+
+        for i in range(1, self.y_nodes - 1):
+            Yprime[i] = (
+                self.delta_x / (4. * self.Pe) * (Y[i + 1] - 2 * Y[i] +
+            Y[i + 1]) / self.delta_y ** 2
+                )
+        
+        self.wall_flux = (
+            -self.height / self.thickness * self.D_C3H8_air_eff /
+        self.D_C3H8_air * self.thiele ** 0.5 * np.tanh(self.thiele **
+        0.5) * Y[0]
+             )
+        Yprime[0] = (
+            ((Y[1] - Y[0]) - self.wall_flux) / self.delta_y ** 2
+            )
+        # interface boundary condition.
+
+        Yprime[-1] = (
+            ((Y[-1] - Y[-2]) - 0) / self.delta_y ** 2
+            )
+        # symmetry boundary condition
