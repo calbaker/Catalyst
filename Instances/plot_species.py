@@ -34,6 +34,13 @@ cat1.Pe = Pe
 cat1.Da = Da
 cat1.Yxy = np.zeros([x_array.size, y_array.size])
 
+cat_num = catalyst.Catalyst()
+cat_num.Pe = Pe
+cat_num.Da = Da
+cat_num.x_array = x_array
+cat_num.y_array = y_array
+cat_num.solve_numeric()
+
 for i in range(x_array.size):
     x_ = x_array[i]
     for j in range(y_array.size):
@@ -44,13 +51,9 @@ for i in range(x_array.size):
 
 cat4.Yxy = np.concatenate((cat4.Yxy[:, ::-1][:, 1:], cat4.Yxy), 1)
 cat1.Yxy = np.concatenate((cat1.Yxy[:, ::-1][:, 1:], cat1.Yxy), 1)
+# cat_num.Yxy_num = np.concatenate((cat_num.Yxy_num[:, ::-1][:, 1:], cat_num.Yxy_num), 1)
 
-y_array = np.concatenate((-y_array[1:][::-1], y_array), 0)
-
-cat_num = catalyst.Catalyst()
-cat_num.Pe = Pe
-cat_num.Da = Da
-cat_num.solve_numeric()
+y_array_sym = np.concatenate((-y_array[1:][::-1], y_array), 0)
 
 # Plot configuration
 FONTSIZE = 30
@@ -67,7 +70,7 @@ LEVELS = np.arange(0, 1.1, 0.1)
 
 plt.close()
 
-x_2d, y_2d = np.meshgrid(x_array, y_array)
+x_2d, y_2d = np.meshgrid(x_array, y_array_sym)
 fig_eta = plt.figure('4 terms')
 FCS = plt.contourf(x_2d, y_2d, cat4.Yxy.T)#, levels=LEVELS)
 CB = plt.colorbar(FCS, orientation='vertical')#, ticks=TICKS)
@@ -104,10 +107,10 @@ plt.savefig('../Plots/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
 plt.savefig('../Plots/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
 
-x_2d_num, y_2d_num = np.meshgrid(cat_num.x_array, cat_num.y_array)
+x_2d, y_2d_asym = np.meshgrid(x_array, y_array)
 
 fig_species = plt.figure('numerical')
-FCS = plt.contourf(x_2d_num, y_2d_num, cat_num.Yxy_num.T)
+FCS = plt.contourf(x_2d, y_2d_asym, cat_num.Yxy_num.T)
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
 plt.grid()
 plt.xlabel(r'$\tilde{x}$')

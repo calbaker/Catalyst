@@ -30,22 +30,22 @@ class Catalyst(object):
         self.P = 101.325  # Pressure of flow (kPa)
 
         self.lambda_and_Da = np.array(
-            [[0.001, 0.0316, 3.142, 6.28, 9.42], 
-             [0.002, 0.0447, 3.141, 6.28, 9.42], 
-             [0.003, 0.0547, 3.141, 6.28, 9.42],  
-             [0.01,  0.100,  3.144, 6.28, 9.43], 
-             [0.02,  0.141,  3.15,  6.28, 9.43], 
-             [0.03,  0.172,  3.15,  6.29, 9.43],  
-             [0.1,   0.31,   3.17,  6.30, 9.44], 
-             [0.2,   0.43,   3.20,  6.31, 9.45], 
-             [0.3,   0.52,   3.23,  6.33, 9.46], 
-             [0.4,   0.59,   3.26,  6.35, 9.46], 
-             [0.5,   0.65,   3.29,  6.36, 9.48], 
-             [1.0,   0.86,   3.43,  6.44, 9.53], 
-             [2.0,   1.08,   3.64,  6.58, 9.63], 
-             [5.0,   1.31,   4.03,  6.91, 9.89], 
-             [10.0,  1.43,   4.30,  7.23, 10.2], 
-             [5000., 1.57,   4.71,  7.85, 11.0]] )
+            [[0.001, 0.0316, 3.142, 6.28, 9.42],
+             [0.002, 0.0447, 3.141, 6.28, 9.42],
+             [0.003, 0.0547, 3.141, 6.28, 9.42],
+             [0.01,  0.100,  3.144, 6.28, 9.43],
+             [0.02,  0.141,  3.15,  6.28, 9.43],
+             [0.03,  0.172,  3.15,  6.29, 9.43],
+             [0.1,   0.31,   3.17,  6.30, 9.44],
+             [0.2,   0.43,   3.20,  6.31, 9.45],
+             [0.3,   0.52,   3.23,  6.33, 9.46],
+             [0.4,   0.59,   3.26,  6.35, 9.46],
+             [0.5,   0.65,   3.29,  6.36, 9.48],
+             [1.0,   0.86,   3.43,  6.44, 9.53],
+             [2.0,   1.08,   3.64,  6.58, 9.63],
+             [5.0,   1.31,   4.03,  6.91, 9.89],
+             [10.0,  1.43,   4.30,  7.23, 10.2],
+             [5000., 1.57,   4.71,  7.85, 11.0]])
         # Graphically determined eigenvalues corresponding to Da.
         # First column is Da, second column is lamba_0, third column
         # is lambda_1, and so on...
@@ -87,15 +87,7 @@ class Catalyst(object):
         # dimensionless x.  this will need to be reevaluated if length
         # or height is changed.
 
-        self.x_nodes = 100
-        # Number of streamwise nodes for which Y is returned in
-        # numerical model.  
-
         self.y_ = 1.
-
-        self.y_nodes = 50
-        # Number of transverse nodes for which Y is returned in
-        # numerical model.
 
         self.T_ambient = 300. + 273.15
         # ambient temperature (K) at which flow rate is measured
@@ -130,13 +122,13 @@ class Catalyst(object):
         """
 
         # T and Vdot are generally going to be constants here so they
-        # are not used as input arguments.  
-        
+        # are not used as input arguments.
+
         if 'Pe' in kwargs:
             Pe = kwargs['Pe']
-            
+
         else:
-            T = self.T  
+            T = self.T
             Vdot = self.Vdot
             Pe = self.get_Pe(Vdot, T)
 
@@ -144,9 +136,9 @@ class Catalyst(object):
             Da = kwargs['Da']
             A_i = self.get_A_i(Da=Da)
             lambda_i = self.lambda_i
-        
+
         else:
-            T = self.T  
+            T = self.T
             A_i = self.get_A_i(T)
             lambda_i = self.lambda_i
 
@@ -214,7 +206,7 @@ class Catalyst(object):
 
         Inputs:
 
-        T: temperature (K) 
+        T: temperature (K)
         """
 
         thiele = self.get_thiele(T)
@@ -222,7 +214,7 @@ class Catalyst(object):
         self.Da = (
             0.5 * self.D_C3H8_air_eff / self.D_C3H8_air * self.height
             / self.thickness * np.sqrt(thiele) *
-            np.tanh(np.sqrt(thiele))  
+            np.tanh(np.sqrt(thiele))
            )
 
         return self.Da
@@ -234,7 +226,7 @@ class Catalyst(object):
         Inputs:
 
         T: temperature (K)"""
-        
+
         k_arr = (self.A_arr * np.exp(-self.T_a / T))
         D_C3H8_air_eff = self.get_D_C3H8_air_eff(T)
 
@@ -339,7 +331,7 @@ class Catalyst(object):
                 D_C3H8_air_eff = (
                     2. * self.porosity / self.tortuosity *
             (self.D_C3H8_air * D_C3H8_air_Kn) / (self.D_C3H8_air +
-            D_C3H8_air_Kn) 
+            D_C3H8_air_Kn)
                     )
 
         else:
@@ -351,7 +343,7 @@ class Catalyst(object):
                 D_C3H8_air_eff = (
                     2. * self.porosity / self.tortuosity *
             (self.D_C3H8_air * D_C3H8_air_Kn) / (self.D_C3H8_air +
-            D_C3H8_air_Kn) 
+            D_C3H8_air_Kn)
                     )
 
         self.D_C3H8_air_eff = D_C3H8_air_eff
@@ -450,7 +442,7 @@ class Catalyst(object):
 
         A_i = self.get_A_i(T)
         Pe = self.get_Pe(Vdot, T)
-            
+
         self.eta = (
             (A_i / self.lambda_i * np.sin(self.lambda_i) * (1. -
             np.exp(-self.lambda_i ** 2. / (4. * Pe) * self.x_))).sum()
@@ -459,9 +451,9 @@ class Catalyst(object):
         return self.eta
 
     def get_eta_fit(self, T_exp, A_arr, T_a):
-        
+
         """Returns eta with inputs that are used by curve_fit
-        
+
         Inputs:
         T: temperature (K)
 
@@ -490,7 +482,7 @@ class Catalyst(object):
         # initial guess at A_arr and T_a
 
         self.popt, self.pcov = curve_fit(
-            self.get_eta_fit, self.T_exp, self.eta_exp, p0=self.p0 
+            self.get_eta_fit, self.T_exp, self.eta_exp, p0=self.p0
             )
 
         self.A_arr = self.popt[0]
@@ -532,30 +524,28 @@ class Catalyst(object):
         self.T_array = self.T_model
 
     def solve_numeric(self):
-        
+
         """Solves for species and conversion numerically."""
 
-        Y0 = np.zeros(self.y_nodes)
-        self.x_array = np.linspace(0, self.x_, self.x_nodes)
-        self.y_array = np.linspace(0, self.y_, self.y_nodes)
-        self.delta_x = self.length / self.x_nodes
-        self.delta_y = self.height / self.y_nodes
-        
+        Y0 = np.ones(self.y_array.size)
+        self.delta_x = self.x_array[1] - self.x_array[0]
+        self.delta_y = self.y_array[1] - self.y_array[0]
+
         self.Yxy_num = odeint(self.get_Yprime, y0=Y0, t=self.x_array)
 
     def get_Yprime(self, Y, x):
-        
+
         """Returns Yprime for numerical solver."""
 
         Yprime = np.zeros(Y.size)
 
-        for i in range(1, self.y_nodes - 1):
+        for i in range(1, self.y_array.size - 1):
             Yprime[i] = (
-                self.delta_x / (4. * self.Pe) * (Y[i + 1] - 2 * Y[i] +
-            Y[i + 1]) / self.delta_y ** 2
+                1. / (4. * self.Pe) * (Y[i + 1] - 2 * Y[i] + Y[i - 1])
+            / self.delta_y ** 2 
                 )
-        
-        self.wall_flux = -self.Da * Y[0]
+
+        self.wall_flux = self.Da * Y[0]
         Yprime[0] = (
             ((Y[1] - Y[0]) - self.wall_flux) / self.delta_y ** 2
             )
@@ -565,3 +555,5 @@ class Catalyst(object):
             ((Y[-1] - Y[-2]) - 0) / self.delta_y ** 2
             )
         # symmetry boundary condition
+
+        return Yprime
