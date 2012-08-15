@@ -41,10 +41,10 @@ COLOR = ['red', 'green', 'blue', 'black']
 
 
 for i in range(lambda_array.shape[1]):
-    plt.plot(Da_array, lambda_array[:, i], color=COLOR[i])
+    plt.plot(Da_array, lambda_array[:, i], color=COLOR[i % 4])
     plt.plot(
         spltest.lambda_and_Da[:,0], spltest.lambda_and_Da[:, i + 1],
-    marker='x', linestyle='', color=COLOR[i]
+    marker='x', linestyle='', color=COLOR[i % 4]
         ) 
 
 plt.xlabel('Da')
