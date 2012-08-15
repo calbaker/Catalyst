@@ -13,7 +13,7 @@ if cmd_folder not in sys.path:
 import catalyst
 reload(catalyst)
 
-Vdot = 500.e-6 / 60.
+Vdot = 250.e-6 / 60.
 T_array = np.linspace(200, 500, 25) + 273.15
 
 cat_terms = catalyst.Catalyst()
