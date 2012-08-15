@@ -31,6 +31,11 @@ class Catalyst(object):
         self.P = 101.325  # Pressure of flow (kPa)
 
         self.lambda_and_Da = np.array(
+            [[0.001, 0.0316, 3.142, 6.28, 9.42],
+             [0.01,  0.100,  3.144, 6.28, 9.43],
+             [0.1,   0.31,   3.17,  6.30, 9.44],
+             [1.0,   0.86,   3.43,  6.44, 9.53],
+             [10.0,  1.43,   4.30,  7.23, 10.2]])
         # Graphically determined eigenvalues corresponding to Da.
         # First column is Da, second column is lamba_0, third column
         # is lambda_1, and so on...

@@ -22,11 +22,11 @@ def get_lambda_error(guess, *args):
     error = 1 - guess / Da * np.tan(guess)
     return error
 
-solution = get_lambda_error(guess)
+solution = get_lambda_error(guess, Da)
 
 def solve_lambda(Da):
     lambda_i = fsolve(
-        get_lambda_error, x0=cat_eigen.get_lambda(Da=Da), args=Da
+        get_lambda_error, x0=cat_eigen.get_lambda(Da=Da), args=(Da)
         )
     return lambda_i
 
