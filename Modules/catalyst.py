@@ -658,7 +658,7 @@ class Catalyst(object):
         x_array = self.x_array
         self.x_array = np.array([self.x_array[0], self.x_array[-1]])
         self.eta_num = (
-            self.Yxy_num[:, 0].mean() - self.Yxy_num[:, -1].mean()
+            self.Yxy_num[0, :].mean() - self.Yxy_num[-1, :].mean()
             )
 
         self.x_array = x_array
