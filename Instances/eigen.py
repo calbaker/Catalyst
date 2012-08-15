@@ -1,12 +1,36 @@
 import numpy as np
-
+from scipy.optimize import fsolve
 import matplotlib.pyplot as plt
+import os
+import sys
+
+cmd_folder = os.path.dirname('../Modules/')
+if cmd_folder not in sys.path:
+    sys.path.insert(0, cmd_folder)
+
+import catalyst
+reload(catalyst)
+
+cat_eigen = catalyst.Catalyst()
 
 Da = 0.25
 
-lambda_guess = np.arange(0, 14., 0.001)
+guess = np.arange(0, 14., 0.001)
 
-solution = 1 - lambda_guess / Da * np.tan(lambda_guess)
+def get_lambda_error(guess):
+    error = 1 - guess / Da * np.tan(guess)
+    return error
+
+solution = get_lambda_error(guess)
+
+def solve_lambda(Da):
+    lambda_i = fsolve(
+        get_lambda_error, x0=cat_eigen.get_lambda(Da=Da)
+        )
+    return lambda_i
+
+lambda_i = solve_lambda(Da)
+ydata = np.zeros(lambda_i.size)
 
 # Plot configuration
 FONTSIZE = 15
@@ -23,8 +47,10 @@ plt.close()
 fig1 = plt.figure()
 fig1.subplots_adjust(bottom=0.15)
 fig1.subplots_adjust(left=0.15)
-plt.plot(lambda_guess, solution, label='Da =' + str(Da))
-# plt.plot(lambda_guess, np.absolute(solution), label='absolute')
+plt.plot(guess, solution, label='Da =' + str(Da))
+plt.plot(guess, np.absolute(solution), label='absolute')
+plt.plot(lambda_i, ydata, label='solver', marker='s', linestyle='',
+         color='black')
 plt.xlim(0, 14)
 plt.ylim(-20, 20)
 plt.grid()
