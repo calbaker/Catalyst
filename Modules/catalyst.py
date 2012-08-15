@@ -4,6 +4,7 @@
 import xlrd
 import numpy as np
 from scipy.optimize import curve_fit
+from scipy.optimize import fsolve
 import scipy.interpolate as interp
 from scipy.integrate import odeint
 
@@ -50,17 +51,10 @@ class Catalyst(object):
         # First column is Da, second column is lamba_0, third column
         # is lambda_1, and so on...
 
+        self.init_lambda_splines()
+
         if 'terms' in kwargs:
             self.terms = kwargs['terms']
-            if self.terms > self.lambda_and_Da.shape[1] - 1:
-                self.terms = self.lambda_and_Da.shape[1] - 1
-                print "lambda are available for no more than 4 terms."
-            self.lambda_and_Da = (
-                self.lambda_and_Da[:, : self.terms + 1]
-                )
-        else:
-            self.terms = self.lambda_and_Da.shape[1] - 1
-        self.init_lambda_splines()
 
         self.A_arr = 1.e7
         # Arrhenius coefficient (1/s ???)
@@ -102,8 +96,9 @@ class Catalyst(object):
         """Sets up spline fitting for get_lambda."""
 
         self.lambda_splines = []
+        self.terms = self.lambda_and_Da.shape[1] - 1
 
-        for i in range(0, self.lambda_and_Da.shape[1] - 1):
+        for i in range(0, self.terms):
             self.lambda_splines.append(
                 interp.splrep(self.lambda_and_Da[:, 0],
                               self.lambda_and_Da[:, i + 1])
@@ -149,7 +144,7 @@ class Catalyst(object):
 
         return self.Y
 
-    def get_lambda(self, *args, **kwargs):
+    def get_lambda_spline(self, *args, **kwargs):
 
         """Uses spline fit to represent lambda as a function of Da.
 
@@ -167,13 +162,62 @@ class Catalyst(object):
             T = args[0]
             Da = np.float32(self.get_Da(T))
 
-        self.lambda_i = np.zeros(self.lambda_and_Da.shape[1] - 1)
+        lambda_i = np.zeros(self.terms)
 
-        for i in range(len(self.lambda_splines)):
-            self.lambda_i[i] = interp.splev(Da, self.lambda_splines[i])
+        for i in range(self.terms):
+            lambda_i[i] = ( 
+                interp.splev(Da, self.lambda_splines[i])
+                )
+
+        return lambda_i
+
+    def get_lambda_error(self, guess, *args):
+
+        """Returns error associated with guess of lambda.
+
+        Inputs:
+        guess: initial guess at lambda as a function of Da.
+        
+        if Da in kwargs, then Da is used
+        """
+
+        if len(args) == 1:
+            Da = args[0]
+    
+        else:
+            Da = self.Da
+
+        error = 1 - guess / Da * np.tan(guess)
+
+        return error
+
+    def get_lambda(self, *args, **kwargs):
+
+        """Uses fsolve to represent lambda as a function of Da.
+
+        Inputs:
+
+        T : temperature (K)
+
+        or keyword argument Da from get_Da
+        """
+
+        if 'Da' in kwargs:
+            Da = kwargs['Da']
+
+        else:
+            T = args[0]
+            Da = np.float32(self.get_Da(T))
+            
+        self.lambda_i = self.get_lambda_spline(Da=Da)
+        lambda_i = self.lambda_i
+
+        self.lambda_i = (
+            fsolve(self.get_lambda_error, x0=lambda_i, args=(Da))
+            )
 
         return self.lambda_i
-
+        
     def get_A_i(self, *args, **kwargs):
 
         """Returns pre-exponential Arrhenius coefficient.
