@@ -13,9 +13,9 @@ reload(catalyst)
 
 cat_eigen = catalyst.Catalyst()
 
-Da = 1.
+Da = 0.5
 
-guess = np.arange(0, 24., 0.01)
+guess = np.arange(0, 30., 0.01)
 
 def get_lambda_error(guess, *args):
     Da = args[0]
@@ -54,7 +54,7 @@ plt.plot(guess, solution, label='Da =' + str(Da))
 plt.plot(guess, np.absolute(solution), label='absolute')
 plt.plot(lambda_i, ydata, label='solver', marker='s', linestyle='',
          color='black')
-# plt.xlim(0, 14)
+plt.xlim(guess.min(), guess.max())
 plt.ylim(-20, 20)
 plt.grid()
 plt.xlabel(r'$\lambda$')
