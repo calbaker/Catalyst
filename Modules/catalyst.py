@@ -158,7 +158,7 @@ class Catalyst(object):
 
         return self.Y
 
-    def get_lambda_spline(self, *args, **kwargs):
+    def get_lambda(self, *args, **kwargs):
 
         """Uses spline fit to represent lambda as a function of Da.
 
@@ -176,14 +176,14 @@ class Catalyst(object):
             T = args[0]
             Da = np.float32(self.get_Da(T))
 
-        lambda_i = np.zeros(self.terms)
+        self.lambda_i = np.zeros(self.terms)
 
         for i in range(self.terms):
-            lambda_i[i] = (
+            self.lambda_i[i] = (
                 interp.splev(Da, self.lambda_splines[i])
                 )
 
-        return lambda_i
+        return self.lambda_i
 
     def get_lambda_error(self, guess, *args):
 
@@ -205,7 +205,7 @@ class Catalyst(object):
 
         return error
 
-    def get_lambda(self, *args, **kwargs):
+    def get_lambda_fsolve(self, *args, **kwargs):
 
         """Uses fsolve to represent lambda as a function of Da.
 
@@ -223,7 +223,7 @@ class Catalyst(object):
             T = args[0]
             Da = np.float32(self.get_Da(T))
 
-        self.lambda_i = self.get_lambda_spline(Da=Da)
+        self.lambda_i = self.get_lambda(Da=Da)
         lambda_i = self.lambda_i
 
         self.lambda_i = (
@@ -591,20 +591,10 @@ class Catalyst(object):
             )
         self.T_array = self.T_model
 
-    def solve_numeric(self):
-
-        """Solves for species and conversion numerically."""
-
-        Y0 = np.ones(self.y_array.size)
-        self.delta_x = self.x_array[1] - self.x_array[0]
-        self.delta_y = self.y_array[1] - self.y_array[0]
-
-        self.Yxy_num = odeint(self.get_Yprime, y0=Y0, t=self.x_array)
-
     def get_Yprime(self, Y, x):
 
         """Returns Yprime for numerical solver."""
-
+        
         Yprime = np.zeros(Y.size)
 
         for i in range(1, self.y_array.size - 1):
@@ -625,6 +615,16 @@ class Catalyst(object):
         # symmetry boundary condition
 
         return Yprime
+
+    def solve_numeric(self):
+
+        """Solves for species and conversion numerically."""
+
+        Y0 = np.ones(self.y_array.size)
+        self.delta_x = self.x_array[1] - self.x_array[0]
+        self.delta_y = self.y_array[1] - self.y_array[0]
+
+        self.Yxy_num = odeint(self.get_Yprime, y0=Y0, t=self.x_array)
 
     def set_eta_ij_num(self):
 
