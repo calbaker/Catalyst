@@ -14,6 +14,7 @@ import catalyst
 reload(catalyst)
 
 x_array = np.linspace(0., 30., 100)
+# max should be 30 to be consistent with experiment
 y_array = np.linspace(0, 1., 50)
 
 Pe = 50.
