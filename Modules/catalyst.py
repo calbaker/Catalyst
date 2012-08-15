@@ -253,7 +253,7 @@ class Catalyst(object):
 
         self.A_i = (
             2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
-            np.sin(lambda_i))
+            np.cos(lambda_i))
             )
 
         return self.A_i
