@@ -17,7 +17,8 @@ Da = 0.25
 
 guess = np.arange(0, 14., 0.001)
 
-def get_lambda_error(guess):
+def get_lambda_error(guess, *args):
+    Da = args[0]
     error = 1 - guess / Da * np.tan(guess)
     return error
 
@@ -25,7 +26,7 @@ solution = get_lambda_error(guess)
 
 def solve_lambda(Da):
     lambda_i = fsolve(
-        get_lambda_error, x0=cat_eigen.get_lambda(Da=Da)
+        get_lambda_error, x0=cat_eigen.get_lambda(Da=Da), args=Da
         )
     return lambda_i
 
