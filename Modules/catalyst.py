@@ -47,7 +47,7 @@ class Catalyst(object):
                 [0.11, 0.325, 3.17, 6.30, 9.44, 12.6, 15.7, 18.9,
             22.0, 25.1, 28.3],
                 [0.5, 0.65, 3.29, 6.36, 9.47, 12.6, 15.7, 18.8, 22.0,
-            25.2, 28.3], 
+            25.2, 28.3],
                 [1.0, 0.86, 3.43, 6.44, 9.53, 12.6, 16, 19, 22,
             25, 28],
                 [10.0, 1.43, 4.30, 7.23, 10.2, 13.2, 16, 19, 22,
@@ -89,6 +89,9 @@ class Catalyst(object):
         # or height is changed.
 
         self.y_ = 1.
+
+        self.x_array = np.linspace(0, self.x_, 100)
+        self.y_array = np.linspace(0, self.y_, 50)
 
         self.T_ambient = 300. + 273.15
         # ambient temperature (K) at which flow rate is measured
@@ -172,7 +175,7 @@ class Catalyst(object):
         lambda_i = np.zeros(self.terms)
 
         for i in range(self.terms):
-            lambda_i[i] = ( 
+            lambda_i[i] = (
                 interp.splev(Da, self.lambda_splines[i])
                 )
 
@@ -184,13 +187,13 @@ class Catalyst(object):
 
         Inputs:
         guess: initial guess at lambda as a function of Da.
-        
+
         if Da in kwargs, then Da is used
         """
 
         if len(args) == 1:
             Da = args[0]
-    
+
         else:
             Da = self.Da
 
@@ -215,7 +218,7 @@ class Catalyst(object):
         else:
             T = args[0]
             Da = np.float32(self.get_Da(T))
-            
+
         self.lambda_i = self.get_lambda_spline(Da=Da)
         lambda_i = self.lambda_i
 
@@ -224,7 +227,7 @@ class Catalyst(object):
             )
 
         return self.lambda_i
-        
+
     def get_A_i(self, *args, **kwargs):
 
         """Returns pre-exponential Arrhenius coefficient.
@@ -593,7 +596,7 @@ class Catalyst(object):
         for i in range(1, self.y_array.size - 1):
             Yprime[i] = (
                 1. / (4. * self.Pe) * (Y[i + 1] - 2 * Y[i] + Y[i - 1])
-            / self.delta_y ** 2 
+            / self.delta_y ** 2
                 )
 
         self.wall_flux = self.Da * Y[-1]
@@ -613,8 +616,6 @@ class Catalyst(object):
 
         """Sets conversion efficiency over a range of Pe and Da."""
 
-        self.x_ = self.length / self.height
-
         try:
             self.Vdot_array
         except AttributeError:
@@ -632,7 +633,7 @@ class Catalyst(object):
                 self.Vdot = self.Vdot_array[i]
                 self.T = self.T_array[j]
 
-                self.eta_ij[i, j] = self.get_eta(self.Vdot, self.T)
+                self.eta_ij_num[i, j] = self.get_eta_num(self.Vdot, self.T)
                 self.Da_j[j] = self.Da
                 self.Pe_ij[i, j] = self.Pe
 
@@ -645,13 +646,13 @@ class Catalyst(object):
         T : temperature (K).
         """
 
-        A_i = self.get_A_i(T)
-        Pe = self.get_Pe(Vdot, T)
+        self.Pe = self.get_Pe(Vdot, T)
+        self.Da = self.get_Da(T)
 
-        self.eta = (
-            (A_i / self.lambda_i * np.sin(self.lambda_i) * (1. -
-            np.exp(-self.lambda_i ** 2. / (4. * Pe) * self.x_))).sum()
+        self.solve_numeric()
+
+        self.eta_num = (
+            self.Yxy_num[:, 0].mean() - self.Yxy_num[:, -1].mean()
             )
 
-        return self.eta
-
+        return self.eta_num
