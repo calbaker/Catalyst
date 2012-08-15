@@ -478,6 +478,7 @@ class Catalyst(object):
             )
         self.Da_j = np.zeros(self.T_array.size)
         self.eta_ij = np.zeros(self.Pe_ij.shape)
+        self.eta_ij_check = np.zeros(self.Pe_ij.shape)
 
         for i in np.arange(self.Vdot_array.size):
             for j in np.arange(self.T_array.size):
@@ -486,6 +487,15 @@ class Catalyst(object):
                 self.T = self.T_array[j]
 
                 self.eta_ij[i, j] = self.get_eta(self.Vdot, self.T)
+
+                Yin = np.zeros(self.y_array.size)
+                Yout = np.zeros(self.y_array.size)
+
+                for k in range(self.y_array.size):
+                    Yin[k] = self.get_Y(0, self.y_array[k])
+                    Yout[k] = self.get_Y(0, self.y_array[k])
+
+                self.eta_ij_check[i, j] = Yin.mean() - Yout.mean()
                 self.Da_j[j] = self.Da
                 self.Pe_ij[i, j] = self.Pe
 
@@ -577,7 +587,7 @@ class Catalyst(object):
             (self.HCin_raw - self.HCout_raw) / self.HCin_raw
             )
         self.T_model = np.linspace(
-            self.T_exp[0] - 50, self.T_exp[-1] + 50, 50
+            self.T_exp[0] - 50, self.T_exp[-1] + 50, 25
             )
         self.T_array = self.T_model
 
