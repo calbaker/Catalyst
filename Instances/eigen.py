@@ -1,22 +1,22 @@
-import numpy as np
-from scipy.optimize import fsolve
-import matplotlib.pyplot as plt
-import os
-import sys
-
-cmd_folder = os.path.dirname('../Modules/')
-if cmd_folder not in sys.path:
-    sys.path.insert(0, cmd_folder)
-
-import catalyst
-reload(catalyst)
-
 def run_eigen(Da, MIN, MAX):
     """Does everything important in eigen.py
 
     Inputs:
     Da : Dahmkohler number
     MIN, MAX : limits for which guess is plotted"""
+    
+    import numpy as np
+    from scipy.optimize import fsolve
+    import matplotlib.pyplot as plt
+    import os
+    import sys
+
+    cmd_folder = os.path.dirname('../Modules/')
+    if cmd_folder not in sys.path:
+        sys.path.insert(0, cmd_folder)
+
+    import catalyst
+    reload(catalyst)
 
     cat_eigen = catalyst.Catalyst()
 

@@ -15,7 +15,7 @@ reload(catalyst)
 
 spltest = catalyst.Catalyst()
 
-Da_array = np.linspace(0.01, 1, 100)
+Da_array = np.linspace(0.001, 1., 100)
 lambda_array = np.zeros(
     [Da_array.size, spltest.lambda_and_Da.shape[1] - 1]
     )
@@ -39,7 +39,6 @@ plt.close()
 
 COLOR = ['red', 'green', 'blue', 'black']
 
-
 for i in range(lambda_array.shape[1]):
     plt.plot(Da_array, lambda_array[:, i], color=COLOR[i % 4])
     plt.plot(
@@ -49,7 +48,7 @@ for i in range(lambda_array.shape[1]):
 
 plt.xlabel('Da')
 plt.ylabel(r'$\lambda_i$')
-plt.xlim(0, 1)
+plt.xlim(0, Da_array.max())
 plt.grid()
 
 plt.savefig('../Plots/splines.pdf')
