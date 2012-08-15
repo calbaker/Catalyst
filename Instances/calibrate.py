@@ -13,7 +13,9 @@ if cmd_folder not in sys.path:
 import catalyst 
 reload(catalyst)
 
-T_model = np.linspace(250, 450, 50) + 273.15
+T_model = np.linspace(250, 450, 25) + 273.15
+
+print "running data250"
 
 data250 = catalyst.Catalyst()
 data250.source = (
@@ -22,12 +24,12 @@ data250.source = (
 data250.import_data()
 data250.T_model = T_model
 data250.Vdot = 250. * 1.e-6 / 60.
-A_arr = 11.29e6
-T_a = 6822.
-data250.A_arr = A_arr
-data250.T_a = T_a
-data250.set_fit_params()
+# data250.set_fit_params()
 data250.set_eta_ij()
+A_arr = data250.A_arr
+T_a = data250.T_a
+
+print "running data500"
 
 data500 = catalyst.Catalyst()
 data500.source = (
@@ -40,6 +42,8 @@ data500.A_arr = data250.A_arr
 data500.Vdot = 500. * 1.e-6 / 60.
 data500.set_eta_ij()
 
+print "running data750"
+
 data750 = catalyst.Catalyst()
 data750.source = (
     '../data/750sccm 10nmPtPd VariedT rep2.xls'
@@ -50,6 +54,8 @@ data750.T_a = data250.T_a
 data750.A_arr = data250.A_arr
 data750.Vdot = 750. * 1.e-6 / 60.
 data750.set_eta_ij()
+
+print "running data1000"
 
 data1000 = catalyst.Catalyst()
 data1000.source = (
@@ -80,6 +86,8 @@ plt.plot(data250.T_exp - 273.15, data250.eta_exp * 100., 'sr', linestyle='',
          label='250sccm exp')
 plt.plot(data250.T_array - 273.15, data250.eta_ij.T * 100., '-r',
          label='250sccm model')
+plt.plot(data250.T_array - 273.15, data250.eta_ij_check.T * 100., '-.r',
+         label='250sccm check')
 
 plt.plot(data500.T_exp - 273.15, data500.eta_exp * 100., 'og', linestyle='',
          label='500sccm exp')
