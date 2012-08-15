@@ -52,4 +52,7 @@ plt.ylabel(r'$\lambda_i$')
 plt.xlim(0, 1)
 plt.grid()
 
+plt.savefig('../Plots/splines.pdf')
+plt.savefig('../Plots/splines.png')
+
 plt.show()
