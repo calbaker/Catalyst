@@ -55,7 +55,7 @@ def run_eigen(Da, MIN, MAX):
     plt.plot(lambda_i, ydata, label='solver', marker='s', linestyle='',
              color='black')
     plt.xlim(guess.min(), guess.max())
-    plt.ylim(-500, 500)
+    plt.ylim(-20, 20)
     plt.grid()
     plt.xlabel(r'$\lambda$')
     plt.ylabel(r'$1 - \frac{\lambda_n}{Da} \tan \lambda_n$') 
