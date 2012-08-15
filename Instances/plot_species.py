@@ -13,11 +13,11 @@ if cmd_folder not in sys.path:
 import catalyst
 reload(catalyst)
 
-x_array = np.linspace(0., 10., 100)
+x_array = np.linspace(0., 30., 100)
 y_array = np.linspace(0, 1., 50)
 
 Pe = 50.
-Da = 0.01
+Da = 0.1
 # reasonable Pe and Da for experimental conditions are Pe = 20 to 50
 # and Da = 0.01 to 0.15
 
