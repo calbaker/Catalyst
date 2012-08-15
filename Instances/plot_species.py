@@ -73,7 +73,7 @@ LEVELS = np.arange(0, 1.1, 0.1)
 plt.close()
 
 x_2d, y_2d = np.meshgrid(x_array, y_array)
-fig_eta = plt.figure('4 terms')
+fig_eta = plt.figure(str(catmax.terms) + ' terms')
 FCS = plt.contourf(x_2d, y_2d, catmax.Yxy.T)#, levels=LEVELS)
 CB = plt.colorbar(FCS, orientation='vertical')#, ticks=TICKS)
 plt.grid()
