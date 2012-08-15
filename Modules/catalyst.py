@@ -63,9 +63,9 @@ class Catalyst(object):
         if 'terms' in kwargs:
             self.terms = kwargs['terms']
 
-        self.A_arr = 1.e7
+        self.A_arr = 11.29e6
         # Arrhenius coefficient (1/s ???)
-        self.T_a = 7.206e3  # activation temperature (K)
+        self.T_a = 6822.  # activation temperature (K)
 
         # Nanowire morphology
         self.porosity = 0.97  # porosity of nanowires
@@ -608,3 +608,50 @@ class Catalyst(object):
         # symmetry boundary condition
 
         return Yprime
+
+    def set_eta_ij_num(self):
+
+        """Sets conversion efficiency over a range of Pe and Da."""
+
+        self.x_ = self.length / self.height
+
+        try:
+            self.Vdot_array
+        except AttributeError:
+            self.Vdot_array = np.array([self.Vdot])
+
+        self.Pe_ij = np.zeros(
+            [self.Vdot_array.size, self.T_array.size]
+            )
+        self.Da_j = np.zeros(self.T_array.size)
+        self.eta_ij = np.zeros(self.Pe_ij.shape)
+
+        for i in np.arange(self.Vdot_array.size):
+            for j in np.arange(self.T_array.size):
+
+                self.Vdot = self.Vdot_array[i]
+                self.T = self.T_array[j]
+
+                self.eta_ij[i, j] = self.get_eta(self.Vdot, self.T)
+                self.Da_j[j] = self.Da
+                self.Pe_ij[i, j] = self.Pe
+
+    def get_eta_num(self, Vdot, T):
+
+        """Returns conversion efficiency.
+
+        Inputs:
+        Vdot : flow rate (m^3/s)
+        T : temperature (K).
+        """
+
+        A_i = self.get_A_i(T)
+        Pe = self.get_Pe(Vdot, T)
+
+        self.eta = (
+            (A_i / self.lambda_i * np.sin(self.lambda_i) * (1. -
+            np.exp(-self.lambda_i ** 2. / (4. * Pe) * self.x_))).sum()
+            )
+
+        return self.eta
+
