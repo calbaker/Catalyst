@@ -22,12 +22,12 @@ Da = 0.1
 # reasonable Pe and Da for experimental conditions are Pe = 20 to 50
 # and Da = 0.01 to 0.15
 
-cat4 = catalyst.Catalyst()
-cat4.x_array = x_array
-cat4.y_array = y_array
-cat4.Pe = Pe
-cat4.Da = Da
-cat4.Yxy = np.zeros([x_array.size, y_array.size])
+catmax = catalyst.Catalyst()
+catmax.x_array = x_array
+catmax.y_array = y_array
+catmax.Pe = Pe
+catmax.Da = Da
+catmax.Yxy = np.zeros([x_array.size, y_array.size])
 
 cat1 = catalyst.Catalyst(terms=1)
 cat1.x_array = x_array
@@ -48,10 +48,10 @@ for i in range(x_array.size):
     for j in range(y_array.size):
         y_ = y_array[j]
 
-        cat4.Yxy[i, j] = cat4.get_Y(x_, y_, Pe=Pe, Da=Da)
+        catmax.Yxy[i, j] = catmax.get_Y(x_, y_, Pe=Pe, Da=Da)
         cat1.Yxy[i, j] = cat1.get_Y(x_, y_, Pe=Pe, Da=Da)
 
-cat4.Yxy = np.concatenate((cat4.Yxy[:, ::-1][:, 1:], cat4.Yxy), 1)
+catmax.Yxy = np.concatenate((catmax.Yxy[:, ::-1][:, 1:], catmax.Yxy), 1)
 cat1.Yxy = np.concatenate((cat1.Yxy[:, ::-1][:, 1:], cat1.Yxy), 1)
 cat_num.Yxy_num = np.concatenate((cat_num.Yxy_num[:, ::-1][:, 1:], cat_num.Yxy_num), 1)
 
@@ -74,7 +74,7 @@ plt.close()
 
 x_2d, y_2d = np.meshgrid(x_array, y_array)
 fig_eta = plt.figure('4 terms')
-FCS = plt.contourf(x_2d, y_2d, cat4.Yxy.T)#, levels=LEVELS)
+FCS = plt.contourf(x_2d, y_2d, catmax.Yxy.T)#, levels=LEVELS)
 CB = plt.colorbar(FCS, orientation='vertical')#, ticks=TICKS)
 plt.grid()
 plt.xlabel(r'$\tilde{x}$')
