@@ -47,9 +47,9 @@ plt.figure()
 
 for i in range(terms):
     plt.plot(
-        T_array - 273.15, eta_ij[:, i], label=str(i + 1) + ' terms'
+        T_array - 273.15, eta_ij[:, i] * 100., label=str(i + 1) + ' terms'
         )
-plt.plot(T_array - 273.15, eta_ij_num, label='numerical')
+plt.plot(T_array - 273.15, cat_terms.eta_ij_num[0,:] * 100., label='numerical')
 
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')

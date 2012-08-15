@@ -40,6 +40,8 @@ class Catalyst(object):
             22.0, 25, 28],
                 [0.01, 0.100, 3.144, 6.28, 9.43, 12.6, 16, 19, 22,
             25, 28],
+                [0.05, 0.222, 3.16, 6.29, 9.43, 12.6, 15.7,  18.9,
+            22.0, 25.1, 28.3] 
                 [0.09, 0.30, 3.17, 6.30, 9.44, 12.6, 14.7, 18.8, 22.0,
             25.1, 28.3],
                 [0.1, 0.31, 3.17, 6.30, 9.44, 12.6, 16, 19, 22,
@@ -625,7 +627,7 @@ class Catalyst(object):
             [self.Vdot_array.size, self.T_array.size]
             )
         self.Da_j = np.zeros(self.T_array.size)
-        self.eta_ij = np.zeros(self.Pe_ij.shape)
+        self.eta_ij_num = np.zeros(self.Pe_ij.shape)
 
         for i in np.arange(self.Vdot_array.size):
             for j in np.arange(self.T_array.size):
