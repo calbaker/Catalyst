@@ -27,7 +27,7 @@ cat.Vdot = 750. * 1.e-6 / 60.
 cat.Vdot_array = np.array([cat.Vdot])
 
 cat.import_data()
-
+cat.set_fit_params()
 cat.set_eta_ij()
 
 cat_empty = catalyst.Catalyst()
