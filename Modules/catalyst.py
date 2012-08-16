@@ -404,14 +404,23 @@ class Catalyst(object):
 
         return self.lambda_i
 
-    def get_Da(self, T):
+    def get_Da(self, *args):
 
         """Returns Damkoehler number.
 
         Inputs:
 
         T: temperature (K)
+
+        of if none:
+        self.T is used
         """
+
+        if len(args) == 1:
+            T = args[0]
+        
+        else:
+            T = self.T
 
         thiele = self.get_thiele(T)
 
@@ -450,7 +459,7 @@ class Catalyst(object):
 
         return self.k_arr
 
-    def get_Pe(self, Vdot, T):
+    def get_Pe(self, *args):
 
         """Returns Peclet number
 
@@ -459,7 +468,19 @@ class Catalyst(object):
         Vdot : flow rate (m^3/s)
         T : temperature (K).
 
+        if if none:
+        Vdot = self.Vdot
+        T = self.T
+
         """
+
+        if len(args) == 2:
+            Vdot = args[0]
+            T = args[1]
+
+        else:
+            Vdot = self.Vdot
+            T = self.T
 
         D_C3H8_air = self.get_D_C3H8_air(T)
 
