@@ -100,6 +100,8 @@ class Catalyst(object):
 
         if 'terms' in kwargs:
             self.terms = kwargs['terms']
+        else:
+            self.terms = 4
 
         self.A_arr = 11.29e6
         # Arrhenius coefficient (1/s ???)
@@ -144,9 +146,10 @@ class Catalyst(object):
         """Sets up spline fitting for get_lambda."""
 
         self.lambda_splines = []
-        self.terms = self.lambda_and_Da.shape[1] - 1
 
-        for i in range(0, self.terms):
+        max_terms = self.lambda_and_Da.shape[1] - 1
+
+        for i in range(0, max_terms):
             self.lambda_splines.append(
                 interp.splrep(self.lambda_and_Da[:, 0],
                               self.lambda_and_Da[:, i + 1])
