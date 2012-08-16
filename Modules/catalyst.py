@@ -131,7 +131,7 @@ class Catalyst(object):
         self.y_ = 1.
 
         self.x_array = np.linspace(0, self.x_, 100)
-        self.y_array = np.linspace(0, self.y_, 50)
+        self.y_array = np.linspace(0, self.y_ * 51 / 50, 50)
 
         self.T_ambient = 300. + 273.15
         # ambient temperature (K) at which flow rate is measured
@@ -647,8 +647,6 @@ class Catalyst(object):
 
         return self.D_C3H8_air
 
-    # Numerical stuff from here on.  
-
     def get_S_r(self):
 
         """Returns sum of residuals squared for all data points."""
@@ -688,21 +686,18 @@ class Catalyst(object):
         
         Yprime = np.zeros(Y.size)
 
+        Y[-1] = Y[-2] * (-self.delta_y * self.Da + 1.)
+        # dummy variable for imaginary Y concentration in the wall
+        
         for i in range(1, self.y_array.size - 1):
             Yprime[i] = (
                 1. / (4. * self.Pe) * (Y[i + 1] - 2 * Y[i] + Y[i - 1])
             / self.delta_y ** 2
                 )
 
-        self.wall_flux = self.Da * Y[-1]
-        Yprime[-1] = (
-            ((Y[-2] - Y[-1]) - self.wall_flux) / self.delta_y ** 2
-            )
-        # interface boundary condition.
-        
         Yprime[0] = (
             1. / (4. * self.Pe) * (Y[1] - 2 * Y[0] + Y[1]) /
-        self.delta_y ** 2
+            self.delta_y ** 2
             )
 
         # symmetry boundary condition
