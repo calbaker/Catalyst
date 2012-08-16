@@ -313,7 +313,7 @@ class Catalyst(object):
             lambda_i = self.lambda_i
 
         self.Y = (
-            (A_i * np.exp(-4. * lambda_i ** 2. / Pe * x_) *
+            (A_i * np.exp((-lambda_i ** 2. / (4. * Pe)) * x_) *
             np.cos(lambda_i * y_)).sum()
             )
 
