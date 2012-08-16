@@ -20,7 +20,7 @@ def run_eigen(Da, MIN, MAX):
 
     cat_eigen = catalyst.Catalyst()
 
-    guess = np.arange(0, 30., 0.01)
+    guess = np.linspace(MIN, MAX, 250)
 
     solution = cat_eigen.get_lambda_error(guess, Da)
 
