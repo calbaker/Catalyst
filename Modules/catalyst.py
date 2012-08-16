@@ -205,23 +205,38 @@ class Catalyst(object):
         that are varied here so they need to be inputs.
         """
 
-        if len(args) == 2:
-            Vdot = args[0]
-            T = args[1]
-            A_i = self.get_A_i(T)
-            Pe = self.get_Pe(Vdot, T)
-
-        if 'Da' in kwargs:
-            Da = kwargs['Da']
-            A_i = self.get_A_i(Da=Da)
 
         if 'Pe' in kwargs:
             Pe = kwargs['Pe']
 
-        self.eta = (
+        elif len(args) == 2:
+            Vdot = args[0]
+            T = args[1]
+            Pe = self.get_Pe(Vdot, T)
+
+        else:
+            Vdot = self.Vdot
+            T = self.T
+            Pe = self.get_Pe(Vdot, T)
+        
+        if 'Da' in kwargs:
+            Da = kwargs['Da']
+            A_i = self.get_A_i(Da=Da)
+
+        elif len(args) == 2:
+            T = args[1]
+            A_i = self.get_A_i(T)
+
+        else:
+            T = self.T
+            A_i = self.get_A_i(T)
+
+        self.eta_array = (
             (A_i / self.lambda_i * np.sin(self.lambda_i) * (1. -
-            np.exp(-self.lambda_i ** 2. / (4. * Pe) * self.x_))).sum()
+            np.exp((-self.lambda_i ** 2. / (4. * Pe)) * self.x_)))
             )
+
+        self.eta = self.eta_array.sum()
 
         return self.eta
 
