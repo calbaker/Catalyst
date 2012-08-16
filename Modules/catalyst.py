@@ -133,6 +133,115 @@ class Catalyst(object):
                 )
         self.lambda_splines = np.array(self.lambda_splines)
 
+    def set_eta_ij(self):
+
+        """Sets conversion efficiency over a range of Pe and Da."""
+
+        self.x_ = self.length / self.height
+
+        try:
+            self.Vdot_array
+        except AttributeError:
+            self.Vdot_array = np.array([self.Vdot])
+
+        self.Pe_ij = np.zeros(
+            [self.Vdot_array.size, self.T_array.size]
+            )
+        self.Da_j = np.zeros(self.T_array.size)
+        self.eta_ij = np.zeros(self.Pe_ij.shape)
+        self.eta_ij_check = np.zeros(self.Pe_ij.shape)
+
+        for i in np.arange(self.Vdot_array.size):
+            for j in np.arange(self.T_array.size):
+
+                self.Vdot = self.Vdot_array[i]
+                self.T = self.T_array[j]
+
+                self.eta_ij[i, j] = self.get_eta(self.Vdot, self.T)
+
+                self.Da_j[j] = self.Da
+                self.Pe_ij[i, j] = self.Pe
+
+    def get_eta(self, *args, **kwargs):
+
+        """Returns conversion efficiency.
+
+        Inputs:
+
+        Vdot : flow rate (m^3/s)
+        T : temperature (K).
+
+        or kwargs:
+        Pe
+        Da
+
+        or if none:
+        self.Vdot and self.T are used
+
+        Vdot and T are generally going to be the independent variables
+        that are varied here so they need to be inputs.
+        """
+
+        if len(args) == 2:
+            Vdot = args[0]
+            T = args[1]
+            A_i = self.get_A_i(T)
+            Pe = self.get_Pe(Vdot, T)
+
+        if 'Da' in kwargs:
+            Da = kwargs['Da']
+            A_i = self.get_A_i(Da=Da)
+
+        if 'Pe' in kwargs:
+            Pe = kwargs['Pe']
+
+        self.eta = (
+            (A_i / self.lambda_i * np.sin(self.lambda_i) * (1. -
+            np.exp(-self.lambda_i ** 2. / (4. * Pe) * self.x_))).sum()
+            )
+
+        return self.eta
+
+    def get_eta_fit(self, T_exp, A_arr, T_a):
+
+        """Returns eta with inputs that are used by curve_fit
+
+        Inputs:
+        T: temperature (K)
+
+        used by curve_fit as fit parameters:
+        A_arr : pre-exponential coefficient for Arrhenius kinetics
+        T_a : activation temperature (K)
+
+        """
+
+        self.A_arr = A_arr
+        self.T_a = T_a
+
+        self.T_array = T_exp
+        self.set_eta_ij()
+
+        self.eta_ij = self.eta_ij.reshape(self.eta_ij.size)
+
+        return self.eta_ij
+
+    def set_fit_params(self):
+
+        """Uses scipy optimize curve_fit to determine Arrhenius
+        parameters that result in best curve fit."""
+
+        self.p0 = np.array([self.A_arr, self.T_a])
+        # initial guess at A_arr and T_a
+
+        self.popt, self.pcov = curve_fit(
+            self.get_eta_fit, self.T_exp, self.eta_exp, p0=self.p0
+            )
+
+        self.A_arr = self.popt[0]
+        self.T_a = self.popt[1]
+
+        self.T_array = self.T_model
+
     def get_Y(self, x_, y_, **kwargs):
 
         """Sets non-dimensional Y at specified non-d (x, y) point.
@@ -171,6 +280,32 @@ class Catalyst(object):
             )
 
         return self.Y
+
+    def get_A_i(self, *args, **kwargs):
+
+        """Returns pre-exponential Arrhenius coefficient.
+
+        Inputs:
+
+        T: temperature (K)
+
+        or keyword argument Da from get_Da
+        """
+
+        if len(args) == 1:
+            T = args[0]
+            lambda_i = self.get_lambda(T)
+
+        elif 'Da' in kwargs:
+            Da = kwargs['Da']
+            lambda_i = self.get_lambda(Da=Da)
+
+        self.A_i = (
+            2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
+            np.cos(lambda_i))
+            )
+
+        return self.A_i
 
     def get_lambda(self, *args, **kwargs):
 
@@ -246,32 +381,6 @@ class Catalyst(object):
 
         return self.lambda_i
 
-    def get_A_i(self, *args, **kwargs):
-
-        """Returns pre-exponential Arrhenius coefficient.
-
-        Inputs:
-
-        T: temperature (K)
-
-        or keyword argument Da from get_Da
-        """
-
-        if len(args) == 1:
-            T = args[0]
-            lambda_i = self.get_lambda(T)
-
-        elif 'Da' in kwargs:
-            Da = kwargs['Da']
-            lambda_i = self.get_lambda(Da=Da)
-
-        self.A_i = (
-            2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
-            np.cos(lambda_i))
-            )
-
-        return self.A_i
-
     def get_Da(self, T):
 
         """Returns Damkoehler number.
@@ -336,6 +445,22 @@ class Catalyst(object):
         self.Pe = U * self.height / D_C3H8_air
 
         return self.Pe
+
+    def set_TempPres_dependents(self, T):
+
+        """Performance this function on both fuel and air.
+
+        Input:
+        T : temperature (K)
+
+        Requires that self.P is set."""
+
+        self.air.T = T
+        self.air.P = self.P
+        self.air.set_TempPres_dependents()
+        self.fuel.T = T
+        self.fuel.P = self.P
+        self.fuel.set_TempPres_dependents()
 
     def get_mfp(self, T):
 
@@ -460,117 +585,7 @@ class Catalyst(object):
 
         return self.D_C3H8_air
 
-    def set_TempPres_dependents(self, T):
-
-        """Performance this function on both fuel and air.
-
-        Input:
-        T : temperature (K)
-
-        Requires that self.P is set."""
-
-        self.air.T = T
-        self.air.P = self.P
-        self.air.set_TempPres_dependents()
-        self.fuel.T = T
-        self.fuel.P = self.P
-        self.fuel.set_TempPres_dependents()
-
-    def set_eta_ij(self):
-
-        """Sets conversion efficiency over a range of Pe and Da."""
-
-        self.x_ = self.length / self.height
-
-        try:
-            self.Vdot_array
-        except AttributeError:
-            self.Vdot_array = np.array([self.Vdot])
-
-        self.Pe_ij = np.zeros(
-            [self.Vdot_array.size, self.T_array.size]
-            )
-        self.Da_j = np.zeros(self.T_array.size)
-        self.eta_ij = np.zeros(self.Pe_ij.shape)
-        self.eta_ij_check = np.zeros(self.Pe_ij.shape)
-
-        for i in np.arange(self.Vdot_array.size):
-            for j in np.arange(self.T_array.size):
-
-                self.Vdot = self.Vdot_array[i]
-                self.T = self.T_array[j]
-
-                self.eta_ij[i, j] = self.get_eta(self.Vdot, self.T)
-
-                Yin = np.zeros(self.y_array.size)
-                Yout = np.zeros(self.y_array.size)
-
-                for k in range(self.y_array.size):
-                    Yin[k] = self.get_Y(0, self.y_array[k])
-                    Yout[k] = self.get_Y(0, self.y_array[k])
-
-                self.eta_ij_check[i, j] = Yin.mean() - Yout.mean()
-                self.Da_j[j] = self.Da
-                self.Pe_ij[i, j] = self.Pe
-
-    def get_eta(self, Vdot, T):
-
-        """Returns conversion efficiency.
-
-        Inputs:
-        Vdot : flow rate (m^3/s)
-        T : temperature (K).
-        """
-
-        A_i = self.get_A_i(T)
-        Pe = self.get_Pe(Vdot, T)
-
-        self.eta = (
-            (A_i / self.lambda_i * np.sin(self.lambda_i) * (1. -
-            np.exp(-self.lambda_i ** 2. / (4. * Pe) * self.x_))).sum()
-            )
-
-        return self.eta
-
-    def get_eta_fit(self, T_exp, A_arr, T_a):
-
-        """Returns eta with inputs that are used by curve_fit
-
-        Inputs:
-        T: temperature (K)
-
-        used by curve_fit as fit parameters:
-        A_arr : pre-exponential coefficient for Arrhenius kinetics
-        T_a : activation temperature (K)
-
-        """
-
-        self.A_arr = A_arr
-        self.T_a = T_a
-
-        self.T_array = T_exp
-        self.set_eta_ij()
-
-        self.eta_ij = self.eta_ij.reshape(self.eta_ij.size)
-
-        return self.eta_ij
-
-    def set_fit_params(self):
-
-        """Uses scipy optimize curve_fit to determine Arrhenius
-        parameters that result in best curve fit."""
-
-        self.p0 = np.array([self.A_arr, self.T_a])
-        # initial guess at A_arr and T_a
-
-        self.popt, self.pcov = curve_fit(
-            self.get_eta_fit, self.T_exp, self.eta_exp, p0=self.p0
-            )
-
-        self.A_arr = self.popt[0]
-        self.T_a = self.popt[1]
-
-        self.T_array = self.T_model
+    # Numerical stuff from here on.  
 
     def get_S_r(self):
 
@@ -688,3 +703,4 @@ class Catalyst(object):
         self.x_array = x_array
 
         return self.eta_num
+
