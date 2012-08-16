@@ -327,6 +327,7 @@ class Catalyst(object):
         T: temperature (K)
 
         or keyword argument Da from get_Da
+        or keyword argument lambda_i from get_lambda
         """
 
         if len(args) == 1:
@@ -336,6 +337,9 @@ class Catalyst(object):
         elif 'Da' in kwargs:
             Da = kwargs['Da']
             lambda_i = self.get_lambda(Da=Da)
+
+        elif 'lambda_i' in kwargs:
+            lambda_i = kwargs['lambda_i']
 
         self.A_i = (
             2. * np.sin(lambda_i) / (lambda_i + np.sin(lambda_i) *
