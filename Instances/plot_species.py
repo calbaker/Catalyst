@@ -13,7 +13,7 @@ if cmd_folder not in sys.path:
 import catalyst
 reload(catalyst)
 
-x_array = np.linspace(0., 30., 100)
+x_array = np.linspace(0., 61., 100)
 # max should be 30 to be consistent with experiment
 y_array = np.linspace(0, 1., 50)
 
@@ -25,8 +25,10 @@ Da = 0.1
 catmax = catalyst.Catalyst()
 catmax.x_array = x_array
 catmax.y_array = y_array
-Pe = catmax.get_Pe(500e-6 / 60, 400 + 273.15)
-Da = catmax.get_Da(400 + 273.15)
+catmax.Vdot = 500e-6 / 60.
+catmax.T = 400. + 273.15
+Pe = catmax.get_Pe()
+Da = catmax.get_Da()
 catmax.Pe = Pe
 catmax.Da = Da
 catmax.Yxy = np.zeros([x_array.size, y_array.size])
