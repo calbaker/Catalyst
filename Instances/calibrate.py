@@ -86,8 +86,6 @@ plt.plot(data250.T_exp - 273.15, data250.eta_exp * 100., 'sr', linestyle='',
          label='250sccm exp')
 plt.plot(data250.T_array - 273.15, data250.eta_ij.T * 100., '-r',
          label='250sccm model')
-plt.plot(data250.T_array - 273.15, data250.eta_ij_check.T * 100., '-.r',
-         label='250sccm check')
 
 plt.plot(data500.T_exp - 273.15, data500.eta_exp * 100., 'og', linestyle='',
          label='500sccm exp')

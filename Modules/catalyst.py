@@ -172,7 +172,6 @@ class Catalyst(object):
             )
         self.Da_j = np.zeros(self.T_array.size)
         self.eta_ij = np.zeros(self.Pe_ij.shape)
-        self.eta_ij_check = np.zeros(self.Pe_ij.shape)
 
         for i in np.arange(self.Vdot_array.size):
             for j in np.arange(self.T_array.size):
