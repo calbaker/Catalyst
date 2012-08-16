@@ -103,7 +103,7 @@ class Catalyst(object):
 
         self.A_arr = 11.29e6
         # Arrhenius coefficient (1/s ???)
-        self.T_a = 6822.  # activation temperature (K)
+        self.T_a = 6543.  # activation temperature (K)
 
         # Nanowire morphology
         self.porosity = 0.97  # porosity of nanowires
