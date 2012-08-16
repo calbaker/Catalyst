@@ -24,7 +24,7 @@ data250.source = (
 data250.import_data()
 data250.T_model = T_model
 data250.Vdot = 250. * 1.e-6 / 60.
-# data250.set_fit_params()
+data250.set_fit_params()
 data250.set_eta_ij()
 A_arr = data250.A_arr
 T_a = data250.T_a
