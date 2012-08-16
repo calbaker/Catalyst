@@ -345,7 +345,7 @@ class Catalyst(object):
 
         return self.A_i
 
-    def get_lambda(self, *args, **kwargs):
+    def get_lambda_spl(self, *args, **kwargs):
 
         """Uses spline fit to represent lambda as a function of Da.
 
@@ -392,7 +392,7 @@ class Catalyst(object):
 
         return error
 
-    def get_lambda_fsolve(self, *args, **kwargs):
+    def get_lambda(self, *args, **kwargs):
 
         """Uses fsolve to represent lambda as a function of Da.
 
@@ -410,7 +410,7 @@ class Catalyst(object):
             T = args[0]
             Da = np.float32(self.get_Da(T))
 
-        self.lambda_i = self.get_lambda(Da=Da)
+        self.lambda_i = self.get_lambda_spl(Da=Da)
         lambda_i = self.lambda_i
 
         self.lambda_i = (
