@@ -14,10 +14,11 @@ import catalyst
 reload(catalyst)
 
 spltest = catalyst.Catalyst()
+spltest.terms = 4
 
 Da_array = np.linspace(0.001, 1., 100)
 lambda_array = np.zeros(
-    [Da_array.size, spltest.lambda_and_Da.shape[1] - 1]
+    [Da_array.size, spltest.terms]
     )
 print lambda_array.shape
 
