@@ -161,9 +161,6 @@ class Catalyst(object):
         self.get_eta_fit = types.MethodType(
             analytical.get_eta_fit, self
             )
-        self.set_fit_params = types.MethodType(
-            analytical.set_fit_params, self
-            )
         self.get_Y = types.MethodType(analytical.get_Y, self)
         self.get_A_i = types.MethodType(analytical.get_A_i, self)
         self.get_lambda_spl = (
@@ -220,3 +217,6 @@ class Catalyst(object):
         self.import_data = types.MethodType(
             experimental.import_data, self
             ) 
+        self.set_fit_params = types.MethodType(
+            experimental.set_fit_params, self
+            )
