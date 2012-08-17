@@ -1,6 +1,5 @@
 import numpy as np
 import scipy.interpolate as interp
-from scipy.optimize import curve_fit
 from scipy.optimize import fsolve
 
 def init_lambda_splines(self):
@@ -123,23 +122,6 @@ def get_eta_fit(self, T_exp, A_arr, T_a):
     self.eta_ij = self.eta_ij.reshape(self.eta_ij.size)
 
     return self.eta_ij
-
-def set_fit_params(self):
-
-    """Uses scipy optimize curve_fit to determine Arrhenius
-    parameters that result in best curve fit."""
-
-    self.p0 = np.array([self.A_arr, self.T_a])
-    # initial guess at A_arr and T_a
-
-    self.popt, self.pcov = curve_fit(
-        self.get_eta_fit, self.T_exp, self.eta_exp, p0=self.p0
-        )
-
-    self.A_arr = self.popt[0]
-    self.T_a = self.popt[1]
-
-    self.T_array = self.T_model
 
 def get_Y(self, x_, y_, **kwargs):
 
