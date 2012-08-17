@@ -65,7 +65,6 @@ def get_eta(self, *args, **kwargs):
     that are varied here so they need to be inputs.
     """
 
-
     if 'Pe' in kwargs:
         Pe = kwargs['Pe']
 
