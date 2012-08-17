@@ -23,7 +23,7 @@ Da = 0.1
 # and Da = 0.01 to 0.15
 
 catmax = catalyst.Catalyst()
-catmax.terms = 10
+catmax.terms = 3
 catmax.x_array = x_array
 catmax.y_array = y_array
 catmax.Vdot = 500e-6 / 60.

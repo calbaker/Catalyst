@@ -708,11 +708,18 @@ class Catalyst(object):
 
         """Solves for species and conversion numerically."""
 
-        Y0 = np.ones(self.y_array.size)
         self.delta_x = self.x_array[1] - self.x_array[0]
+        
+        SIZE = self.y_array.size + 1
+        MAX = self.y_array.max() * (SIZE) / (SIZE - 1)
+        self.y_array = np.linspace(0, MAX, SIZE)
         self.delta_y = self.y_array[1] - self.y_array[0]
+        Y0 = np.ones(self.y_array.size)
 
         self.Yxy_num = odeint(self.get_Yprime, y0=Y0, t=self.x_array)
+
+        # trimming off the boundary condition row
+        self.Yxy_num = self.Yxy_num[:, :-1]
 
     def set_eta_ij_num(self):
 
