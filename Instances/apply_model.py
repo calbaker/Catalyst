@@ -19,7 +19,7 @@ cat = catalyst.Catalyst()
 cat.A_arr0 = cat.A_arr
 
 cat.Vdot = 500.e-6 / 60. 
-cat.T = 450.
+cat.T = 450. + 273.15
 
 cat.thickness0 = 5.e-6
 
@@ -42,17 +42,30 @@ for j in range(cat.Kn_length_array.size):
 
         print 'i, j =', i, ",", j
 
+        cat.A_arr = cat.A_arr_array[i]
         cat.thickness = cat.thickness_array[i]
-        cat.Da = cat.get_Da()
 
+        cat.eta_Pt_total[i,j] = cat.get_eta(Pe=cat.Pe)
         cat.Da_array[i,j] = cat.Da
         cat.phi_array[i,j] = cat.thiele
 
-        cat.eta_Pt_total[i,j] = cat.get_eta(cat.Pe, cat.Da)
-
         cat.A_arr = cat.A_arr0
+
         cat.Da = cat.get_Da(cat.T)
-        cat.eta_Pt_density[i,j] = cat.get_eta(cat.Pe, cat.Da)
+        cat.eta_Pt_density[i,j] = cat.get_eta(Pe=cat.Pe)
+
+np.savetxt(
+    '../output/apply_model/cat.thickness_array', cat.thickness_array
+    ) 
+np.savetxt(
+    '../output/apply_model/cat.Kn_length_array', cat.Kn_length_array
+    ) 
+np.savetxt(
+    '../output/apply_model/cat.eta_Pt_total', cat.eta_Pt_total
+    ) 
+np.savetxt(
+    '../output/apply_model/cat.eta_Pt_density', cat.eta_Pt_density
+    ) 
 
 
 # Plot configuration
@@ -84,8 +97,8 @@ plt.grid()
 plt.ylim(ymin=0)
 plt.legend(loc='lower right',title='Knudsen Length', ncol=2)
 plt.subplots_adjust(left=0.17,bottom=0.17)
-plt.savefig('../Plots/applied/eta_Pt_density.pdf')
-plt.savefig('../Plots/applied/eta_Pt_density.png')
+plt.savefig('../Plots/apply_model/eta_Pt_density.pdf')
+plt.savefig('../Plots/apply_model/eta_Pt_density.png')
 
 plt.figure()
 for i in range(cat.Kn_length_array.size):
@@ -98,8 +111,8 @@ plt.grid()
 plt.ylim(0,20)
 plt.legend(loc='lower left',title=r"Knudsen Length", ncol=2)
 plt.subplots_adjust(left=0.17,bottom=0.17)
-plt.savefig('../Plots/applied/eta_Pt_total.pdf')
-plt.savefig('../Plots/applied/eta_Pt_total.png')
+plt.savefig('../Plots/apply_model/eta_Pt_total.pdf')
+plt.savefig('../Plots/apply_model/eta_Pt_total.png')
 
 # plt.figure()
 # for i in range(cat.Kn_length_array.size):
@@ -112,8 +125,8 @@ plt.savefig('../Plots/applied/eta_Pt_total.png')
 # plt.ylim(0,20)
 # plt.legend(loc='lower left',title=r"Knudsen Length", ncol=2)
 # plt.subplots_adjust(left=0.17,bottom=0.17)
-# plt.savefig('../Plots/applied/Da.pdf')
-# plt.savefig('../Plots/applied/Da.png')
+# plt.savefig('../Plots/apply_model/Da.pdf')
+# plt.savefig('../Plots/apply_model/Da.png')
 
 # plt.figure()
 # for i in range(cat.Kn_length_array.size):
@@ -126,7 +139,7 @@ plt.savefig('../Plots/applied/eta_Pt_total.png')
 # plt.ylim(0,20)
 # plt.legend(loc='lower left',title=r"Knudsen Length", ncol=2)
 # plt.subplots_adjust(left=0.17,bottom=0.17)
-# plt.savefig('../Plots/applied/phi.pdf')
-# plt.savefig('../Plots/applied/phi.png')
+# plt.savefig('../Plots/apply_model/phi.pdf')
+# plt.savefig('../Plots/apply_model/phi.png')
 
 plt.show()
