@@ -23,7 +23,7 @@ Da = 0.1
 # and Da = 0.01 to 0.15
 
 catmax = catalyst.Catalyst()
-catmax.terms = 3
+catmax.terms = 4
 catmax.x_array = x_array
 catmax.y_array = y_array
 catmax.Vdot = 500e-6 / 60.
@@ -72,16 +72,15 @@ plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 10
 
-TICKS = np.arange(0, 1.2, 0.2)
-LEVELS = np.arange(0, 1.1, 0.1)
+TICKS = np.linspace(0.8, 1, 6)
+LEVELS = np.linspace(0.8, cat1.Yxy.max(), 12)
 
 plt.close()
 
-LEVELS = np.linspace(catmax.Yxy.min(), catmax.Yxy.max(), 12)
 x_2d, y_2d = np.meshgrid(x_array, y_array)
 fig_eta = plt.figure(str(catmax.terms) + ' terms')
 FCS = plt.contourf(x_2d, y_2d, catmax.Yxy.T, levels=LEVELS)
-CB = plt.colorbar(FCS, orientation='vertical')#, ticks=TICKS)
+CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKS)
 plt.grid()
 plt.xlabel(r'$\tilde{x}$')
 plt.ylabel(r'$\tilde{y}$')
@@ -96,30 +95,26 @@ plt.savefig('../Plots/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
 plt.savefig('../Plots/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
 
-# fig_species = plt.figure('1 term')
-# # TICKS = np.arange(0,1.5,0.1)
-# LEVELS = np.arange(0, 1.2, 0.1)
-# FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T)# , levels=LEVELS)
-# CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')# , ticks=TICKS)
-# plt.grid()
-# plt.xlabel(r'$\tilde{x}$')
-# plt.ylabel(r'$\tilde{y}$')
-# # plt.title(r'Species Concentration v. $\tilde{x}$ and $\tilde{y}$' +
-# #           '\nDa=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe))
-# plt.ylim(-1, 1)
-# plt.subplots_adjust(bottom=0.15)
-# plt.subplots_adjust(left=0.2)
-# plt.subplots_adjust(right=0.7)
-# plt.savefig('../Plots/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
-#             + '.pdf')
-# plt.savefig('../Plots/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
-#             + '.png')
-
-LEVELS = np.linspace(cat_num.Yxy_num.min(), cat_num.Yxy_num.max(), 12)
+fig_species = plt.figure('1 term')
+FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T, levels=LEVELS)
+CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKS)
+plt.grid()
+plt.xlabel(r'$\tilde{x}$')
+plt.ylabel(r'$\tilde{y}$')
+# plt.title(r'Species Concentration v. $\tilde{x}$ and $\tilde{y}$' +
+#           '\nDa=' + str(cat1.Da) + ' Pe=' + str(cat1.Pe))
+plt.ylim(-1, 1)
+plt.subplots_adjust(bottom=0.15)
+plt.subplots_adjust(left=0.2)
+plt.subplots_adjust(right=0.7)
+plt.savefig('../Plots/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
+            + '.pdf')
+plt.savefig('../Plots/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
+            + '.png')
 
 fig_species = plt.figure('numerical')
 FCS = plt.contourf(x_2d, y_2d, cat_num.Yxy_num.T, levels=LEVELS)
-CB = plt.colorbar(FCS, orientation='vertical', format='%.2f')
+CB = plt.colorbar(FCS, orientation='vertical', ticks=TICKS, format='%.2f')
 plt.grid()
 plt.xlabel(r'$\tilde{x}$')
 plt.ylabel(r'$\tilde{y}$')
