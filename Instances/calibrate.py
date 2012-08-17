@@ -13,7 +13,7 @@ if cmd_folder not in sys.path:
 import catalyst 
 reload(catalyst)
 
-T_model = np.linspace(250, 450, 25) + 273.15
+T_model = np.linspace(250, 450, 50) + 273.15
 
 print "running data250"
 
@@ -22,9 +22,9 @@ data250.source = (
     '../data/250sccm 10nmPtPd VariedT rep2.xls'
     )
 data250.import_data()
-data250.T_model = T_model
 data250.Vdot = 250. * 1.e-6 / 60.
 data250.set_fit_params()
+data250.T_model = T_model
 data250.set_eta_ij()
 A_arr = data250.A_arr
 T_a = data250.T_a
