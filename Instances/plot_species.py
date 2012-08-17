@@ -81,8 +81,9 @@ x_2d, y_2d = np.meshgrid(x_array, y_array)
 
 np.savetxt('../output/plot_species/x_2d', x_2d)
 np.savetxt('../output/plot_species/y_2d', y_2d)
-np.savetxt('../output/plot_species/numerical Yxy', cat_num.Yxy_num)
-np.savetxt('../output/plot_species/one term Yxy', cat1.Yxy)
+np.savetxt('../output/plot_species/cat_num.Yxy_num', cat_num.Yxy_num)
+np.savetxt('../output/plot_species/catmax.Yxy', cat_num.Yxy_num)
+np.savetxt('../output/plot_species/cat1.Yxy', cat1.Yxy)
 np.savetxt(
     '../output/plot_species/' + str(catmax.terms) + ' Yxy',
     catmax.Yxy
