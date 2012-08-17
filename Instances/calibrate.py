@@ -29,6 +29,11 @@ data250.set_eta_ij()
 A_arr = data250.A_arr
 T_a = data250.T_a
 
+np.savetxt('../output/calibrate/data250.T_exp', data250.T_exp)
+np.savetxt('../output/calibrate/data250.T_array', data250.T_array)
+np.savetxt('../output/calibrate/data250.eta_ij', data250.eta_ij)
+np.savetxt('../output/calibrate/data250.eta_exp', data250.eta_exp)
+
 print "running data500"
 
 data500 = catalyst.Catalyst()
@@ -41,6 +46,11 @@ data500.T_a = data250.T_a
 data500.A_arr = data250.A_arr
 data500.Vdot = 500. * 1.e-6 / 60.
 data500.set_eta_ij()
+
+np.savetxt('../output/calibrate/data500.T_exp', data500.T_exp)
+np.savetxt('../output/calibrate/data500.T_array', data500.T_array)
+np.savetxt('../output/calibrate/data500.eta_ij', data500.eta_ij)
+np.savetxt('../output/calibrate/data500.eta_exp', data500.eta_exp)
 
 print "running data750"
 
@@ -55,6 +65,11 @@ data750.A_arr = data250.A_arr
 data750.Vdot = 750. * 1.e-6 / 60.
 data750.set_eta_ij()
 
+np.savetxt('../output/calibrate/data750.T_exp', data750.T_exp)
+np.savetxt('../output/calibrate/data750.T_array', data750.T_array)
+np.savetxt('../output/calibrate/data750.eta_ij', data750.eta_ij)
+np.savetxt('../output/calibrate/data750.eta_exp', data250.eta_exp)
+
 print "running data1000"
 
 data1000 = catalyst.Catalyst()
@@ -68,6 +83,11 @@ data1000.A_arr = data250.A_arr
 data1000.Vdot = 1000. * 1.e-6 / 60.
 data1000.set_eta_ij()
 
+np.savetxt('../output/calibrate/data1000.T_exp', data1000.T_exp)
+np.savetxt('../output/calibrate/data1000.T_array', data1000.T_array)
+np.savetxt('../output/calibrate/data1000.eta_ij', data1000.eta_ij)
+np.savetxt('../output/calibrate/data1000.eta_exp', data1000.eta_exp)
+
 # Plot configuration
 FONTSIZE = 18
 plt.rcParams['axes.labelsize'] = FONTSIZE
@@ -80,7 +100,7 @@ plt.rcParams['lines.markersize'] = 8
 
 plt.close()
 
-plt.figure()
+fig1 = plt.figure()
 
 plt.plot(data250.T_exp - 273.15, data250.eta_exp * 100., 'sr', linestyle='',
          label='250sccm exp')
@@ -104,11 +124,14 @@ plt.plot(data1000.T_array - 273.15, data1000.eta_ij.T * 100., '-m',
 
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')
-plt.ylim(ymax=37)
+plt.ylim(ymax=45)
 # plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
 plt.grid()
-plt.savefig('../Plots/4model and exp.pdf')
-plt.savefig('../Plots/4model and exp.png')
+# fig1.set_figwidth(7.)
+
+fig1.savefig('../Plots/calibrate/4model and exp.pdf')
+fig1.savefig('../Plots/calibrate/4model and exp.png')
 
 plt.show()
+
