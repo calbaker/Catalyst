@@ -34,6 +34,7 @@ print "solving numerical model"
 cat_terms.y_array = np.linspace(0, 1, 100)
 cat_terms.set_eta_ij_num()
 
+
 # Plot configuration
 FONTSIZE = 18
 plt.rcParams['axes.labelsize'] = FONTSIZE
@@ -57,13 +58,17 @@ for i in range(terms):
 plt.plot(T_array - 273.15, cat_terms.eta_ij_num[0, :] * 100., '--k',
     label='numerical')
 
+np.savetxt('../output/plot_eta_v_terms/eta_ij', eta_ij)
+np.savetxt('../output/plot_eta_v_terms/eta_ij_num', cat_terms.eta_ij_num)
+np.savetxt('../output/plot_eta_v_terms/T_array', T_array)
+
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')
 # plt.ylim(ymax=37)
 # plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
 plt.grid()
-plt.savefig('../Plots/Fo convergence' + str(Vdot * 60e6) + '.pdf')
-plt.savefig('../Plots/Fo convergence' + str(Vdot * 60e6) + '.png')
+plt.savefig('../Plots/plot_eta_v_terms/Fo convergence' + str(Vdot * 60e6) + '.pdf')
+plt.savefig('../Plots/plot_eta_v_terms/Fo convergence' + str(Vdot * 60e6) + '.png')
 
 plt.show()
