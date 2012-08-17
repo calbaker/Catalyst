@@ -128,7 +128,6 @@ plt.ylim(ymax=45)
 # plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
 plt.grid()
-# fig1.set_figwidth(7.)
 
 fig1.savefig('../Plots/calibrate/4model and exp.pdf')
 fig1.savefig('../Plots/calibrate/4model and exp.png')
