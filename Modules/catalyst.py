@@ -716,10 +716,10 @@ class Catalyst(object):
         self.delta_y = self.y_array[1] - self.y_array[0]
         Y0 = np.ones(self.y_array.size)
 
-        self.Yxy_num = odeint(self.get_Yprime, y0=Y0, t=self.x_array)
+        self.Yxy_num_raw = odeint(self.get_Yprime, y0=Y0, t=self.x_array)
 
         # trimming off the boundary condition row
-        self.Yxy_num = self.Yxy_num[:, :-1]
+        self.Yxy_num = self.Yxy_num_raw[:, :-1]
 
     def set_eta_ij_num(self):
 
