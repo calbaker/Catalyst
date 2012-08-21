@@ -87,7 +87,6 @@ def get_Yprime(self, Y, x):
         1. / (4. * self.Pe) * (Y[1] - 2 * Y[0] + Y[1]) /
         self.delta_y ** 2
         )
-
     # symmetry boundary condition
 
     return Yprime
