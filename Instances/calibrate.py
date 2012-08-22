@@ -89,10 +89,10 @@ np.savetxt('../output/calibrate/data1000.eta_ij', data1000.eta_ij)
 np.savetxt('../output/calibrate/data1000.eta_exp', data1000.eta_exp)
 
 # Plot configuration
-FONTSIZE = 18
+FONTSIZE = 22
 plt.rcParams['axes.labelsize'] = FONTSIZE
 plt.rcParams['axes.titlesize'] = FONTSIZE
-plt.rcParams['legend.fontsize'] = FONTSIZE 
+plt.rcParams['legend.fontsize'] = 18
 plt.rcParams['xtick.labelsize'] = FONTSIZE
 plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
@@ -125,8 +125,11 @@ plt.plot(data1000.T_array - 273.15, data1000.eta_ij.T * 100., '-m',
 plt.xlabel(r'Temperature ($^\circ$C)')
 plt.ylabel('Conversion Efficiency (%)')
 plt.ylim(ymax=45)
+plt.xlim(xmax=475)
 # plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
+plt.subplots_adjust(bottom=0.14)
+plt.subplots_adjust(right=0.94)
 plt.grid()
 
 fig1.savefig('../Plots/calibrate/4model and exp.pdf')

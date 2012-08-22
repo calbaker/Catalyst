@@ -23,10 +23,10 @@ cat.T = 450. + 273.15
 
 cat.thickness0 = 5.e-6
 
-cat.thickness_array = np.linspace(1, 200, 25) * 1.e-6
+cat.thickness_array = np.linspace(1, 25, 25) * 1.e-6
 cat.A_arr_array = ( cat.A_arr0 / (cat.thickness_array /
                                   cat.thickness0) )
-cat.Kn_length_array = np.array([1., 5., 10., 50., 100.]) * 1.e-9
+cat.Kn_length_array = np.array([1., 10., 50., 100., 200.]) * 1.e-9
 
 cat.eta_Pt_density = np.zeros([cat.thickness_array.size, cat.Kn_length_array.size])
 cat.eta_Pt_total = np.zeros([cat.thickness_array.size, cat.Kn_length_array.size])
@@ -82,7 +82,7 @@ plt.rcParams['lines.markersize'] = 10
 
 FORMATTER = tic.FormatStrFormatter('%1.1f')
 MARKERS = ['-k', '-.b', '--r', ':m', '-.g']
-LABELS = list(['1 nm', '5 nm', '10 nm', '50 nm', '100 nm'])
+LABELS = list(['1 nm', '10 nm', '50 nm', '100 nm', '200 nm'])
 
 plt.close()
 
@@ -94,9 +94,10 @@ plt.xlabel(r'Nanowire Length ($\mu$m)')
 plt.ylabel('Conversion Efficiency (%)')
 #ax1.yaxis.set_major_formatter(FORMATTER)
 plt.grid()
-plt.ylim(ymin=0)
+plt.ylim(ymin=-50)
+plt.yticks(np.arange(0, 70, 10))
 plt.legend(loc='lower right',title='Knudsen Length', ncol=2)
-plt.subplots_adjust(left=0.17,bottom=0.17)
+plt.subplots_adjust(left=0.2,bottom=0.17)
 plt.savefig('../Plots/apply_model/eta_Pt_density.pdf')
 plt.savefig('../Plots/apply_model/eta_Pt_density.png')
 
@@ -108,9 +109,9 @@ plt.xlabel(r'Nanowire Length ($\mu$m)')
 plt.ylabel('Conversion Efficiency (%)')
 #ax1.yaxis.set_major_formatter(FORMATTER)
 plt.grid()
-plt.ylim(0,20)
+plt.ylim(0,30)
 plt.legend(loc='lower left',title=r"Knudsen Length", ncol=2)
-plt.subplots_adjust(left=0.17,bottom=0.17)
+plt.subplots_adjust(left=0.15,bottom=0.17)
 plt.savefig('../Plots/apply_model/eta_Pt_total.pdf')
 plt.savefig('../Plots/apply_model/eta_Pt_total.png')
 
