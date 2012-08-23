@@ -106,6 +106,11 @@ plt.savefig('../Plots/plot_species/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
 plt.savefig('../Plots/plot_species/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
 
+paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+
+plt.savefig(paper_dir + 'species_4term.pdf')
+
+
 fig_species = plt.figure('1 term')
 FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T, levels=LEVELS)
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKS)
@@ -123,6 +128,8 @@ plt.savefig('../Plots/plot_species/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
 plt.savefig('../Plots/plot_species/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
 
+plt.savefig(paper_dir + 'species_1term.pdf')
+
 fig_species = plt.figure('numerical')
 FCS = plt.contourf(x_2d, y_2d, cat_num.Yxy_num.T, levels=LEVELS)
 CB = plt.colorbar(FCS, orientation='vertical', ticks=TICKS, format='%.2f')
@@ -137,5 +144,7 @@ plt.savefig('../Plots/plot_species/species num Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.pdf')
 plt.savefig('../Plots/plot_species/species num Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
+
+plt.savefig(paper_dir + 'species_num.pdf')
 
 plt.show()

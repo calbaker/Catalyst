@@ -18,9 +18,10 @@ T_array = np.linspace(200, 500, 25) + 273.15
 
 cat_terms = catalyst.Catalyst()
 cat_terms.terms = 10
-terms = np.arange(4, cat_terms.terms, 3)
 cat_terms.Vdot = Vdot
 cat_terms.T_array = T_array
+
+terms = np.arange(1, cat_terms.terms)
 
 eta_ij = np.zeros([T_array.size, cat_terms.terms])
 
@@ -68,7 +69,13 @@ plt.ylabel('Conversion Efficiency (%)')
 # plt.title('Conversion Efficiency v. Flow Rate')
 plt.legend(loc='best')
 plt.grid()
-plt.savefig('../Plots/plot_eta_v_terms/Fo convergence' + str(Vdot * 60e6) + '.pdf')
-plt.savefig('../Plots/plot_eta_v_terms/Fo convergence' + str(Vdot * 60e6) + '.png')
+plt.savefig(
+    '../Plots/plot_eta_v_terms/Fo convergence' + str(Vdot * 60e6) + '.pdf')
+plt.savefig(
+    '../Plots/plot_eta_v_terms/Fo convergence' + str(Vdot * 60e6) + '.png')
+
+paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+
+plt.savefig(paper_dir + 'Fo_convergence.pdf')
 
 plt.show()

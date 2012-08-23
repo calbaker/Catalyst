@@ -132,8 +132,12 @@ plt.subplots_adjust(bottom=0.14)
 plt.subplots_adjust(right=0.94)
 plt.grid()
 
+paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+
 fig1.savefig('../Plots/calibrate/4model and exp.pdf')
 fig1.savefig('../Plots/calibrate/4model and exp.png')
+
+fig1.savefig(paper_dir + '4model_and_exp.pdf')
 
 plt.show()
 

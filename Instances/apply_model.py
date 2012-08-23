@@ -101,6 +101,10 @@ plt.subplots_adjust(left=0.2,bottom=0.17)
 plt.savefig('../Plots/apply_model/eta_Pt_density.pdf')
 plt.savefig('../Plots/apply_model/eta_Pt_density.png')
 
+paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+
+plt.savefig(paper_dir + 'eta_Pt_density.pdf')
+
 plt.figure()
 for i in range(cat.Kn_length_array.size):
     plt.plot(cat.thickness_array * 1.e6, cat.eta_Pt_total[:,i] *
@@ -114,6 +118,8 @@ plt.legend(loc='lower left',title=r"Knudsen Length", ncol=2)
 plt.subplots_adjust(left=0.15,bottom=0.17)
 plt.savefig('../Plots/apply_model/eta_Pt_total.pdf')
 plt.savefig('../Plots/apply_model/eta_Pt_total.png')
+
+plt.savefig(paper_dir + 'eta_Pt_total.pdf')
 
 # plt.figure()
 # for i in range(cat.Kn_length_array.size):
