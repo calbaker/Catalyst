@@ -18,15 +18,15 @@ T_array = np.linspace(200, 500, 25) + 273.15
 
 cat_terms = catalyst.Catalyst()
 cat_terms.terms = 10
-terms = cat_terms.terms
+terms = np.arange(4, cat_terms.terms, 3)
 cat_terms.Vdot = Vdot
 cat_terms.T_array = T_array
 
 eta_ij = np.zeros([T_array.size, cat_terms.terms])
 
-for i in range(terms):
-    print "solving for", i + 1, "terms"
-    cat_terms.terms = i + 1
+for i in range(terms.size):
+    print "solving for", terms[i], "terms"
+    cat_terms.terms = terms[i]
     cat_terms.set_eta_ij()
     eta_ij[:, i] = cat_terms.eta_ij
 
@@ -49,9 +49,9 @@ plt.close()
 
 plt.figure()
 
-for i in range(terms):
+for i in range(terms.size):
     if i % 2 == 0:
-        LABEL = str(i + 1) + ' terms'
+        LABEL = str(terms[i]) + ' terms'
     else:
         LABEL = None
     plt.plot(T_array - 273.15, eta_ij[:, i] * 100., label=LABEL)
