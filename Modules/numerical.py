@@ -10,8 +10,7 @@ def solve_numeric(self):
     self.delta_y = self.y_array[1] - self.y_array[0]
     Y0 = np.ones(self.y_array.size)
 
-    self.Yxy_num_raw = odeint(self.get_Yprime, y0=Y0, t=self.x_array)
-
+    self.Yxy_num = odeint(self.get_Yprime, y0=Y0, t=self.x_array)
 
 def set_eta_ij_num(self):
 
@@ -71,19 +70,20 @@ def get_Yprime(self, Y, x):
 
     # symmetry boundary condition
     Yprime[0] = (
-        1. / (4. * self.Pe) * (Y[1] - 2 * Y[0] + Y[1]) /
-        self.delta_y ** 2
+        4. / self.Pe * (Y[1] - 2 * Y[0] + Y[1]) / self.delta_y ** 2
         )
 
     # in the channel
     for i in range(1, self.y_array.size - 1):
         Yprime[i] = (
-            1. / (4. * self.Pe) * (Y[i + 1] - 2 * Y[i] + Y[i - 1])
-            / self.delta_y ** 2
+            4. / self.Pe * (Y[i + 1] - 2 * Y[i] + Y[i - 1]) /
+            self.delta_y ** 2
             )
 
     # wall BC
-
-    Yprime[-1] = 1. / self.Pe * (Y[-1] - Y[-2] - self.Da * Y[-1])
+    Yprime[-1] = (
+        8. / self.Pe * (Y[-2] - Y[-1] - self.Da * Y[-1]) /
+        self.delta_y
+        )
 
     return Yprime

@@ -91,8 +91,8 @@ def get_eta(self, *args, **kwargs):
         A_i = self.get_A_i(T)
 
     self.eta_array = (
-        (A_i / self.lambda_i * np.sin(self.lambda_i) * (1. -
-        np.exp((-self.lambda_i ** 2. / (4. * Pe)) * self.x_)))
+        A_i / self.lambda_i * np.sin(self.lambda_i) * (1. -
+        np.exp(-4 * self.lambda_i ** 2. / Pe * self.x_))
         )
 
     self.eta = self.eta_array.sum()
@@ -155,7 +155,7 @@ def get_Y(self, x_, y_, **kwargs):
         lambda_i = self.lambda_i
 
     self.Y = (
-        (A_i * np.exp((-lambda_i ** 2. / (4. * Pe)) * x_) *
+        (A_i * np.exp(-4. * lambda_i ** 2. / Pe * x_) *
         np.cos(lambda_i * y_)).sum()
         )
 
