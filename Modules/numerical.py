@@ -7,16 +7,11 @@ def solve_numeric(self):
 
     self.delta_x = self.x_array[1] - self.x_array[0]
 
-    SIZE = self.y_array.size + 1
-    MAX = self.y_array.max() * (SIZE) / (SIZE - 1)
-    self.y_array = np.linspace(0, MAX, SIZE)
     self.delta_y = self.y_array[1] - self.y_array[0]
     Y0 = np.ones(self.y_array.size)
 
     self.Yxy_num_raw = odeint(self.get_Yprime, y0=Y0, t=self.x_array)
 
-    # trimming off the boundary condition row
-    self.Yxy_num = self.Yxy_num_raw[:, :-1]
 
 def set_eta_ij_num(self):
 
@@ -74,19 +69,21 @@ def get_Yprime(self, Y, x):
 
     Yprime = np.zeros(Y.size)
 
-    Y[-1] = Y[-2] * (-self.delta_y * self.Da + 1.)
-    # dummy variable for imaginary Y concentration in the wall
-
-    for i in range(1, self.y_array.size - 1):
-        Yprime[i] = (
-            1. / (4. * self.Pe) * (Y[i + 1] - 2 * Y[i] + Y[i - 1])
-        / self.delta_y ** 2
-            )
-
+    # symmetry boundary condition
     Yprime[0] = (
         1. / (4. * self.Pe) * (Y[1] - 2 * Y[0] + Y[1]) /
         self.delta_y ** 2
         )
-    # symmetry boundary condition
+
+    # in the channel
+    for i in range(1, self.y_array.size - 1):
+        Yprime[i] = (
+            1. / (4. * self.Pe) * (Y[i + 1] - 2 * Y[i] + Y[i - 1])
+            / self.delta_y ** 2
+            )
+
+    # wall BC
+
+    Yprime[-1] = 1. / self.Pe * (Y[-1] - Y[-2] - self.Da * Y[-1])
 
     return Yprime
