@@ -82,8 +82,8 @@ def get_Yprime(self, Y, x):
 
     # wall BC
     Yprime[-1] = (
-        8. / self.Pe * (Y[-2] - Y[-1] - self.Da * Y[-1]) /
-        self.delta_y
+        8. / self.Pe * ((Y[-2] - Y[-1]) / self.delta_y - self.Da *
+                        Y[-1]) / self.delta_y 
         )
 
     return Yprime
