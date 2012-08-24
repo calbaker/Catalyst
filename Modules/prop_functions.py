@@ -23,9 +23,8 @@ def get_Da(self, *args):
     thiele = self.get_thiele(T)
 
     self.Da = (
-        0.5 * self.D_C3H8_air_eff / self.D_C3H8_air * self.height
-        / self.thickness * np.sqrt(thiele) *
-        np.tanh(np.sqrt(thiele))
+        0.5 * self.D_C3H8_air_eff / self.D_C3H8_air * self.height /
+        self.thickness * np.sqrt(thiele) * np.tanh(np.sqrt(thiele)) 
        )
 
     return self.Da
