@@ -19,14 +19,14 @@ cat = catalyst.Catalyst()
 cat.A_arr0 = cat.A_arr
 
 cat.Vdot = 500.e-6 / 60. 
-cat.T = 450. + 273.15
+cat.T = 400. + 273.15
 
 cat.thickness0 = 5.e-6
 
-cat.thickness_array = np.linspace(1, 25, 25) * 1.e-6
+cat.thickness_array = np.linspace(1, 25, 10) * 1.e-6
 cat.A_arr_array = ( cat.A_arr0 / (cat.thickness_array /
                                   cat.thickness0) )
-cat.Kn_length_array = np.array([1., 10., 50., 100., 200.]) * 1.e-9
+cat.Kn_length_array = np.array([0.5, 1., 10., 100.]) * 1.e-9
 
 cat.eta_Pt_density = np.zeros([cat.thickness_array.size, cat.Kn_length_array.size])
 cat.eta_Pt_total = np.zeros([cat.thickness_array.size, cat.Kn_length_array.size])
@@ -81,8 +81,8 @@ plt.rcParams['lines.markersize'] = 10
 
 
 FORMATTER = tic.FormatStrFormatter('%1.1f')
-MARKERS = ['-k', '-.b', '--r', ':m', '-.g']
-LABELS = list(['1 nm', '10 nm', '50 nm', '100 nm', '200 nm'])
+MARKERS = [':k', '-.b', '--r', ':m', '-.g']
+LABELS = list(['0.1 nm', '1 nm', '10 nm', '100 nm'])
 
 plt.close()
 
@@ -94,10 +94,10 @@ plt.xlabel(r'Nanowire Length ($\mu$m)')
 plt.ylabel('Conversion Efficiency (%)')
 #ax1.yaxis.set_major_formatter(FORMATTER)
 plt.grid()
-plt.ylim(ymin=-50)
+plt.ylim(ymin=-55)
 plt.yticks(np.arange(0, 70, 10))
-plt.legend(loc='lower right',title='Knudsen Length', ncol=2)
-plt.subplots_adjust(left=0.2,bottom=0.17)
+plt.legend(loc='lower center',title='Knudsen Length', ncol=2)
+plt.subplots_adjust(left=0.18,bottom=0.17)
 plt.savefig('../Plots/apply_model/eta_Pt_density.pdf')
 plt.savefig('../Plots/apply_model/eta_Pt_density.png')
 
@@ -113,9 +113,9 @@ plt.xlabel(r'Nanowire Length ($\mu$m)')
 plt.ylabel('Conversion Efficiency (%)')
 #ax1.yaxis.set_major_formatter(FORMATTER)
 plt.grid()
-plt.ylim(0,30)
-plt.legend(loc='lower left',title=r"Knudsen Length", ncol=2)
-plt.subplots_adjust(left=0.15,bottom=0.17)
+plt.ylim(11.5, 12.)
+plt.legend(loc='upper center',title=r"Knudsen Length", ncol=2)
+plt.subplots_adjust(left=0.2,bottom=0.17)
 plt.savefig('../Plots/apply_model/eta_Pt_total.pdf')
 plt.savefig('../Plots/apply_model/eta_Pt_total.png')
 
