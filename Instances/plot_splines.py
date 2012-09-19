@@ -14,7 +14,7 @@ import catalyst
 reload(catalyst)
 
 spltest = catalyst.Catalyst()
-spltest.terms = 10
+spltest.terms = 4
 
 Da_array = np.linspace(0.001, 1., 100)
 
