@@ -30,15 +30,17 @@ catmax.Vdot = 500e-6 / 60.
 catmax.T = 400. + 273.15
 Pe = catmax.get_Pe()
 Da = catmax.get_Da()
-catmax.Pe = Pe
-catmax.Da = Da
 catmax.Yxy = np.zeros([x_array.size, y_array.size])
+
+cathipe = catalyst.Catalyst()
+cathipe.terms = 4
+cathipe.x_array = x_array
+cathipe.y_array = y_array
+cathipe.Yxy = np.zeros([x_array.size, y_array.size])
 
 cat1 = catalyst.Catalyst(terms=1)
 cat1.x_array = x_array
 cat1.y_array = y_array
-cat1.Pe = Pe
-cat1.Da = Da
 cat1.Yxy = np.zeros([x_array.size, y_array.size])
 
 cat_num = catalyst.Catalyst()
@@ -52,13 +54,23 @@ for i in range(x_array.size):
     x_ = x_array[i]
     for j in range(y_array.size):
         y_ = y_array[j]
-
         catmax.Yxy[i, j] = catmax.get_Y(x_, y_, Pe=Pe, Da=Da)
+        cathipe.Yxy[i, j] = cathipe.get_Y(x_, y_, Pe=100., Da=Da)
         cat1.Yxy[i, j] = cat1.get_Y(x_, y_, Pe=Pe, Da=Da)
 
-catmax.Yxy = np.concatenate((catmax.Yxy[:, ::-1][:, 1:], catmax.Yxy), 1)
-cat1.Yxy = np.concatenate((cat1.Yxy[:, ::-1][:, 1:], cat1.Yxy), 1)
-cat_num.Yxy_num = np.concatenate((cat_num.Yxy_num[:, ::-1][:, 1:], cat_num.Yxy_num), 1)
+catmax.Yxy = (
+    np.concatenate((catmax.Yxy[:, ::-1][:, 1:], catmax.Yxy), 1)
+    )
+cathipe.Yxy = (
+    np.concatenate((cathipe.Yxy[:, ::-1][:, 1:], cathipe.Yxy), 1)
+    )
+cat1.Yxy = (
+    np.concatenate((cat1.Yxy[:, ::-1][:, 1:], cat1.Yxy), 1)
+    )
+cat_num.Yxy_num = (
+    np.concatenate((cat_num.Yxy_num[:, ::-1][:, 1:], cat_num.Yxy_num),
+    1)
+    )
 
 y_array = np.concatenate((-y_array[1:][::-1], y_array), 0)
 
@@ -72,8 +84,8 @@ plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 10
 
-TICKS = np.linspace(0.8, 1, 6)
-LEVELS = np.linspace(0.8, cat1.Yxy.max(), 12)
+TICKS = np.linspace(cat1.Yxy.min(), 1, 6)
+LEVELS = np.linspace(cat1.Yxy.min(), cat1.Yxy.max(), 12)
 
 plt.close()
 
@@ -89,7 +101,7 @@ np.savetxt(
     catmax.Yxy
     )
 
-fig_species = plt.figure(str(catmax.terms) + ' terms')
+fig_max = plt.figure(str(catmax.terms) + ' terms')
 FCS = plt.contourf(x_2d, y_2d, catmax.Yxy.T, levels=LEVELS)
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKS)
 plt.grid()
@@ -108,7 +120,27 @@ plt.savefig('../Plots/plot_species/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
 paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
 plt.savefig(paper_dir + 'species_4term.pdf')
 
-fig_species = plt.figure('1 term')
+TICKShipe = np.linspace(cathipe.Yxy.min(), 1, 6)
+LEVELShipe = np.linspace(cathipe.Yxy.min(), cathipe.Yxy.max(), 12)
+
+fig_hipe = plt.figure(str(cathipe.terms) + ' terms, hi Pe')
+FCS = plt.contourf(x_2d, y_2d, cathipe.Yxy.T, levels=LEVELShipe)
+CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKShipe)
+plt.grid()
+plt.xlabel(r'$\tilde{x}$')
+plt.ylabel(r'$\tilde{y}$')
+plt.ylim(-1, 1)
+#plt.title(r'Species Concentration v. $\tilde{x}$ and $\tilde{y}$')
+plt.ylim(-1, 1)
+plt.subplots_adjust(bottom=0.15)
+plt.subplots_adjust(left=0.2)
+plt.subplots_adjust(right=0.7)
+plt.savefig('../Plots/plot_species/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
+            + '.pdf')
+plt.savefig('../Plots/plot_species/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
+            + '.png')
+
+fig_one = plt.figure('1 term')
 FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T, levels=LEVELS)
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKS)
 plt.grid()
@@ -126,7 +158,7 @@ plt.savefig('../Plots/plot_species/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
 plt.savefig(paper_dir + 'species_1term.pdf')
 
-fig_species = plt.figure('numerical')
+fig_num = plt.figure('numerical')
 FCS = plt.contourf(x_2d, y_2d, cat_num.Yxy_num.T, levels=LEVELS)
 CB = plt.colorbar(FCS, orientation='vertical', ticks=TICKS, format='%.2f')
 plt.grid()
@@ -151,7 +183,7 @@ plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 10
 
-fig_species2 = plt.figure(str(catmax.terms) + ' terms alt')
+fig_max2 = plt.figure(str(catmax.terms) + ' terms alt')
 FCS2 = plt.contourf(x_2d, y_2d, catmax.Yxy.T, levels=LEVELS)
 CB2 = plt.colorbar(FCS2, orientation='vertical', format='%.2f', ticks=TICKS)
 plt.grid()
