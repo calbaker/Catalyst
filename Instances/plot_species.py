@@ -89,7 +89,7 @@ np.savetxt(
     catmax.Yxy
     )
 
-fig_eta = plt.figure(str(catmax.terms) + ' terms')
+fig_species = plt.figure(str(catmax.terms) + ' terms')
 FCS = plt.contourf(x_2d, y_2d, catmax.Yxy.T, levels=LEVELS)
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKS)
 plt.grid()
@@ -105,11 +105,8 @@ plt.savefig('../Plots/plot_species/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.pdf')
 plt.savefig('../Plots/plot_species/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
-
 paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
-
 plt.savefig(paper_dir + 'species_4term.pdf')
-
 
 fig_species = plt.figure('1 term')
 FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T, levels=LEVELS)
@@ -127,7 +124,6 @@ plt.savefig('../Plots/plot_species/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.pdf')
 plt.savefig('../Plots/plot_species/species1 Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
-
 plt.savefig(paper_dir + 'species_1term.pdf')
 
 fig_species = plt.figure('numerical')
@@ -144,7 +140,31 @@ plt.savefig('../Plots/plot_species/species num Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.pdf')
 plt.savefig('../Plots/plot_species/species num Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.png')
-
 plt.savefig(paper_dir + 'species_num.pdf')
 
+FONTSIZE = 18
+plt.rcParams['axes.labelsize'] = FONTSIZE
+plt.rcParams['axes.titlesize'] = FONTSIZE
+plt.rcParams['legend.fontsize'] = FONTSIZE
+plt.rcParams['xtick.labelsize'] = FONTSIZE
+plt.rcParams['ytick.labelsize'] = FONTSIZE
+plt.rcParams['lines.linewidth'] = 1.5
+plt.rcParams['lines.markersize'] = 10
+
+fig_species2 = plt.figure(str(catmax.terms) + ' terms alt')
+FCS2 = plt.contourf(x_2d, y_2d, catmax.Yxy.T, levels=LEVELS)
+CB2 = plt.colorbar(FCS2, orientation='vertical', format='%.2f', ticks=TICKS)
+plt.grid()
+plt.xlabel(r'$\tilde{x}$')
+plt.ylabel(r'$\tilde{y}$')
+plt.ylim(-1, 1)
+#plt.title(r'Species Concentration v. $\tilde{x}$ and $\tilde{y}$')
+plt.ylim(-1, 1)
+plt.subplots_adjust(bottom=0.10)
+plt.subplots_adjust(left=0.15)
+plt.subplots_adjust(right=0.75)
+plt.savefig('../Plots/plot_species/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
+            + 'alt.pdf')
+
 plt.show()
+
