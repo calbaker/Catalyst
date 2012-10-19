@@ -15,23 +15,71 @@ reload(catalyst)
 
 cat_opt = catalyst.Catalyst()
 cat_opt.terms = 4
-cat_opt.Vdot = 500e-6 / 60.
+cat_opt.Vdot = 50000.e-6 / 60. 
 cat_opt.T = 400. + 273.15
+cat_opt.set_TempPres_dependents(cat_opt.T)
 
-terms = np.arange(1, cat_opt.terms)
+length = cat_opt.length
+height = cat_opt.height
+height_array = np.linspace(0.5, 10., 25) * 1.e-3
+length_array = (length * height) / height_array
 
-eta_ij = np.zeros([T_array.size, cat_opt.terms])
+U = np.zeros(height_array.size)
+DeltaP_c_L = np.zeros(height_array.size)
+DeltaP_c_V = np.zeros(height_array.size)
 
-for i in range(terms.size):
-    print "solving for", terms[i], "terms"
-    cat_opt.terms = terms[i]
-    cat_opt.set_eta_ij()
-    eta_ij[:, i] = cat_opt.eta_ij
+eta_c_L = np.zeros(height_array.size)
+eta_per_p_c_L = np.zeros(height_array.size)
+eta_c_V = np.zeros(height_array.size)
+eta_per_p_c_V = np.zeros(height_array.size)
 
-print "solving numerical model"
-cat_opt.y_array = np.linspace(0, 1, 100)
-cat_opt.set_eta_ij_num()
+for i in range(height_array.size):
+    # Constant Length
+    cat_opt.length = length
+    cat_opt.height = height_array[i]
+    cat_opt.x_ = cat_opt.length / cat_opt.height
 
+    cat_opt.get_eta()
+    print "\n\n\nConstant Length"
+    print "Da =", cat_opt.Da
+    print "A_i =", cat_opt.A_i
+    print "lambda_i =", cat_opt.lambda_i
+
+    U[i] = cat_opt.U
+    Re_h = U[i] * height_array[i] / cat_opt.air.nu
+    f = 24. / Re_h
+
+    perimeter = 2. * (cat_opt.height + cat_opt.width)
+    area = cat_opt.height * cat_opt.width
+
+    DeltaP_c_L[i] = (
+        0.5 * f * perimeter * cat_opt.length / area * cat_opt.air.rho
+        * cat_opt.U ** 2. * 1e-3
+        )
+
+    eta_c_L[i] = cat_opt.eta
+    eta_per_p_c_L[i] = eta_c_L[i] / DeltaP_c_L[i]
+
+    # Constant Volume
+    cat_opt.length = length_array[i]
+    cat_opt.x_ = cat_opt.length / cat_opt.height
+
+    cat_opt.get_eta()
+    print "\nConstant Volume"
+    print "Da =", cat_opt.Da
+    print "A_i =", cat_opt.A_i
+    print "lambda_i =", cat_opt.lambda_i
+
+    perimeter = 2. * (cat_opt.height + cat_opt.width)
+    area = cat_opt.height * cat_opt.width
+
+    DeltaP_c_V[i] = (
+        0.5 * f * perimeter * cat_opt.length / area * cat_opt.air.rho
+        * cat_opt.U ** 2. * 1e-3
+        )
+
+    eta_c_V[i] = cat_opt.eta
+    eta_per_p_c_V[i] = eta_c_V[i] / DeltaP_c_V[i]
 
 # Plot configuration
 FONTSIZE = 18
@@ -45,34 +93,54 @@ plt.rcParams['lines.markersize'] = 8
 
 plt.close()
 
-plt.figure()
+plt.figure('eta per p')
+plt.plot(height_array * 1e3, eta_per_p_c_L, label="Const. L")
+plt.plot(height_array * 1e3, eta_per_p_c_V, label="Const. V")
+plt.xlabel('Channel Height (mm)')
+plt.ylabel(
+    r'$\frac{\eta}{\Delta P}$ (%/kPa)'
+    )
+plt.grid()
+plt.legend(loc="best")
+plt.savefig(
+    '../Plots/plot_eta_per_p/eta_per_p.pdf')
+paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+plt.savefig(paper_dir + 'eta_per_p.pdf')
 
-for i in range(terms.size):
-    if i % 2 == 0:
-        LABEL = str(terms[i]) + ' terms'
-    else:
-        LABEL = None
-    plt.plot(T_array - 273.15, eta_ij[:, i] * 100., label=LABEL)
-plt.plot(T_array - 273.15, cat_opt.eta_ij_num[0, :] * 100., '--k',
-    label='numerical')
-
-np.savetxt('../output/plot_eta_v_terms/eta_ij', eta_ij)
-np.savetxt('../output/plot_eta_v_terms/eta_ij_num', cat_opt.eta_ij_num)
-np.savetxt('../output/plot_eta_v_terms/T_array', T_array)
-
-plt.xlabel(r'Temperature ($^\circ$C)')
-plt.ylabel('Conversion Efficiency (%)')
-# plt.ylim(ymax=37)
-# plt.title('Conversion Efficiency v. Flow Rate')
-plt.legend(loc='best')
+plt.figure('eta per p v length')
+plt.plot(length_array * 1e3, eta_per_p_c_V)
+plt.xlabel('Channel Length (mm)')
+plt.ylabel(
+    r'$\frac{\eta}{\Delta P}$ (%/kPa)'
+    )
 plt.grid()
 plt.savefig(
-    '../Plots/plot_eta_v_terms/Fo convergence' + str(Vdot * 60e6) + '.pdf')
-plt.savefig(
-    '../Plots/plot_eta_v_terms/Fo convergence' + str(Vdot * 60e6) + '.png')
-
+    '../Plots/plot_eta_per_p/eta_per_p_v_length.pdf')
 paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+plt.savefig(paper_dir + 'eta_per_p_v_length.pdf')
 
-plt.savefig(paper_dir + 'Fo_convergence.pdf')
+plt.figure('eta')
+plt.plot(height_array * 1e3, eta_c_L, label="Const. L")
+plt.plot(height_array * 1e3, eta_c_V, label="Const. V")
+plt.xlabel('Channel Height (mm)')
+plt.ylabel('Conversion Efficiency (%)')
+plt.grid()
+plt.legend(loc="best")
+plt.savefig(
+    '../Plots/plot_eta_per_p/eta.pdf')
+paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+plt.savefig(paper_dir + 'eta.pdf')
+
+plt.figure('delta p')
+plt.plot(height_array * 1e3, DeltaP_c_L, label="Const. L")
+plt.plot(height_array * 1e3, DeltaP_c_V, label="Const. V")
+plt.xlabel('Channel Height (mm)')
+plt.ylabel(r'$\Delta P$ (kPa)')
+plt.grid()
+plt.legend(loc="best")
+plt.savefig(
+    '../Plots/plot_eta_per_p/deltaP.pdf')
+paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+plt.savefig(paper_dir + 'deltaP.pdf')
 
 plt.show()
