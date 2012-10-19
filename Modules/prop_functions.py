@@ -81,9 +81,9 @@ def get_Pe(self, *args):
 
     D_C3H8_air = self.get_D_C3H8_air(T)
 
-    U = Vdot / (self.width * self.height) * (T / self.T_ambient)
+    self.U = Vdot / (self.width * self.height) * (T / self.T_ambient)
 
-    self.Pe = U * self.height / D_C3H8_air
+    self.Pe = self.U * self.height / D_C3H8_air
 
     return self.Pe
 
