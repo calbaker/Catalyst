@@ -58,9 +58,9 @@ def get_error(length, *args):
 
 for i in range(height_array.size):
     height = height_array[i]
-    length_array[i] = (
-        fsolve(get_error, x0=length_array[i], args=(height))
-        )
+    # length_array[i] = (
+    #     fsolve(get_error, x0=length_array[i], args=(height))
+    #     )
     cat_opt.height = height_array[i]
     cat_opt.length = length_array[i]
     cat_opt.Vdot = Vdot_array[i]
@@ -84,6 +84,9 @@ Wdot = DeltaP * Vdot_array * height / height_array
 eta_per_p = eta / DeltaP
 eta_per_Wdot = eta / Wdot
 eta_per_cat = eta * height_array / length_array
+eta_per_cat_p = (
+    eta * (height_array / length_array) / (DeltaP * 1e-3)
+    )
 
 # Plot configuration
 FONTSIZE = 18
@@ -96,6 +99,20 @@ plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 8
 
 plt.close()
+
+# eta per cat_p
+plt.figure('eta per cat_p')
+plt.plot(height_array * 1e3, eta_per_cat_p)
+plt.xlabel('Channel Height (mm)')
+plt.ylabel(
+    r'$\frac{\eta}{cat p}$'
+    )
+plt.grid()
+# plt.legend(loc="best")
+plt.savefig(
+    '../Plots/plot_eta_per_p/eta_per_cat_p.pdf')
+paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+plt.savefig(paper_dir + 'eta_per_cat_p.pdf')
 
 # eta per cat
 plt.figure('eta per cat')
@@ -111,7 +128,7 @@ plt.savefig(
 paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
 plt.savefig(paper_dir + 'eta_per_cat.pdf')
 
-# 'eta'
+# eta
 plt.figure('eta')
 plt.plot(height_array * 1e3, eta)
 plt.xlabel('Channel Height (mm)')
