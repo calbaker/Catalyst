@@ -25,6 +25,7 @@ Vdot = 500.e-6 / 60.
 
 height_array = np.linspace(0.1, 5., 25) * height
 length_array = length * (height_array / height)
+# length_array for const. catalyst area
 Vdot_array = Vdot * height_array / height
 
 cat_opt.Vdot = Vdot
@@ -57,10 +58,11 @@ def get_error(length, *args):
     return error
 
 for i in range(height_array.size):
-    height = height_array[i]
+    # height = height_array[i]
     # length_array[i] = (
     #     fsolve(get_error, x0=length_array[i], args=(height))
     #     )
+
     cat_opt.height = height_array[i]
     cat_opt.length = length_array[i]
     cat_opt.Vdot = Vdot_array[i]
