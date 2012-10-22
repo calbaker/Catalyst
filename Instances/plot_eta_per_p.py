@@ -23,13 +23,13 @@ length = cat_opt.length
 thickness = 550.e-6  # wafer thickness (m)
 Vdot = 500.e-6 / 60. # volume flow rate (m/s)
 
-height_array = np.linspace(0.25, 10., 25) * height
+height_array = np.linspace(0.25, 5., 50) * height
 # distance (m) between plate centerlines
 
-# length_array = length * (height_array / height)
+length_array = length * (height_array / height)
 # lengths (m) for const. catalyst area 
 
-length_array = np.ones(height_array.size) * length
+# length_array = np.ones(height_array.size) * length
 # lengths (m) for const. length
 
 # length_array = length * height / height_array
@@ -49,7 +49,6 @@ eta = np.zeros(height_array.size)
 
 cat_opt.get_eta()
 U = cat_opt.U
-
 
 for i in range(height_array.size):
     cat_opt.height = h_gap[i]
@@ -91,7 +90,7 @@ plt.close()
 
 # eta per vol
 plt.figure('eta per vol')
-plt.plot(h_gap * 1e3, eta_per_vol)
+plt.plot(h_gap * 1e3, eta_per_vol, '-k')
 plt.xlabel('Channel Height (mm)')
 plt.ylabel(
     r'$\frac{\eta}{volume}$'
@@ -103,58 +102,58 @@ plt.savefig(
 paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
 plt.savefig(paper_dir + 'eta_per_vol.pdf')
 
-# eta per DeltaP
-plt.figure('eta per DeltaP')
-plt.plot(h_gap * 1e3, eta_per_p)
-plt.xlabel('Channel Height (mm)')
-plt.ylabel(
-    r'$\frac{\eta}{???}$'
-    )
-plt.grid()
-# plt.legend(loc="best")
-plt.savefig(
-    '../Plots/plot_eta_per_p/eta_per_p.pdf')
-paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
-plt.savefig(paper_dir + 'eta_per_p.pdf')
+# # eta per DeltaP
+# plt.figure('eta per DeltaP')
+# plt.plot(h_gap * 1e3, eta_per_p)
+# plt.xlabel('Channel Height (mm)')
+# plt.ylabel(
+#     r'$\frac{\eta}{???}$'
+#     )
+# plt.grid()
+# # plt.legend(loc="best")
+# plt.savefig(
+#     '../Plots/plot_eta_per_p/eta_per_p.pdf')
+# paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+# plt.savefig(paper_dir + 'eta_per_p.pdf')
 
-# eta per Wdot
-plt.figure('eta per Wdot')
-plt.plot(h_gap * 1e3, eta_per_Wdot)
-plt.xlabel('Channel Height (mm)')
-plt.ylabel(
-    r'$\frac{\eta}{\dot{W}}$'
-    )
-plt.grid()
-# plt.legend(loc="best")
-plt.savefig(
-    '../Plots/plot_eta_per_p/eta_per_p.pdf')
-paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
-plt.savefig(paper_dir + 'eta_per_p.pdf')
+# # eta per Wdot
+# plt.figure('eta per Wdot')
+# plt.plot(h_gap * 1e3, eta_per_Wdot)
+# plt.xlabel('Channel Height (mm)')
+# plt.ylabel(
+#     r'$\frac{\eta}{\dot{W}}$'
+#     )
+# plt.grid()
+# # plt.legend(loc="best")
+# plt.savefig(
+#     '../Plots/plot_eta_per_p/eta_per_p.pdf')
+# paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+# plt.savefig(paper_dir + 'eta_per_p.pdf')
 
-# eta per cat
-plt.figure('eta per cat')
-plt.plot(h_gap * 1e3, eta_per_cat)
-plt.xlabel('Channel Height (mm)')
-plt.ylabel(
-    r'$\frac{\eta}{A}$ (%/m$^2$)'
-    )
-plt.grid()
-# plt.legend(loc="best")
-plt.savefig(
-    '../Plots/plot_eta_per_p/eta_per_cat.pdf')
-paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
-plt.savefig(paper_dir + 'eta_per_cat.pdf')
+# # eta per cat
+# plt.figure('eta per cat')
+# plt.plot(h_gap * 1e3, eta_per_cat)
+# plt.xlabel('Channel Height (mm)')
+# plt.ylabel(
+#     r'$\frac{\eta}{A}$ (%/m$^2$)'
+#     )
+# plt.grid()
+# # plt.legend(loc="best")
+# plt.savefig(
+#     '../Plots/plot_eta_per_p/eta_per_cat.pdf')
+# paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+# plt.savefig(paper_dir + 'eta_per_cat.pdf')
 
-# eta
-plt.figure('eta')
-plt.plot(h_gap * 1e3, eta)
-plt.xlabel('Channel Height (mm)')
-plt.ylabel('Conversion Efficiency (%)')
-plt.grid()
-# plt.legend(loc="best")
-plt.savefig(
-    '../Plots/plot_eta_per_p/eta.pdf')
-paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
-plt.savefig(paper_dir + 'eta.pdf')
+# # eta
+# plt.figure('eta')
+# plt.plot(h_gap * 1e3, eta)
+# plt.xlabel('Channel Height (mm)')
+# plt.ylabel('Conversion Efficiency (%)')
+# plt.grid()
+# # plt.legend(loc="best")
+# plt.savefig(
+#     '../Plots/plot_eta_per_p/eta.pdf')
+# paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+# plt.savefig(paper_dir + 'eta.pdf')
 
 plt.show()
