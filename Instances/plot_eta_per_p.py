@@ -5,7 +5,6 @@ import matplotlib.pyplot as plt
 import os
 import sys
 import numpy as np
-from scipy.optimize import fsolve
 
 cmd_folder = os.path.dirname('../Modules/')
 if cmd_folder not in sys.path:
@@ -16,16 +15,18 @@ reload(catalyst)
 
 cat_opt = catalyst.Catalyst()
 cat_opt.terms = 4
-cat_opt.T = 400. + 273.15
+cat_opt.T = 400. + 273.15  # temperature (K)
 cat_opt.set_TempPres_dependents(cat_opt.T)
 
 height = cat_opt.height
 length = cat_opt.length
-Vdot = 500.e-6 / 60. 
+thickness = 550.e-6  # wafer thickness (m)
+Vdot = 500.e-6 / 60. # volume flow rate (m/s)
 
-height_array = np.linspace(0.1, 5., 25) * height
+height_array = np.linspace(0.2, 5., 25) * height
+# gap height (m)
 length_array = length * (height_array / height)
-# length_array for const. catalyst area
+# lengths (m) for const. catalyst area 
 Vdot_array = Vdot * height_array / height
 
 cat_opt.Vdot = Vdot
@@ -36,34 +37,9 @@ eta = np.zeros(height_array.size)
 cat_opt.get_eta()
 U = cat_opt.U
 
-def get_DeltaP(length, *args):
-    height = args[0]
-    Re_h = U * height / cat_opt.air.nu
-    f = 24. / Re_h
-
-    perimeter = 2. * (height + cat_opt.width)
-    area = height * cat_opt.width
-    DeltaP = (
-        0.5 * f * perimeter * length / area * cat_opt.air.rho *
-        cat_opt.U ** 2.
-        )
-    return DeltaP
-
-DeltaP0 = get_DeltaP(length, height)
-
-def get_error(length, *args):
-    height = args[0]
-    DeltaP = get_DeltaP(length, height)
-    error = DeltaP - DeltaP0
-    return error
 
 for i in range(height_array.size):
-    # height = height_array[i]
-    # length_array[i] = (
-    #     fsolve(get_error, x0=length_array[i], args=(height))
-    #     )
-
-    cat_opt.height = height_array[i]
+    cat_opt.height = height_array[i] - thickness
     cat_opt.length = length_array[i]
     cat_opt.Vdot = Vdot_array[i]
     cat_opt.x_ = cat_opt.length / cat_opt.height
