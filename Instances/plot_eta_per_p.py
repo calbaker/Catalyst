@@ -26,10 +26,10 @@ Vdot = 500.e-6 / 60. # volume flow rate (m/s)
 height_array = np.linspace(0.25, 10., 25) * height
 # distance (m) between plate centerlines
 
-length_array = length * (height_array / height)
+# length_array = length * (height_array / height)
 # lengths (m) for const. catalyst area 
 
-# length_array = np.ones(height_array.size) * length
+length_array = np.ones(height_array.size) * length
 # lengths (m) for const. length
 
 # length_array = length * height / height_array
@@ -37,6 +37,8 @@ length_array = length * (height_array / height)
 
 h_gap = height_array - thickness
 # height (m) of actual gap
+
+volume = length_array * height_array
 
 Vdot_array = (height - thickness) / h_gap * Vdot
 
@@ -73,7 +75,7 @@ Wdot = DeltaP * Vdot
 eta_per_p = eta / DeltaP
 eta_per_Wdot = eta / Wdot
 eta_per_cat = eta * height_array / length_array
-eta_per_vol = eta * length_array / length * (length * height)
+eta_per_vol = eta / volume
 
 # Plot configuration
 FONTSIZE = 18
