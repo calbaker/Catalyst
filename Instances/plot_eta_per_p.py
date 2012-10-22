@@ -23,11 +23,22 @@ length = cat_opt.length
 thickness = 550.e-6  # wafer thickness (m)
 Vdot = 500.e-6 / 60. # volume flow rate (m/s)
 
-height_array = np.linspace(0.2, 5., 25) * height
-# gap height (m)
-length_array = length * (height_array / height)
+height_array = np.linspace(0.25, 10., 25) * height
+# distance (m) between plate centerlines
+
+# length_array = length * (height_array / height)
 # lengths (m) for const. catalyst area 
-Vdot_array = Vdot * height_array / height
+
+# length_array = np.ones(height_array.size) * length
+# lengths (m) for const. length
+
+length_array = length * height / height_array
+# lengths (m) for const. volume
+
+h_gap = height_array - thickness
+# height (m) of actual gap
+
+Vdot_array = (height - thickness) / h_gap * Vdot
 
 cat_opt.Vdot = Vdot
 
@@ -39,7 +50,7 @@ U = cat_opt.U
 
 
 for i in range(height_array.size):
-    cat_opt.height = height_array[i] - thickness
+    cat_opt.height = h_gap[i]
     cat_opt.length = length_array[i]
     cat_opt.Vdot = Vdot_array[i]
     cat_opt.x_ = cat_opt.length / cat_opt.height
@@ -58,13 +69,10 @@ for i in range(height_array.size):
         )
     eta[i] = cat_opt.eta
 
-Wdot = DeltaP * Vdot_array * height / height_array
+Wdot = DeltaP * Vdot
 eta_per_p = eta / DeltaP
 eta_per_Wdot = eta / Wdot
 eta_per_cat = eta * height_array / length_array
-eta_per_cat_p = (
-    eta * (height_array / length_array) / (DeltaP * 1e-3)
-    )
 
 # Plot configuration
 FONTSIZE = 18
@@ -78,23 +86,37 @@ plt.rcParams['lines.markersize'] = 8
 
 plt.close()
 
-# eta per cat_p
-plt.figure('eta per cat_p')
-plt.plot(height_array * 1e3, eta_per_cat_p)
+# eta per DeltaP
+plt.figure('eta per DeltaP')
+plt.plot(h_gap * 1e3, eta_per_p)
 plt.xlabel('Channel Height (mm)')
 plt.ylabel(
-    r'$\frac{\eta}{cat p}$'
+    r'$\frac{\eta}{???}$'
     )
 plt.grid()
 # plt.legend(loc="best")
 plt.savefig(
-    '../Plots/plot_eta_per_p/eta_per_cat_p.pdf')
+    '../Plots/plot_eta_per_p/eta_per_p.pdf')
 paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
-plt.savefig(paper_dir + 'eta_per_cat_p.pdf')
+plt.savefig(paper_dir + 'eta_per_p.pdf')
+
+# eta per Wdot
+plt.figure('eta per Wdot')
+plt.plot(h_gap * 1e3, eta_per_Wdot)
+plt.xlabel('Channel Height (mm)')
+plt.ylabel(
+    r'$\frac{\eta}{\dot{W}}$'
+    )
+plt.grid()
+# plt.legend(loc="best")
+plt.savefig(
+    '../Plots/plot_eta_per_p/eta_per_p.pdf')
+paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+plt.savefig(paper_dir + 'eta_per_p.pdf')
 
 # eta per cat
 plt.figure('eta per cat')
-plt.plot(height_array * 1e3, eta_per_cat)
+plt.plot(h_gap * 1e3, eta_per_cat)
 plt.xlabel('Channel Height (mm)')
 plt.ylabel(
     r'$\frac{\eta}{A}$ (%/m$^2$)'
@@ -108,7 +130,7 @@ plt.savefig(paper_dir + 'eta_per_cat.pdf')
 
 # eta
 plt.figure('eta')
-plt.plot(height_array * 1e3, eta)
+plt.plot(h_gap * 1e3, eta)
 plt.xlabel('Channel Height (mm)')
 plt.ylabel('Conversion Efficiency (%)')
 plt.grid()
