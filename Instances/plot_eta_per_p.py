@@ -26,13 +26,13 @@ Vdot = 500.e-6 / 60. # volume flow rate (m/s)
 height_array = np.linspace(0.25, 10., 25) * height
 # distance (m) between plate centerlines
 
-# length_array = length * (height_array / height)
+length_array = length * (height_array / height)
 # lengths (m) for const. catalyst area 
 
 # length_array = np.ones(height_array.size) * length
 # lengths (m) for const. length
 
-length_array = length * height / height_array
+# length_array = length * height / height_array
 # lengths (m) for const. volume
 
 h_gap = height_array - thickness
@@ -73,6 +73,7 @@ Wdot = DeltaP * Vdot
 eta_per_p = eta / DeltaP
 eta_per_Wdot = eta / Wdot
 eta_per_cat = eta * height_array / length_array
+eta_per_vol = eta * length_array / length * (length * height)
 
 # Plot configuration
 FONTSIZE = 18
@@ -85,6 +86,20 @@ plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 8
 
 plt.close()
+
+# eta per vol
+plt.figure('eta per vol')
+plt.plot(h_gap * 1e3, eta_per_vol)
+plt.xlabel('Channel Height (mm)')
+plt.ylabel(
+    r'$\frac{\eta}{volume}$'
+    )
+plt.grid()
+# plt.legend(loc="best")
+plt.savefig(
+    '../Plots/plot_eta_per_p/eta_per_vol.pdf')
+paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+plt.savefig(paper_dir + 'eta_per_vol.pdf')
 
 # eta per DeltaP
 plt.figure('eta per DeltaP')
