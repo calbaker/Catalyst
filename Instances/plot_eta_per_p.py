@@ -93,7 +93,7 @@ plt.figure('eta per vol')
 plt.plot(h_gap * 1e3, eta_per_vol, '-k')
 plt.xlabel('Channel Height (mm)')
 plt.ylabel(
-    r'$\frac{\eta}{volume}$'
+    r'$\eta$ / V (m$^{-3}$)'
     )
 plt.grid()
 # plt.legend(loc="best")
