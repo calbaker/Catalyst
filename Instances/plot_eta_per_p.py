@@ -21,7 +21,7 @@ cat_opt.set_TempPres_dependents(cat_opt.T)
 height = cat_opt.height
 length = cat_opt.length
 thickness = 550.e-6  # wafer thickness (m)
-Vdot = 500.e-6 / 60. # volume flow rate (m/s)
+Vdot = 500.e-6 / 60. # volume flow rate (m^3/s)
 
 height_array = np.linspace(0.25, 5., 50) * height
 # distance (m) between plate centerlines
@@ -45,6 +45,9 @@ Vdot_array = (height - thickness) / h_gap * Vdot
 cat_opt.Vdot = Vdot
 
 DeltaP = np.zeros(height_array.size)
+Da = np.zeros(height_array.size)
+Pe = np.zeros(height_array.size)
+thiele = np.zeros(height_array.size)
 eta = np.zeros(height_array.size)
 
 cat_opt.get_eta()
@@ -68,6 +71,9 @@ for i in range(height_array.size):
         0.5 * f * perimeter * cat_opt.length / area * cat_opt.air.rho
         * cat_opt.U ** 2.
         )
+    Da[i] = cat_opt.Da
+    Pe[i] = cat_opt.Pe
+    thiele[i] = cat_opt.thiele
     eta[i] = cat_opt.eta
 
 Wdot = DeltaP * Vdot
@@ -101,6 +107,22 @@ plt.savefig(
     '../Plots/plot_eta_per_p/eta_per_vol.pdf')
 paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
 plt.savefig(paper_dir + 'eta_per_vol.pdf')
+
+# dimless number
+plt.figure('thiele, Da, and Pe')
+plt.plot(
+    h_gap * 1e3, Da * 1e3, label=r'Da x 10$^3$'
+    )
+plt.plot(
+    h_gap * 1e3, Pe, label='Pe'
+    )
+plt.xlabel('Channel Height (mm)')
+plt.grid()
+plt.legend(loc="best")
+plt.savefig(
+    '../Plots/plot_eta_per_p/dimless.pdf')
+paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+plt.savefig(paper_dir + 'dimless.pdf')
 
 # # eta per DeltaP
 # plt.figure('eta per DeltaP')
