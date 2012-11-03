@@ -18,15 +18,15 @@ cat_opt.terms = 4
 cat_opt.T = 400. + 273.15  # temperature (K)
 cat_opt.set_TempPres_dependents(cat_opt.T)
 
-height = cat_opt.height
-length = cat_opt.length
+height0 = cat_opt.height
+length0 = cat_opt.length
 thickness = 550.e-6  # wafer thickness (m)
-Vdot = 500.e-6 / 60. # volume flow rate (m^3/s)
+Vdot0 = 500.e-6 / 60. # volume flow rate (m^3/s)
 
-height_array = np.linspace(0.25, 5., 50) * height
+height = np.linspace(0.25, 5., 50) * height0
 # distance (m) between plate centerlines
 
-length_array = length * (height_array / height)
+length = length0 * (height / height0)
 # lengths (m) for const. catalyst area 
 
 # length_array = np.ones(height_array.size) * length
@@ -35,34 +35,33 @@ length_array = length * (height_array / height)
 # length_array = length * height / height_array
 # lengths (m) for const. volume
 
-h_gap = height_array - thickness
+h_gap = height - thickness
 # height (m) of actual gap
+h_gap0 = height0 - thickness
 
-volume = length_array * height_array
+volume = length * height
 
-Vdot_array = (height - thickness) / h_gap * Vdot
+Vdot = Vdot0 * (h_gap0 / height0) / (h_gap / height)
 
-cat_opt.Vdot = Vdot
+cat_opt.Vdot = Vdot0
 
-DeltaP = np.zeros(height_array.size)
-Da = np.zeros(height_array.size)
-Pe = np.zeros(height_array.size)
-thiele = np.zeros(height_array.size)
-eta = np.zeros(height_array.size)
+DeltaP = np.zeros(height.size)
+Da = np.zeros(height.size)
+Pe = np.zeros(height.size)
+thiele = np.zeros(height.size)
+eta = np.zeros(height.size)
+U = np.zeros(height.size)
 
-cat_opt.get_eta()
-U = cat_opt.U
-
-for i in range(height_array.size):
+for i in range(height.size):
     cat_opt.height = h_gap[i]
-    cat_opt.length = length_array[i]
-    cat_opt.Vdot = Vdot_array[i]
+    cat_opt.length = length[i]
+    cat_opt.Vdot = Vdot[i]
     cat_opt.x_ = cat_opt.length / cat_opt.height
 
     cat_opt.get_eta()
 
-    U = cat_opt.U
-    Re_h = U * cat_opt.height / cat_opt.air.nu
+    U[i] = cat_opt.U
+    Re_h = U[i] * cat_opt.height / cat_opt.air.nu
     f = 24. / Re_h
 
     perimeter = 2. * (cat_opt.height + cat_opt.width)
@@ -79,7 +78,7 @@ for i in range(height_array.size):
 Wdot = DeltaP * Vdot
 eta_per_p = eta / DeltaP
 eta_per_Wdot = eta / Wdot
-eta_per_cat = eta * height_array / length_array
+eta_per_cat = eta * height / length
 eta_per_vol = eta / volume
 
 # Plot configuration
@@ -166,15 +165,15 @@ plt.savefig(paper_dir + 'dimless.pdf')
 # paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
 # plt.savefig(paper_dir + 'eta_per_cat.pdf')
 
-# # eta
-# plt.figure('eta')
-# plt.plot(h_gap * 1e3, eta)
-# plt.xlabel('Channel Height (mm)')
-# plt.ylabel('Conversion Efficiency (%)')
-# plt.grid()
-# # plt.legend(loc="best")
-# plt.savefig(
-#     '../Plots/plot_eta_per_p/eta.pdf')
+# eta
+plt.figure('eta')
+plt.plot(h_gap * 1e3, eta)
+plt.xlabel('Channel Height (mm)')
+plt.ylabel('Conversion Efficiency (%)')
+plt.grid()
+# plt.legend(loc="best")
+plt.savefig(
+    '../Plots/plot_eta_per_p/eta.pdf')
 # paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
 # plt.savefig(paper_dir + 'eta.pdf')
 
