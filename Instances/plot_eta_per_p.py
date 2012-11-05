@@ -1,4 +1,4 @@
-"""Module for plotting results of first term model with experimental
+ """Module for plotting results of first term model with experimental
 data and fitting capability."""
 
 import matplotlib.pyplot as plt
@@ -23,7 +23,7 @@ length0 = cat_opt.length
 thickness = 550.e-6  # wafer thickness (m)
 Vdot0 = 500.e-6 / 60. # volume flow rate (m^3/s)
 
-height = np.linspace(0.25, 5., 50) * height0
+height = np.linspace(0.25, 1.5, 50) * height0
 # distance (m) between plate centerlines
 
 length = length0 * (height / height0)
@@ -41,9 +41,9 @@ h_gap0 = height0 - thickness
 
 volume = length * height
 
-Vdot = Vdot0 * (h_gap0 / height0) / (h_gap / height)
-
-cat_opt.Vdot = Vdot0
+Vdot = Vdot0 * h_gap0 / height0 * (height / h_gap)
+# from previous commit: 
+# Vdot_array = (height - thickness) / h_gap * Vdot
 
 DeltaP = np.zeros(height.size)
 Da = np.zeros(height.size)
@@ -102,26 +102,48 @@ plt.ylabel(
     )
 plt.grid()
 # plt.legend(loc="best")
-plt.savefig(
-    '../Plots/plot_eta_per_p/eta_per_vol.pdf')
+# plt.savefig(
+#     '../Plots/plot_eta_per_p/eta_per_vol.pdf')
 paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
 plt.savefig(paper_dir + 'eta_per_vol.pdf')
 
-# dimless number
-plt.figure('thiele, Da, and Pe')
-plt.plot(
-    h_gap * 1e3, Da * 1e3, label=r'Da x 10$^3$'
-    )
-plt.plot(
-    h_gap * 1e3, Pe, label='Pe'
-    )
+FONTSIZE = 30
+plt.rcParams['axes.labelsize'] = FONTSIZE
+plt.rcParams['axes.titlesize'] = FONTSIZE
+plt.rcParams['legend.fontsize'] = FONTSIZE
+plt.rcParams['xtick.labelsize'] = FONTSIZE
+plt.rcParams['ytick.labelsize'] = FONTSIZE
+plt.rcParams['lines.linewidth'] = 1.5
+plt.rcParams['lines.markersize'] = 8
+
+plt.figure('eta per vol big font')
+plt.plot(h_gap * 1e3, eta_per_vol, '-k')
+plt.xticks(rotation=45)
 plt.xlabel('Channel Height (mm)')
+plt.ylabel(
+    r'$\eta$ / V (m$^{-3}$)'
+    )
 plt.grid()
-plt.legend(loc="best")
+# plt.legend(loc="best")
+plt.subplots_adjust(bottom=0.2, left=0.2)
 plt.savefig(
-    '../Plots/plot_eta_per_p/dimless.pdf')
-paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
-plt.savefig(paper_dir + 'dimless.pdf')
+    '../Plots/plot_eta_per_p/eta_per_vol.pdf')
+
+# # dimless number
+# plt.figure('thiele, Da, and Pe')
+# plt.plot(
+#     h_gap * 1e3, Da * 1e3, label=r'Da x 10$^3$'
+#     )
+# plt.plot(
+#     h_gap * 1e3, Pe, label='Pe'
+#     )
+# plt.xlabel('Channel Height (mm)')
+# plt.grid()
+# plt.legend(loc="best")
+# plt.savefig(
+#     '../Plots/plot_eta_per_p/dimless.pdf')
+# paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
+# plt.savefig(paper_dir + 'dimless.pdf')
 
 # # eta per DeltaP
 # plt.figure('eta per DeltaP')
@@ -170,8 +192,10 @@ plt.figure('eta')
 plt.plot(h_gap * 1e3, eta)
 plt.xlabel('Channel Height (mm)')
 plt.ylabel('Conversion Efficiency (%)')
+plt.xticks(rotation=45)
 plt.grid()
 # plt.legend(loc="best")
+plt.subplots_adjust(bottom=0.2, left=0.2)
 plt.savefig(
     '../Plots/plot_eta_per_p/eta.pdf')
 # paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
