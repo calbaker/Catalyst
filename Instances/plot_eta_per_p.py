@@ -1,4 +1,4 @@
- """Module for plotting results of first term model with experimental
+"""Module for plotting results of first term model with experimental
 data and fitting capability."""
 
 import matplotlib.pyplot as plt
@@ -106,6 +106,9 @@ plt.grid()
 #     '../Plots/plot_eta_per_p/eta_per_vol.pdf')
 paper_dir = '/home/chad/Documents/Catalyst/Paper/version 2.1/Figures/'
 plt.savefig(paper_dir + 'eta_per_vol.pdf')
+
+plt.show()
+plt.close()
 
 FONTSIZE = 30
 plt.rcParams['axes.labelsize'] = FONTSIZE
