@@ -121,21 +121,6 @@ plt.savefig(paper_dir + 'species_4term.pdf')
 TICKShipe = np.linspace(cathipe.Yxy.min(), 1, 6)
 LEVELShipe = np.linspace(cathipe.Yxy.min(), cathipe.Yxy.max(), 12)
 
-fig_hipe = plt.figure(str(cathipe.terms) + ' terms, hi Pe')
-FCS = plt.contourf(x_2d, y_2d, cathipe.Yxy.T, levels=LEVELShipe)
-CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKShipe)
-plt.grid()
-plt.xlabel(r'$\tilde{x}$')
-plt.ylabel(r'$\tilde{y}$')
-plt.ylim(-1, 1)
-#plt.title(r'Species Concentration v. $\tilde{x}$ and $\tilde{y}$')
-plt.ylim(-1, 1)
-plt.subplots_adjust(bottom=0.15)
-plt.subplots_adjust(left=0.2)
-plt.subplots_adjust(right=0.7)
-plt.savefig('../Plots/plot_species/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
-            + ' hipe.pdf')
-
 fig_one = plt.figure('1 term')
 FCS = plt.contourf(x_2d, y_2d, cat1.Yxy.T, levels=LEVELS)
 CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKS)
@@ -174,6 +159,21 @@ plt.rcParams['xtick.labelsize'] = FONTSIZE
 plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 10
+
+fig_hipe = plt.figure(str(cathipe.terms) + ' terms, hi Pe')
+FCS = plt.contourf(x_2d, y_2d, cathipe.Yxy.T, levels=LEVELShipe)
+CB = plt.colorbar(FCS, orientation='vertical', format='%.2f', ticks=TICKShipe)
+plt.grid()
+plt.xlabel(r'$\tilde{x}$')
+plt.ylabel(r'$\tilde{y}$')
+plt.ylim(-1, 1)
+#plt.title(r'Species Concentration v. $\tilde{x}$ and $\tilde{y}$')
+plt.ylim(-1, 1)
+plt.subplots_adjust(bottom=0.15)
+plt.subplots_adjust(left=0.2)
+plt.subplots_adjust(right=0.7)
+plt.savefig('../Plots/plot_species/species4 Da=' + str(Da) + ' Pe=' + str(Pe)
+            + ' hipe.pdf')
 
 fig_max2 = plt.figure(str(catmax.terms) + ' terms alt')
 FCS2 = plt.contourf(x_2d, y_2d, catmax.Yxy.T, levels=LEVELS)
