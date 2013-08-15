@@ -14,6 +14,8 @@ import experimental
 reload(experimental)
 import numerical
 reload(numerical)
+import numerical1dflow
+reload(numerical1dflow)
 import prop_functions
 reload(prop_functions)
 
@@ -184,6 +186,19 @@ class Catalyst(object):
         self.get_eta_num = types.MethodType(numerical.get_eta_num,
         self)
         self.get_Yprime = types.MethodType(numerical.get_Yprime, self)
+
+    def init_numerical1dflow(self):
+        
+        """Adds methods from numerical1dflow."""
+
+        self.solve_numeric = types.MethodType(numerical1dflow.solve_numeric,
+        self)
+        self.set_eta_ij_num = (
+            types.MethodType(numerical1dflow.set_eta_ij_num, self)
+            )
+        self.get_eta_num = types.MethodType(numerical1dflow.get_eta_num,
+        self)
+        self.get_Yprime = types.MethodType(numerical1dflow.get_Yprime, self)
 
 
     def init_prop_functions(self):

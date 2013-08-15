@@ -50,6 +50,14 @@ cat_num.x_array = x_array
 cat_num.y_array = y_array
 cat_num.solve_numeric()
 
+cat_1dflow = catalyst.Catalyst()
+cat_1dflow.Pe = Pe
+cat_1dflow.Da = Da
+cat_1dflow.x_array = x_array
+cat_1dflow.y_array = y_array
+cat_1dflow.init_numerical1dflow()
+cat_1dflow.solve_numeric()
+
 for i in range(x_array.size):
     x_ = x_array[i]
     for j in range(y_array.size):
@@ -71,6 +79,10 @@ cat_num.Yxy_num = (
     np.concatenate((cat_num.Yxy_num[:, ::-1][:, 1:], cat_num.Yxy_num),
     1)
     )
+cat_1dflow.Yxy_num = (
+    np.concatenate((cat_1dflow.Yxy_num[:, ::-1][:, 1:], cat_1dflow.Yxy_num),
+    1)
+    )
 
 y_array = np.concatenate((-y_array[1:][::-1], y_array), 0)
 
@@ -84,8 +96,8 @@ plt.rcParams['ytick.labelsize'] = FONTSIZE
 plt.rcParams['lines.linewidth'] = 1.5
 plt.rcParams['lines.markersize'] = 10
 
-TICKS = np.linspace(cat1.Yxy.min(), 1, 6)
-LEVELS = np.linspace(cat1.Yxy.min(), cat1.Yxy.max(), 12)
+TICKS = np.linspace(cat_1dflow.Yxy_num.min(), 1, 6)
+LEVELS = np.linspace(cat_1dflow.Yxy_num.min(), cat_1dflow.Yxy_num.max(), 12)
 
 plt.close()
 
@@ -94,7 +106,8 @@ x_2d, y_2d = np.meshgrid(x_array, y_array)
 np.savetxt('../output/plot_species/x_2d', x_2d)
 np.savetxt('../output/plot_species/y_2d', y_2d)
 np.savetxt('../output/plot_species/cat_num.Yxy_num', cat_num.Yxy_num)
-np.savetxt('../output/plot_species/catmax.Yxy', cat_num.Yxy_num)
+np.savetxt('../output/plot_species/cat_1dflow.Yxy_num', cat_1dflow.Yxy_num)
+np.savetxt('../output/plot_species/catmax.Yxy', catmax.Yxy)
 np.savetxt('../output/plot_species/cat1.Yxy', cat1.Yxy)
 np.savetxt(
     '../output/plot_species/' + str(catmax.terms) + ' Yxy',
@@ -150,6 +163,20 @@ plt.subplots_adjust(right=0.7)
 plt.savefig('../Plots/plot_species/species num Da=' + str(Da) + ' Pe=' + str(Pe)
             + '.pdf')
 plt.savefig(paper_dir + 'species_num.pdf')
+
+fig_1dflow = plt.figure('1d flow')
+FCS = plt.contourf(x_2d, y_2d, cat_1dflow.Yxy_num.T, levels=LEVELS)
+CB = plt.colorbar(FCS, orientation='vertical', ticks=TICKS, format='%.2f')
+plt.grid()
+plt.xlabel(r'$\tilde{x}$')
+plt.ylabel(r'$\tilde{y}$')
+plt.ylim(-1, 1)
+plt.subplots_adjust(bottom=0.15)
+plt.subplots_adjust(left=0.2)
+plt.subplots_adjust(right=0.7)
+plt.savefig('../Plots/plot_species/species 1dflow Da=' + str(Da) + ' Pe=' + str(Pe)
+            + '.pdf')
+plt.savefig(paper_dir + 'species_1dflow.pdf')
 
 FONTSIZE = 18
 plt.rcParams['axes.labelsize'] = FONTSIZE

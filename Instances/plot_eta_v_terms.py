@@ -33,6 +33,7 @@ for i in range(terms.size):
 
 print "solving numerical model"
 cat_terms.y_array = np.linspace(0, 1, 100)
+cat_terms.init_numerical1dflow()
 cat_terms.set_eta_ij_num()
 
 
@@ -50,9 +51,9 @@ plt.close()
 
 plt.figure()
 
-for i in range(terms.size):
+for i in terms:
     if i % 2 == 0:
-        LABEL = str(terms[i]) + ' terms'
+        LABEL = str(i) + ' terms'
     else:
         LABEL = None
     plt.plot(T_array - 273.15, eta_ij[:, i] * 100., label=LABEL)
